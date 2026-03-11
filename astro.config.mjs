@@ -16,16 +16,26 @@ export default defineConfig({
 					content: `
 						import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 						mermaid.initialize({ startOnLoad: false, theme: 'dark' });
-						document.addEventListener('DOMContentLoaded', () => {
-							document.querySelectorAll('pre:has(code.language-mermaid)').forEach((pre, i) => {
-								const code = pre.querySelector('code').textContent;
+						function initMermaid() {
+							const pres = document.querySelectorAll('pre[data-language="mermaid"]');
+							let found = false;
+							pres.forEach((pre) => {
+								found = true;
+								const code = pre.querySelector('code');
+								const text = code ? code.textContent : pre.textContent;
 								const div = document.createElement('div');
 								div.className = 'mermaid';
-								div.textContent = code;
-								pre.replaceWith(div);
+								div.textContent = text;
+								const wrapper = pre.closest('.expressive-code') || pre.closest('figure') || pre;
+								wrapper.replaceWith(div);
 							});
-							mermaid.run();
-						});
+							if (found) mermaid.run();
+						}
+						if (document.readyState === 'loading') {
+							document.addEventListener('DOMContentLoaded', initMermaid);
+						} else {
+							initMermaid();
+						}
 					`,
 				},
 			],
