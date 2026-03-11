@@ -36,6 +36,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Hytale Modding Manual',
+			logo: { src: './src/assets/logo.png' },
 			defaultLocale: 'root',
 			head: [
 				{

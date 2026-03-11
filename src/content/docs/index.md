@@ -6,6 +6,8 @@ editUrl: false
 hero:
   title: 'Documentation for **Hytale** modding'
   tagline: JSON schemas extracted from game assets, NPC and item reference, crafting, world config, and tutorials. In English, Spanish, and Portuguese.
+  image:
+    html: '<img src="/hytale-modding-docs/assets/hero.png" alt="Hytale Modding Manual — documentation for server modding" />'
   actions:
     - text: Get started
       link: /hytale-modding-docs/getting-started/installation/

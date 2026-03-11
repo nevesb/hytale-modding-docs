@@ -1,5 +1,5 @@
 # Extracted Hytale assets (too large to commit)
-Assets/
+/Assets/
 Assets.zip
 
 # Node
@@ -20,3 +20,5 @@ __pycache__/
 *.pyc
 .venv/
 .omc/
+
+TODO.md
