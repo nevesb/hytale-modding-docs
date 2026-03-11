@@ -11,14 +11,13 @@ Hytale builds complex gameplay behaviors by chaining simple interactions togethe
 
 ```mermaid
 flowchart TD;
-    A[Player Uses Item] --> B{Condition Check}
-    B -->|"Game Mode = Adventure"| C[Apply Effect]
-    B -->|"Wrong Game Mode"| X[Chain Stops]
-    C -->|"EffectId: Burning"| D[Deal Damage]
-    D -->|"BaseDamage: Fire 10"| E[Chain Complete]
-
-    style A fill:darkgreen,color:white
-    style X fill:darkred,color:white
+    A[Player Uses Item] --> B{Condition Check};
+    B -->|"Game Mode = Adventure"| C[Apply Effect];
+    B -->|"Wrong Game Mode"| X[Chain Stops];
+    C -->|"EffectId: Burning"| D[Deal Damage];
+    D -->|"BaseDamage: Fire 10"| E[Chain Complete];
+    style A fill:darkgreen,color:white;
+    style X fill:darkred,color:white;
     style E fill:steelblue,color:white
 ```
 
@@ -26,10 +25,9 @@ flowchart TD;
 
 ```mermaid
 flowchart LR;
-    A[Projectile Hits Entity] --> B["DamageEntity<br>Fire: 15"]
-    B --> C["RemoveEntity<br>Projectile destroyed"]
-
-    style A fill:darkgoldenrod,color:white
+    A[Projectile Hits Entity] --> B["DamageEntity<br>Fire: 15"];
+    B --> C["RemoveEntity<br>Projectile destroyed"];
+    style A fill:darkgoldenrod,color:white;
     style C fill:darkred,color:white
 ```
 
@@ -37,17 +35,16 @@ flowchart LR;
 
 ```mermaid
 flowchart TD;
-    A[Player Swings Sword] --> B{Check Durability}
-    B -->|"Has durability"| C[Damage Target]
-    B -->|"Broken"| X[Play Break Sound]
-    C --> D[Apply Knockback]
-    D --> E{Critical Hit?}
-    E -->|"Yes"| F[Apply Stun Effect]
-    E -->|"No"| G[Play Hit Sound]
-    F --> G
-    G --> H[Reduce Durability]
-
-    style A fill:darkgreen,color:white
+    A[Player Swings Sword] --> B{Check Durability};
+    B -->|"Has durability"| C[Damage Target];
+    B -->|"Broken"| X[Play Break Sound];
+    C --> D[Apply Knockback];
+    D --> E{Critical Hit?};
+    E -->|"Yes"| F[Apply Stun Effect];
+    E -->|"No"| G[Play Hit Sound];
+    F --> G;
+    G --> H[Reduce Durability];
+    style A fill:darkgreen,color:white;
     style X fill:darkred,color:white
 ```
 
