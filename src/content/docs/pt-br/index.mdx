@@ -1,17 +1,23 @@
 ---
-title: Manual de Modding do Hytale
-description: Documentação de modding para Hytale — schemas JSON, NPCs, itens, crafting e tutoriais. Referência para servidores em português.
+title: Manual de Modding Hytale
+description: Documentação completa de modding para Hytale — schemas JSON, NPCs, itens, crafting e tutoriais passo a passo. Referência em inglês, espanhol e português.
 template: splash
+editUrl: false
 hero:
-  tagline: A referência completa para modding de servidores Hytale. Cada campo JSON documentado, com tutoriais passo a passo.
+  title: 'Documentação para **modding** de **Hytale**'
+  tagline: Schemas JSON extraídos dos assets do jogo, referência de NPCs, itens, crafting, mundo e tutoriais. Em inglês, espanhol e português.
+  image:
+    html: '<img src="/hytale-modding-docs/assets/hero.png" alt="Manual de Modding Hytale — documentação para modding de servidor" />'
   actions:
-    - text: Começar
-      link: /hytale-modding-docs/getting-started/installation/
+    - text: Primeiros passos
+      link: /hytale-modding-docs/pt-br/getting-started/installation/
       icon: right-arrow
       variant: primary
-    - text: Documentação
-      link: /hytale-modding-docs/reference/concepts/inheritance-and-templates/
-      variant: minimal
+    - text: Referência
+      link: /hytale-modding-docs/pt-br/reference/concepts/inheritance-and-templates/
+      icon: external
+      variant: secondary
+tableOfContents: false
 head:
   - tag: meta
     attrs:
@@ -24,7 +30,7 @@ head:
   - tag: meta
     attrs:
       property: og:site_name
-      content: Manual de Modding do Hytale
+      content: Manual de Modding Hytale
   - tag: meta
     attrs:
       name: twitter:card
@@ -34,3 +40,45 @@ head:
       rel: canonical
       href: https://nevesb.github.io/hytale-modding-docs/pt-br/
 ---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## O que você encontra aqui
+
+Documentação estática gerada a partir dos arquivos de configuração do Hytale. Feita para quem cria mods de servidor: NPCs, itens, receitas, tabelas de drop e regras de mundo via JSON.
+
+- **Primeiros passos** — Instalação, estrutura do projeto, fundamentos de JSON e visão geral dos assets.
+- **Referência** — Conceitos, sistema de NPCs, itens, crafting, combate, economia, mundo, modelos e configuração do jogo.
+- **Tutoriais** — Do iniciante ao avançado, com exemplos como *Dude vs Dungeon* e empacotamento de mods.
+
+<CardGrid stagger>
+  <Card title="Sistema de NPCs" icon="document">
+    Defina roles de NPC, comportamentos, tomada de decisão da IA, regras de spawn e balanceamento de combate.
+    [Explorar referência de NPCs](/hytale-modding-docs/pt-br/reference/npc-system/npc-roles/)
+  </Card>
+  <Card title="Sistema de itens" icon="puzzle">
+    Crie itens, blocos, armas, ferramentas e comida. Configure qualidades, interações e categorias.
+    [Explorar referência de itens](/hytale-modding-docs/pt-br/reference/item-system/item-definitions/)
+  </Card>
+  <Card title="Crafting e receitas" icon="setting">
+    Configure bancadas de crafting, receitas, tabelas de reciclagem e fluxos de processamento.
+    [Explorar referência de crafting](/hytale-modding-docs/pt-br/reference/crafting-system/recipes/)
+  </Card>
+  <Card title="Mundo e ambiente" icon="sun">
+    Configure biomas, sistemas de clima, geração do mundo e tipos de portal.
+    [Explorar referência do mundo](/hytale-modding-docs/pt-br/reference/world-and-environment/environments/)
+  </Card>
+</CardGrid>
+
+## Idiomas
+
+A documentação está disponível em **English** (padrão), **Español** e **Português (BR)**. Use o seletor de idioma no cabeçalho.
+
+## Links rápidos
+
+- [Instalação](/hytale-modding-docs/pt-br/getting-started/installation/) — Ferramentas e pasta de mods
+- [Estrutura do projeto](/hytale-modding-docs/pt-br/getting-started/project-structure/) — Layout de Server/ e Common/
+- [Herança e templates](/hytale-modding-docs/pt-br/reference/concepts/inheritance-and-templates/) — Reference/Modify e Parent
+- [NPC Roles](/hytale-modding-docs/pt-br/reference/npc-system/npc-roles/) — Definindo NPCs
+- [Receitas](/hytale-modding-docs/pt-br/reference/crafting-system/recipes/) — Sistema de crafting
+- [Tutoriais para iniciantes](/hytale-modding-docs/pt-br/tutorials/beginner/create-an-item/) — Criar item, NPC e bloco
