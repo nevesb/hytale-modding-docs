@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "gameplay-config",
+  "description": "Core game settings — death, durability, stamina, day/night",
+  "type": "object",
+  "properties": {
+    "CameraEffects": {
+      "type": "object"
+    },
+    "Combat": {
+      "type": "object"
+    },
+    "CreativePlaySoundSet": {
+      "type": "string",
+      "examples": [
+        "CreativePlayDefaults"
+      ]
+    },
+    "Death": {
+      "type": "object"
+    },
+    "Gathering": {
+      "type": "object"
+    },
+    "ItemDurability": {
+      "type": "object"
+    },
+    "ItemEntity": {
+      "type": "object"
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Default"
+      ]
+    },
+    "Ping": {
+      "type": "object"
+    },
+    "Player": {
+      "type": "object"
+    },
+    "Plugin": {
+      "type": "object"
+    },
+    "Respawn": {
+      "type": "object"
+    },
+    "Spawn": {
+      "type": "object"
+    },
+    "World": {
+      "type": "object"
+    },
+    "WorldMap": {
+      "type": "object"
+    }
+  }
+}

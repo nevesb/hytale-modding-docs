@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "quality",
+  "description": "Item quality/rarity tiers",
+  "type": "object",
+  "properties": {
+    "BlockSlotTexture": {
+      "type": "string",
+      "examples": [
+        "UI/ItemQualities/Slots/SlotCommon.png",
+        "UI/ItemQualities/Slots/SlotDeveloper.png",
+        "UI/ItemQualities/Slots/SlotEpic.png"
+      ]
+    },
+    "HideFromSearch": {
+      "type": "boolean"
+    },
+    "ItemEntityConfig": {
+      "type": "object"
+    },
+    "ItemTooltipArrowTexture": {
+      "type": "string",
+      "examples": [
+        "UI/ItemQualities/Tooltips/ItemTooltipCommonArrow.png",
+        "UI/ItemQualities/Tooltips/ItemTooltipEpicArrow.png",
+        "UI/ItemQualities/Tooltips/ItemTooltipJunkArrow.png"
+      ]
+    },
+    "ItemTooltipTexture": {
+      "type": "string",
+      "examples": [
+        "UI/ItemQualities/Tooltips/ItemTooltipCommon.png",
+        "UI/ItemQualities/Tooltips/ItemTooltipEpic.png",
+        "UI/ItemQualities/Tooltips/ItemTooltipJunk.png"
+      ]
+    },
+    "LocalizationKey": {
+      "type": "string",
+      "examples": [
+        "server.general.qualities.Common",
+        "server.general.qualities.Debug",
+        "server.general.qualities.Developer"
+      ]
+    },
+    "QualityValue": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "RenderSpecialSlot": {
+      "type": "boolean"
+    },
+    "SlotTexture": {
+      "type": "string",
+      "examples": [
+        "UI/ItemQualities/Slots/SlotCommon.png",
+        "UI/ItemQualities/Slots/SlotDeveloper.png",
+        "UI/ItemQualities/Slots/SlotEpic.png"
+      ]
+    },
+    "SpecialSlotTexture": {
+      "type": "string",
+      "examples": [
+        "UI/ItemQualities/Slots/SlotCommon.png",
+        "UI/ItemQualities/Slots/SlotDeveloper.png",
+        "UI/ItemQualities/Slots/SlotEpic.png"
+      ]
+    },
+    "TextColor": {
+      "type": "string",
+      "examples": [
+        "#c9d2dd",
+        "#ce1624",
+        "#bb2f2c"
+      ]
+    },
+    "VisibleQualityLabel": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "BlockSlotTexture",
+    "ItemTooltipArrowTexture",
+    "ItemTooltipTexture",
+    "LocalizationKey",
+    "QualityValue",
+    "RenderSpecialSlot",
+    "SlotTexture",
+    "SpecialSlotTexture",
+    "TextColor",
+    "VisibleQualityLabel"
+  ]
+}

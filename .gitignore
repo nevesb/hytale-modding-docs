@@ -1,0 +1,21 @@
+# Extracted Hytale assets (too large to commit)
+Assets/
+Assets.zip
+
+# Node
+node_modules/
+dist/
+.astro/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Editor files
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/

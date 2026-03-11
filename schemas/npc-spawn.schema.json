@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "npc-spawn",
+  "description": "NPC spawn rules — where, when, and how NPCs appear",
+  "type": "object",
+  "properties": {
+    "BeaconRadius": {
+      "type": "integer",
+      "minimum": 6,
+      "maximum": 70
+    },
+    "BeaconVacantDespawnGameTime": {
+      "type": "string",
+      "examples": [
+        "PT35M",
+        "PT15M",
+        "PT40M"
+      ]
+    },
+    "ConcurrentSpawnsRange": {
+      "type": "array"
+    },
+    "DayTimeRange": {
+      "type": "array"
+    },
+    "DeactivationDistance": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 1000
+    },
+    "Despawn": {
+      "type": "object"
+    },
+    "Environments": {
+      "type": "array"
+    },
+    "ExclusionRadius": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 85
+    },
+    "LightRanges": {
+      "type": "object"
+    },
+    "ManualTrigger": {
+      "type": "boolean"
+    },
+    "MaxDropHeight": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 30
+    },
+    "MaxSpawnedNPCs": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 15
+    },
+    "MinDistanceFromPlayer": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 15
+    },
+    "Model": {
+      "type": "string",
+      "examples": [
+        "NPC_Spawn_Marker"
+      ]
+    },
+    "MoonPhaseWeightModifiers": {
+      "type": "array"
+    },
+    "NPCIdleDespawnTime": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 60
+    },
+    "NPCSpawnState": {
+      "type": "string",
+      "examples": [
+        "Seek",
+        "Chase",
+        "Alerted"
+      ]
+    },
+    "NPCs": {
+      "type": "array"
+    },
+    "RealtimeRespawn": {
+      "type": "boolean"
+    },
+    "SpawnAfterGameTimeRange": {
+      "type": "array"
+    },
+    "SpawnAfterRealTimeRange": {
+      "type": "array"
+    },
+    "SpawnRadius": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 50
+    },
+    "SpawnSuppression": {
+      "type": "string",
+      "examples": [
+        "Test"
+      ]
+    },
+    "SuppressSpawnMarkers": {
+      "type": "boolean"
+    },
+    "SuppressedGroups": {
+      "type": "array"
+    },
+    "SuppressionRadius": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 45
+    },
+    "TargetDistanceFromPlayer": {
+      "type": "integer",
+      "minimum": 6,
+      "maximum": 25
+    },
+    "TargetSlot": {
+      "type": "string",
+      "examples": [
+        "LockedTarget"
+      ]
+    }
+  },
+  "required": [
+    "NPCs"
+  ]
+}

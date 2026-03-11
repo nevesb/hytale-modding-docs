@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "response-curve",
+  "description": "Mathematical curves for AI and gameplay",
+  "type": "object",
+  "properties": {
+    "Amplitude": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "Ceiling": {
+      "type": "integer",
+      "minimum": -1,
+      "maximum": 1
+    },
+    "Exponent": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.28,
+      "maximum": 2
+    },
+    "Frequency": {
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 0.5
+    },
+    "HorizontalShift": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "RateOfChange": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "Slope": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": -1,
+      "maximum": 1.1
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "Exponential",
+        "Logistic",
+        "SineWave"
+      ]
+    },
+    "VerticalShift": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "required": [
+    "Type"
+  ]
+}

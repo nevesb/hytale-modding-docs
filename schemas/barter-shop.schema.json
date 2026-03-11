@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "barter-shop",
+  "description": "NPC shop inventories with fixed and pool trade slots",
+  "type": "object",
+  "properties": {
+    "DisplayNameKey": {
+      "type": "string",
+      "examples": [
+        "server.barter.klops_merchant.title",
+        "server.barter.kweebec_merchant.title"
+      ]
+    },
+    "RefreshInterval": {
+      "type": "object"
+    },
+    "RestockHour": {
+      "type": "integer",
+      "minimum": 6,
+      "maximum": 6
+    },
+    "TradeSlots": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "DisplayNameKey",
+    "RefreshInterval",
+    "RestockHour",
+    "TradeSlots"
+  ]
+}

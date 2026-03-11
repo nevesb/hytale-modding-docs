@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "farming",
+  "description": "Farm configurations — coops, growth modifiers",
+  "type": "object",
+  "properties": {
+    "AcceptedNpcGroups": {
+      "type": "array"
+    },
+    "ArtificialLight": {
+      "type": "object"
+    },
+    "CaptureWildNPCsInRange": {
+      "type": "boolean"
+    },
+    "Fluids": {
+      "type": "array"
+    },
+    "MaxResidents": {
+      "type": "integer",
+      "minimum": 6,
+      "maximum": 6
+    },
+    "Modifier": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 2,
+      "maximum": 2.5
+    },
+    "ProduceDrops": {
+      "type": "object"
+    },
+    "RequireBoth": {
+      "type": "boolean"
+    },
+    "ResidentRoamTime": {
+      "type": "array"
+    },
+    "ResidentSpawnOffset": {
+      "type": "object"
+    },
+    "Sunlight": {
+      "type": "object"
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "LightLevel",
+        "Fertilizer",
+        "Water"
+      ]
+    },
+    "Weathers": {
+      "type": "array"
+    },
+    "WildCaptureRadius": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 10
+    }
+  }
+}

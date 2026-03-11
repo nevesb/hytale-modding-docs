@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "npc-decision-making",
+  "description": "AI condition evaluators for NPC behavior",
+  "type": "object",
+  "properties": {
+    "Curve": {
+      "type": "string",
+      "examples": [
+        "Linear"
+      ]
+    },
+    "Stat": {
+      "type": "string",
+      "examples": [
+        "Health"
+      ]
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "OwnStatPercent"
+      ]
+    }
+  },
+  "required": [
+    "Curve",
+    "Stat",
+    "Type"
+  ]
+}

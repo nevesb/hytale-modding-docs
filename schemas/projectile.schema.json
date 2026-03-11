@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "projectile",
+  "description": "Simple projectile definitions",
+  "type": "object",
+  "properties": {
+    "Appearance": {
+      "type": "string",
+      "examples": [
+        "Arrow_Crude",
+        "Ice_Ball",
+        "Ice_Bolt"
+      ]
+    },
+    "BounceParticles": {
+      "type": "object"
+    },
+    "BounceSoundEventId": {
+      "type": "string",
+      "examples": [
+        "SFX_Rubble_Bounce",
+        "SFX_Bomb_Fire_Goblin_Bounce",
+        "SFX_Poop_Bounce"
+      ]
+    },
+    "Bounciness": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 0.8
+    },
+    "ComputePitch": {
+      "type": "boolean"
+    },
+    "ComputeRoll": {
+      "type": "boolean"
+    },
+    "ComputeYaw": {
+      "type": "boolean"
+    },
+    "Damage": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 200
+    },
+    "DeadTime": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 5
+    },
+    "DeadTimeMiss": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "DeathEffectsOnHit": {
+      "type": "boolean"
+    },
+    "DeathParticles": {
+      "type": "object"
+    },
+    "DeathSoundEventId": {
+      "type": "string",
+      "examples": [
+        "SFX_Ice_Ball_Death",
+        "SFX_Ice_Break",
+        "SFX_GunPvP_Assault_Rifle_Bullet_Death"
+      ]
+    },
+    "Density": {
+      "type": "integer",
+      "minimum": 500,
+      "maximum": 1100
+    },
+    "DepthShot": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 2
+    },
+    "ExplosionConfig": {
+      "type": "object"
+    },
+    "Gravity": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 30
+    },
+    "Height": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 0.3
+    },
+    "HitParticles": {
+      "type": "object"
+    },
+    "HitSoundEventId": {
+      "type": "string",
+      "examples": [
+        "SFX_Arrow_FullCharge_Hit",
+        "SFX_Arrow_HalfCharge_Hit",
+        "SFX_Arrow_NoCharge_Hit"
+      ]
+    },
+    "HorizontalCenterShot": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": -0.25,
+      "maximum": 0.3
+    },
+    "ImpactSlowdown": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "MissParticles": {
+      "type": "object"
+    },
+    "MissSoundEventId": {
+      "type": "string",
+      "examples": [
+        "SFX_Arrow_FullCharge_Miss",
+        "SFX_Arrow_HalfCharge_Miss",
+        "SFX_Arrow_NoCharge_Miss"
+      ]
+    },
+    "MuzzleVelocity": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 500
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Arrow_FullCharge",
+        "Wand_Wood_Rotten_Corruption_Orb",
+        "Bomb_Potion_Poison"
+      ]
+    },
+    "PitchAdjustShot": {
+      "type": "boolean"
+    },
+    "Radius": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 2.2
+    },
+    "SticksVertically": {
+      "type": "boolean"
+    },
+    "TerminalVelocity": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 5,
+      "maximum": 500
+    },
+    "TimeToLive": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 50
+    },
+    "VerticalCenterShot": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": -0.5,
+      "maximum": 0.5
+    },
+    "WaterHitImpulseLoss": {
+      "type": "number",
+      "minimum": 0.4,
+      "maximum": 0.5
+    },
+    "WaterTerminalVelocityMultiplier": {
+      "type": "number",
+      "minimum": 0.35,
+      "maximum": 0.35
+    }
+  },
+  "required": [
+    "Appearance",
+    "Damage"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "objective",
+  "description": "Quest objective definitions",
+  "type": "object",
+  "properties": {
+    "Area": {
+      "type": "object"
+    },
+    "Completions": {
+      "type": "array"
+    },
+    "Name": {
+      "type": "string",
+      "examples": [
+        "Test Location"
+      ]
+    },
+    "ObjectiveIds": {
+      "type": "array"
+    },
+    "Radius": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 5
+    },
+    "RemoveOnItemDrop": {
+      "type": "boolean"
+    },
+    "Setup": {
+      "type": "object"
+    },
+    "TaskSets": {
+      "type": "array"
+    },
+    "TriggerConditions": {
+      "type": "array"
+    }
+  }
+}

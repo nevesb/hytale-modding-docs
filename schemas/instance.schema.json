@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "instance",
+  "description": "Instance data configurations",
+  "type": "object",
+  "properties": {
+    "BlockPlacementCounts": {
+      "type": "object"
+    },
+    "ChunkConfig": {
+      "type": "object"
+    },
+    "ChunkStorage": {
+      "type": "object"
+    },
+    "ClientEffects": {
+      "type": "object"
+    },
+    "DeleteOnRemove": {
+      "type": "boolean"
+    },
+    "DeleteOnUniverseStart": {
+      "type": "boolean"
+    },
+    "DisplayName": {
+      "type": "string",
+      "examples": [
+        "the Crossroads"
+      ]
+    },
+    "GameMode": {
+      "type": "string",
+      "examples": [
+        "Creative"
+      ]
+    },
+    "GameTime": {
+      "type": "string",
+      "examples": [
+        "0001-01-01T16:50:44.090953998Z",
+        "0001-01-04T08:00:00.000858306Z",
+        "0001-01-01T09:30:00Z"
+      ]
+    },
+    "GameplayConfig": {
+      "type": "string",
+      "examples": [
+        "CreativeHub",
+        "ForgottenTemple",
+        "Default"
+      ]
+    },
+    "HadPlayer": {
+      "type": "boolean"
+    },
+    "IsAllNPCFrozen": {
+      "type": "boolean"
+    },
+    "IsBlockTicking": {
+      "type": "boolean"
+    },
+    "IsCompassUpdating": {
+      "type": "boolean"
+    },
+    "IsFallDamageEnabled": {
+      "type": "boolean"
+    },
+    "IsGameTimePaused": {
+      "type": "boolean"
+    },
+    "IsObjectiveMarkersEnabled": {
+      "type": "boolean"
+    },
+    "IsPvpEnabled": {
+      "type": "boolean"
+    },
+    "IsSavingChunks": {
+      "type": "boolean"
+    },
+    "IsSavingPlayers": {
+      "type": "boolean"
+    },
+    "IsSpawnMarkersEnabled": {
+      "type": "boolean"
+    },
+    "IsSpawningNPC": {
+      "type": "boolean"
+    },
+    "IsTicking": {
+      "type": "boolean"
+    },
+    "IsUnloadingChunks": {
+      "type": "boolean"
+    },
+    "LoadedPrefabMetadata": {
+      "type": "array"
+    },
+    "Markers": {
+      "type": "object"
+    },
+    "Now": {
+      "type": "string",
+      "examples": [
+        "1970-01-01T00:00:02.207904012Z",
+        "1970-01-01T00:00:03.062851534Z",
+        "1970-01-01T02:24:02.607425678Z"
+      ]
+    },
+    "Plugin": {
+      "type": "object"
+    },
+    "RequiredPlugins": {
+      "type": "object"
+    },
+    "ResourceStorage": {
+      "type": "object"
+    },
+    "SaveNewChunks": {
+      "type": "boolean"
+    },
+    "Seed": {
+      "type": "integer",
+      "minimum": 1618917989368,
+      "maximum": 1769510793960
+    },
+    "SmartBlockRotations": {
+      "type": "object"
+    },
+    "SmartBlocks": {
+      "type": "object"
+    },
+    "SpawnPoint": {
+      "type": "array"
+    },
+    "SpawnProvider": {
+      "type": "object"
+    },
+    "SpawnSuppressorMap": {
+      "type": "object"
+    },
+    "Stats": {
+      "type": "object"
+    },
+    "UUID": {
+      "type": "object"
+    },
+    "UserMarkers": {
+      "type": "array"
+    },
+    "Version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "WorldGen": {
+      "type": "object"
+    },
+    "WorldMap": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "particle",
+  "description": "Particle effect definitions",
+  "type": "object",
+  "properties": {
+    "CrouchOffset": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    "CullDistance": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 100
+    },
+    "EyeHeight": {
+      "type": "number",
+      "minimum": 0.9,
+      "maximum": 0.9
+    },
+    "HitBox": {
+      "type": "object"
+    },
+    "LifeSpan": {
+      "type": "integer",
+      "minimum": 9,
+      "maximum": 9
+    },
+    "MaxScale": {
+      "type": "number",
+      "minimum": 1.5,
+      "maximum": 1.5
+    },
+    "MinScale": {
+      "type": "number",
+      "minimum": 1.5,
+      "maximum": 1.5
+    },
+    "Model": {
+      "type": "string",
+      "examples": [
+        "Items/Weapons/Deployable/Slowness_Totem.blockymodel"
+      ]
+    },
+    "Particles": {
+      "type": "array"
+    },
+    "Spawners": {
+      "type": "array"
+    },
+    "Texture": {
+      "type": "string",
+      "examples": [
+        "Items/Weapons/Deployable/Slowness_Totem.png"
+      ]
+    },
+    "Trails": {
+      "type": "array"
+    }
+  }
+}

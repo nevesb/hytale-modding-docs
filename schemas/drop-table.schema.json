@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "drop-table",
+  "description": "Loot table definitions with weighted containers",
+  "type": "object",
+  "properties": {
+    "Container": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "Container"
+  ]
+}

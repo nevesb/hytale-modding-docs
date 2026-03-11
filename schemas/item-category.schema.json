@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "item-category",
+  "description": "Item category hierarchy for inventory UI",
+  "type": "object",
+  "properties": {
+    "Children": {
+      "type": "array"
+    },
+    "Icon": {
+      "type": "string",
+      "examples": [
+        "Icons/ItemCategories/Natural.png",
+        "Icons/ItemCategories/Furniture.png",
+        "Icons/ItemCategories/Items.png"
+      ]
+    },
+    "Name": {
+      "type": "string",
+      "examples": [
+        "server.benchCategories.workbench.tools"
+      ]
+    },
+    "Order": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    }
+  },
+  "required": [
+    "Icon",
+    "Order"
+  ]
+}

@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "item-definition",
+  "description": "Item definitions — stats, recipes, icons, interactions",
+  "type": "object",
+  "properties": {
+    "$Comment": {
+      "type": "string",
+      "examples": [
+        " ",
+        "  ",
+        ""
+      ]
+    },
+    "Animation": {
+      "type": "string",
+      "examples": [
+        "NPC/Swimming_Wildlife/Bluegill/Animations/Swim/Swim.blockyanim",
+        "NPC/Swimming_Beast/Crab/Animations/Default/Walk.blockyanim",
+        "NPC/Swimming_Beast/Eel/Animations/Swim/Swim.blockyanim"
+      ]
+    },
+    "Armor": {
+      "type": "object"
+    },
+    "BlockSelectorTool": {
+      "type": "object"
+    },
+    "BlockType": {
+      "type": "object"
+    },
+    "BuilderTool": {
+      "type": "object"
+    },
+    "Categories": {
+      "type": "array"
+    },
+    "ClipsGeometry": {
+      "type": "boolean"
+    },
+    "Consumable": {
+      "type": "boolean"
+    },
+    "Container": {
+      "type": "object"
+    },
+    "DisplayEntityStatsHUD": {
+      "type": "array"
+    },
+    "DropOnDeath": {
+      "type": "boolean"
+    },
+    "DroppedItemAnimation": {
+      "type": "string",
+      "examples": [
+        "Items/Animations/Dropped/Dropped_Diagonal_Left.blockyanim",
+        "Items/Animations/Dropped/Dropped_Diagonal_Right.blockyanim"
+      ]
+    },
+    "DurabilityLossOnDeath": {
+      "type": "boolean"
+    },
+    "DurabilityLossOnHit": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.0,
+      "maximum": 1
+    },
+    "FuelQuality": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 2,
+      "maximum": 9.0
+    },
+    "Glider": {
+      "type": "object"
+    },
+    "Icon": {
+      "type": "string",
+      "examples": [
+        "Icons/ItemsGenerated/Fluid_Slime_Red.png",
+        "Icons/ItemsGenerated/Ingredient_Ice_Essence.png",
+        "Icons/ItemsGenerated/Armor_Adamantite_Chest.png"
+      ]
+    },
+    "IconProperties": {
+      "type": "object"
+    },
+    "InteractionConfig": {
+      "type": "object"
+    },
+    "InteractionVars": {
+      "type": "object"
+    },
+    "Interactions": {
+      "type": "object"
+    },
+    "ItemAppearanceConditions": {
+      "type": "object"
+    },
+    "ItemEntity": {
+      "type": "object"
+    },
+    "ItemLevel": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 75
+    },
+    "ItemSoundSetId": {
+      "type": "string",
+      "examples": [
+        "ISS_Items_Gems",
+        "ISS_Armor_Heavy",
+        "ISS_Armor_Cloth"
+      ]
+    },
+    "Light": {
+      "type": "object"
+    },
+    "MaxDurability": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 1,
+      "maximum": 500
+    },
+    "MaxStack": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "Model": {
+      "type": "string",
+      "examples": [
+        "Resources/Ingredients/Essence.blockymodel",
+        "Items/Armors/Adamantite/Chest.blockymodel",
+        "Items/Armors/Adamantite/Hands.blockymodel"
+      ]
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Armor_Iron_Chest",
+        "Armor_Iron_Hands",
+        "Armor_Iron_Head"
+      ]
+    },
+    "Particles": {
+      "type": "array"
+    },
+    "PlayerAnimationsId": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Block",
+        "Item",
+        "Staff"
+      ]
+    },
+    "PortalKey": {
+      "type": "object"
+    },
+    "Quality": {
+      "type": "string",
+      "examples": [
+        "Technical",
+        "Rare",
+        "Uncommon"
+      ]
+    },
+    "Recipe": {
+      "type": "object"
+    },
+    "RenderDeployablePreview": {
+      "type": "boolean"
+    },
+    "ResourceTypes": {
+      "type": "array"
+    },
+    "Reticle": {
+      "type": "string",
+      "examples": [
+        "DefaultMelee",
+        "MaceMelee"
+      ]
+    },
+    "Scale": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.01,
+      "maximum": 2
+    },
+    "Set": {
+      "type": "string",
+      "examples": [
+        "Bones",
+        "Scrap",
+        "Deco_Iron"
+      ]
+    },
+    "SoundEventId": {
+      "type": "string",
+      "examples": [
+        "SFX_Bomb_Fuse",
+        "SFX_Goblin_Lobber_Bomb_Miss"
+      ]
+    },
+    "State": {
+      "type": "object"
+    },
+    "Tags": {
+      "type": "object"
+    },
+    "Texture": {
+      "type": "string",
+      "examples": [
+        "Resources/Ingredients/Essence_Textures/Ice_Essence_Texture.png",
+        "Items/Armors/Adamantite/Chest_Texture.png",
+        "Items/Armors/Adamantite/Hands_Texture.png"
+      ]
+    },
+    "Tool": {
+      "type": "object"
+    },
+    "Trails": {
+      "type": "array"
+    },
+    "TranslationProperties": {
+      "type": "object"
+    },
+    "UsePlayerAnimations": {
+      "type": "boolean"
+    },
+    "Utility": {
+      "type": "object"
+    },
+    "Variant": {
+      "type": "boolean"
+    },
+    "Weapon": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "Icon",
+    "TranslationProperties"
+  ]
+}

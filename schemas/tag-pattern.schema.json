@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "tag-pattern",
+  "description": "Logical tag matching patterns",
+  "type": "object",
+  "properties": {
+    "Op": {
+      "type": "string",
+      "examples": [
+        "Or",
+        "Equals"
+      ]
+    },
+    "Patterns": {
+      "type": "array"
+    },
+    "Tag": {
+      "type": "string",
+      "examples": [
+        "CactusGrowth",
+        "Vine"
+      ]
+    }
+  },
+  "required": [
+    "Op"
+  ]
+}

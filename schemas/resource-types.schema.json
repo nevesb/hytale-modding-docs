@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "resource-types",
+  "description": "Resource type definitions",
+  "type": "object",
+  "properties": {
+    "Icon": {
+      "type": "string",
+      "examples": [
+        "Icons/ResourceTypes/Any_Bone.png",
+        "Icons/ResourceTypes/Any_Book.png",
+        "Icons/ResourceTypes/Rock.png"
+      ]
+    }
+  },
+  "required": [
+    "Icon"
+  ]
+}

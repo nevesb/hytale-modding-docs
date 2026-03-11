@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "macro-command",
+  "description": "Command macro definitions",
+  "type": "object",
+  "properties": {
+    "Aliases": {
+      "type": "array"
+    },
+    "Commands": {
+      "type": "array"
+    },
+    "Description": {
+      "type": "string",
+      "examples": [
+        "server.commands.delete.desc",
+        "server.commands.fillSignature.desc",
+        "server.commands.heal.desc"
+      ]
+    },
+    "Name": {
+      "type": "string",
+      "examples": [
+        "delete",
+        "fillsignature",
+        "heal"
+      ]
+    },
+    "Parameters": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "Commands",
+    "Description",
+    "Name"
+  ]
+}

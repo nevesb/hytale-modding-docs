@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "npc-attitude",
+  "description": "NPC attitude definitions toward players and other entities",
+  "type": "object",
+  "properties": {
+    "Attitudes": {
+      "type": "object"
+    },
+    "Groups": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "Groups"
+  ]
+}

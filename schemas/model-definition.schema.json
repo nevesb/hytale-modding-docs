@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "model-definition",
+  "description": "Server-side model definitions — hitboxes, animations, camera",
+  "type": "object",
+  "properties": {
+    "$Comment": {
+      "type": "string",
+      "examples": [
+        " "
+      ]
+    },
+    "AnimationSets": {
+      "type": "object"
+    },
+    "Camera": {
+      "type": "object"
+    },
+    "CrouchOffset": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": -1,
+      "maximum": 0.1
+    },
+    "DefaultAttachments": {
+      "type": "array"
+    },
+    "DetailBoxes": {
+      "type": "object"
+    },
+    "EyeHeight": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 6
+    },
+    "GradientId": {
+      "type": "string",
+      "examples": [
+        "02"
+      ]
+    },
+    "GradientSet": {
+      "type": "string",
+      "examples": [
+        "Skin"
+      ]
+    },
+    "HitBox": {
+      "type": "object"
+    },
+    "Icon": {
+      "type": "string",
+      "examples": [
+        "Icons/ModelsGenerated/Toad_Rhino.png",
+        "Icons/ModelsGenerated/Tadpole_Rhino.png",
+        "Icons/ModelsGenerated/Kitten.png"
+      ]
+    },
+    "IconProperties": {
+      "type": "object"
+    },
+    "Light": {
+      "type": "object"
+    },
+    "MaxScale": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.5,
+      "maximum": 5
+    },
+    "MinScale": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.5,
+      "maximum": 3
+    },
+    "Model": {
+      "type": "string",
+      "examples": [
+        "Characters/Player.blockymodel",
+        "Items/NPC_Path.blockymodel",
+        "Items/NPC_Spawner_Block.blockymodel"
+      ]
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Player",
+        "Bear_Grizzly",
+        "Snake_Marsh"
+      ]
+    },
+    "Particles": {
+      "type": "array"
+    },
+    "Phobia": {
+      "type": "string",
+      "examples": [
+        "None",
+        "Ophidiophobia",
+        "Arachnophobia"
+      ]
+    },
+    "PhobiaModelAssetId": {
+      "type": "string",
+      "examples": [
+        "",
+        "Larva_Silk",
+        "Crab"
+      ]
+    },
+    "PhysicsValues": {
+      "type": "object"
+    },
+    "RandomAttachmentSets": {
+      "type": "object"
+    },
+    "SittingOffset": {
+      "type": "number",
+      "minimum": -0.6,
+      "maximum": -0.6
+    },
+    "SleepingOffset": {
+      "type": "integer",
+      "minimum": -1,
+      "maximum": -1
+    },
+    "Texture": {
+      "type": "string",
+      "examples": [
+        "Characters/Player_Textures/Player_Greyscale.png",
+        "Items/NPC_Path_Texture.png",
+        "Items/NPC_Spawner_Block_Texture.png"
+      ]
+    },
+    "Trails": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "Texture"
+  ]
+}

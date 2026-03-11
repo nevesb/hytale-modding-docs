@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "weather",
+  "description": "Weather visual definitions — sky, fog, clouds, sun, moon",
+  "type": "object",
+  "properties": {
+    "$Comment": {
+      "type": "string",
+      "examples": [
+        "",
+        "h",
+        "hz"
+      ]
+    },
+    "Clouds": {
+      "type": "array"
+    },
+    "ColorFilters": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "FogColors": {
+      "type": "array"
+    },
+    "FogDensities": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "FogDistance": {
+      "type": "array"
+    },
+    "FogHeightFalloffs": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "FogOptions": {
+      "type": "object"
+    },
+    "MoonColors": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "MoonGlowColors": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "MoonScales": {
+      "type": "array"
+    },
+    "Moons": {
+      "type": "array"
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Forgotten_Temple"
+      ]
+    },
+    "Particle": {
+      "type": "object"
+    },
+    "ScreenEffect": {
+      "type": "string",
+      "examples": [
+        "ScreenEffects/Poison.png",
+        "ScreenEffects/Sand.png"
+      ]
+    },
+    "ScreenEffectColors": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SkyBottomColors": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SkySunsetColors": {
+      "type": "array"
+    },
+    "SkyTopColors": {
+      "type": "array"
+    },
+    "Stars": {
+      "type": "string",
+      "examples": [
+        "Sky/Stars.png",
+        "Sky/Stars3.png",
+        "Sky/Clouds/Storm_Plain.png"
+      ]
+    },
+    "SunColors": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SunGlowColors": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SunScales": {
+      "type": "array"
+    },
+    "SunlightColors": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SunlightDampingMultipliers": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "object"
+    },
+    "WaterTints": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "Clouds",
+    "FogColors",
+    "FogDistance",
+    "MoonScales",
+    "Moons",
+    "SkySunsetColors",
+    "SkyTopColors",
+    "Stars",
+    "SunGlowColors",
+    "SunScales"
+  ]
+}

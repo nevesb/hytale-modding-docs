@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "world-generation",
+  "description": "World generation rules and assignments",
+  "type": "object",
+  "properties": {
+    "$Comments": {
+      "type": "array"
+    },
+    "$Groups": {
+      "type": "array"
+    },
+    "$NodeEditorMetadata": {
+      "type": "object"
+    },
+    "$NodeId": {
+      "type": "string",
+      "examples": [
+        "Constant.Assignments-c0b1593b-145f-44a0-9845-7b510979e17e",
+        "FieldFunction.Assignments-028ef49b-e2d9-4c43-84cc-5994b9465de5",
+        "Constant.Assignments-435d9ff1-6446-4305-a556-4ceff00c4064"
+      ]
+    },
+    "$Position": {
+      "type": "object"
+    },
+    "$Title": {
+      "type": "string",
+      "examples": [
+        "[ROOT] FieldFunction Assignments",
+        "[ROOT] Weighted Assignments",
+        "[ROOT] Constant Assignments"
+      ]
+    },
+    "$WorkspaceID": {
+      "type": "string",
+      "examples": [
+        "HytaleGenerator - Assignments",
+        "HytaleGenerator - Biome",
+        "Worldgen Biome"
+      ]
+    },
+    "BiomeTransitions": {
+      "type": "array"
+    },
+    "Biomes": {
+      "type": "array"
+    },
+    "BufferCapacityFactor": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 0.1
+    },
+    "Capacity": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 3
+    },
+    "CustomConcurrency": {
+      "type": "integer",
+      "minimum": -1,
+      "maximum": -1
+    },
+    "DefaultBiome": {
+      "type": "string",
+      "examples": [
+        "Basic",
+        "Default_Flat",
+        "Default_Void"
+      ]
+    },
+    "DefaultTransitionDistance": {
+      "type": "integer",
+      "minimum": 16,
+      "maximum": 64
+    },
+    "Delimiters": {
+      "type": "array"
+    },
+    "Density": {
+      "type": "object"
+    },
+    "DontPlace": {
+      "type": "object"
+    },
+    "DontReplace": {
+      "type": "object"
+    },
+    "Edges": {
+      "type": "array"
+    },
+    "EnvironmentProvider": {
+      "type": "object"
+    },
+    "ExportAs": {
+      "type": "string",
+      "examples": [
+        "Portals_Exit",
+        "Portals_Mithril",
+        "Boreal1_Hedera_Boulders"
+      ]
+    },
+    "FieldFunction": {
+      "type": "object"
+    },
+    "Framework": {
+      "type": "array"
+    },
+    "Inputs": {
+      "type": "array"
+    },
+    "MaterialProvider": {
+      "type": "object"
+    },
+    "MaxBiomeEdgeDistance": {
+      "type": "integer",
+      "minimum": 16,
+      "maximum": 128
+    },
+    "Name": {
+      "type": "string",
+      "examples": [
+        "Basic",
+        "Twister",
+        "Default_Flat"
+      ]
+    },
+    "Nodes": {
+      "type": "array"
+    },
+    "Prop": {
+      "type": "object"
+    },
+    "Props": {
+      "type": "array"
+    },
+    "Seed": {
+      "type": "string",
+      "examples": [
+        "A"
+      ]
+    },
+    "SingleInstance": {
+      "type": "boolean"
+    },
+    "Skip": {
+      "type": "boolean"
+    },
+    "SkipChance": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 0.5
+    },
+    "SpawnPositions": {
+      "type": "object"
+    },
+    "StatsCheckpoints": {
+      "type": "array"
+    },
+    "TargetPlayerCount": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 3
+    },
+    "TargetViewDistance": {
+      "type": "integer",
+      "minimum": 512,
+      "maximum": 512
+    },
+    "Terrain": {
+      "type": "object"
+    },
+    "TintProvider": {
+      "type": "object"
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "Constant",
+        "FieldFunction",
+        "Weighted"
+      ]
+    },
+    "WeightedAssignments": {
+      "type": "array"
+    }
+  }
+}

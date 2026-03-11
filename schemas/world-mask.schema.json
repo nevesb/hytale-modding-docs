@@ -1,0 +1,651 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "world-mask",
+  "description": "World noise mask configurations",
+  "type": "object",
+  "properties": {
+    "#Comment": {
+      "type": "array"
+    },
+    "$Comment": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Length = Column Height",
+        "Length = Column Height. Repeat = Count per Column.",
+        "|||| GRID GENERATORS & ENTRY POINTS & FACTION NOISEMAPS & ENVIRONMENT NOISEMAPS NEEDS TO BE UPDATED MANUALLY ||||"
+      ]
+    },
+    "Alpha": {
+      "type": "object"
+    },
+    "BiomeGenerator": {
+      "type": "object"
+    },
+    "BlockMask": {
+      "type": "object"
+    },
+    "Blocks": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Rock_Bedrock",
+        "Rock_Volcanic"
+      ]
+    },
+    "CellMode": {
+      "type": "string",
+      "examples": [
+        "DISTANCE"
+      ]
+    },
+    "CellType": {
+      "type": "string",
+      "examples": [
+        "HEX"
+      ]
+    },
+    "ChildCountBounds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "Children": {
+      "type": "array"
+    },
+    "Climate": {
+      "type": "object"
+    },
+    "Color": {
+      "type": "string",
+      "examples": [
+        "#0000ff",
+        "#ff0000",
+        "#00ff00"
+      ]
+    },
+    "Cover": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "Covers": {
+      "type": "array"
+    },
+    "CustomBiomeGenerator": {
+      "type": "object"
+    },
+    "DeepSearch": {
+      "type": "boolean"
+    },
+    "Default": {
+      "type": "array"
+    },
+    "Density": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.1,
+      "maximum": 1
+    },
+    "DirectMigrations": {
+      "type": "object"
+    },
+    "Discovery": {
+      "type": "object"
+    },
+    "Displacement": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "minimum": -9,
+      "maximum": 2
+    },
+    "Distance2Mode": {
+      "type": "string",
+      "examples": [
+        "MIN",
+        "DIV"
+      ]
+    },
+    "DistanceMode": {
+      "type": "string",
+      "examples": [
+        "NATURAL"
+      ]
+    },
+    "DistanceRange": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.2,
+      "maximum": 10.0
+    },
+    "Entries": {
+      "type": "array"
+    },
+    "Entry": {
+      "type": "object"
+    },
+    "EntryPoints": {
+      "type": "object"
+    },
+    "Environment": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Env_Zone1_Caves_Volcanic_T1",
+        "Env_Zone1_Caves_Volcanic_T2",
+        "Env_Zone1_Caves_Volcanic_T3"
+      ]
+    },
+    "ExclusionRadius": {
+      "type": "integer",
+      "minimum": 40,
+      "maximum": 500
+    },
+    "Factors": {
+      "type": "array"
+    },
+    "Fade": {
+      "type": "object"
+    },
+    "Filling": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Ore_Copper_Stone",
+        "Ore_Iron_Stone",
+        "Ore_Iron_Basalt"
+      ]
+    },
+    "FitHeightmap": {
+      "type": "boolean"
+    },
+    "FixedEntryHeight": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 0
+    },
+    "Formula": {
+      "type": "string",
+      "examples": [
+        "INVERTED",
+        "INVERTED_RIDGED_SQRT",
+        "NORMAL"
+      ]
+    },
+    "FractalMode": {
+      "type": "string",
+      "examples": [
+        "OLDSCHOOL",
+        "MAX"
+      ]
+    },
+    "GridGenerator": {
+      "type": "object"
+    },
+    "Height": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20000
+    },
+    "HeightRadiusFactor": {
+      "type": "object"
+    },
+    "HeightThreshold": {
+      "type": "object"
+    },
+    "HeightmapNoise": {
+      "type": "object"
+    },
+    "Id": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "InheritParentRadius": {
+      "type": "boolean"
+    },
+    "InheritRotation": {
+      "type": "boolean"
+    },
+    "Jitter": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.3,
+      "maximum": 1
+    },
+    "Lacunarity": {
+      "type": "number",
+      "minimum": 2.5,
+      "maximum": 2.5
+    },
+    "Layers": {
+      "type": "object"
+    },
+    "Length": {
+      "type": "array"
+    },
+    "MapColor": {
+      "type": "string",
+      "examples": [
+        "#fffff",
+        "#1e3e80",
+        "#1c86ed"
+      ]
+    },
+    "Mask": {
+      "type": "object"
+    },
+    "MaskMapping": {
+      "type": "object"
+    },
+    "Masks": {
+      "type": "array"
+    },
+    "Max": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "minimum": 50,
+      "maximum": 255
+    },
+    "MaxNoise": {
+      "type": "object"
+    },
+    "MaxSize": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 100
+    },
+    "Min": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "MinNoise": {
+      "type": "object"
+    },
+    "Name": {
+      "type": "string",
+      "examples": [
+        "Zone 3",
+        "Zone 2",
+        "Zone 1"
+      ]
+    },
+    "Noise": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "NoiseMask": {
+      "type": "object"
+    },
+    "NoiseType": {
+      "type": "string",
+      "examples": [
+        "SIMPLEX",
+        "OLD_SIMPLEX",
+        "CELL"
+      ]
+    },
+    "Noisemask": {
+      "type": "object"
+    },
+    "Normalize": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.2,
+      "maximum": 0.2
+    },
+    "Ocean": {
+      "type": "string",
+      "examples": [
+        "#008479"
+      ]
+    },
+    "Octaves": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "Offset": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "OffsetX": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5310
+    },
+    "OffsetY": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 11869
+    },
+    "OnWater": {
+      "type": "boolean"
+    },
+    "OverrideDataFolder": {
+      "type": "string",
+      "examples": [
+        "../Default/"
+      ]
+    },
+    "Parent": {
+      "type": "array"
+    },
+    "Persistence": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 0.8
+    },
+    "Pitch": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 0
+    },
+    "Points": {
+      "type": "array"
+    },
+    "Prefab": {
+      "type": "array"
+    },
+    "PrefabStore": {
+      "type": "string",
+      "examples": [
+        "ASSETS",
+        "WORLD_GEN"
+      ]
+    },
+    "Prefabs": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "Priority": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 50
+    },
+    "Radius": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "minimum": 2,
+      "maximum": 2
+    },
+    "RadiusX": {
+      "type": "array"
+    },
+    "RadiusY": {
+      "type": "array"
+    },
+    "RadiusZ": {
+      "type": "array"
+    },
+    "Randomizer": {
+      "type": "object"
+    },
+    "Renames": {
+      "type": "object"
+    },
+    "Rotations": {
+      "type": "array"
+    },
+    "Scale": {
+      "type": "number",
+      "minimum": 0.00015,
+      "maximum": 0.6
+    },
+    "Seed": {
+      "type": "string",
+      "examples": [
+        "INTENSITY",
+        "TEMPERATURE",
+        "coral_seed"
+      ]
+    },
+    "ShallowOcean": {
+      "type": "string",
+      "examples": [
+        "#8D994F",
+        "#7E8946",
+        "#6A723B"
+      ]
+    },
+    "Shore": {
+      "type": "string",
+      "examples": [
+        "#F4FF9D",
+        "#D2E053",
+        "#AEB745"
+      ]
+    },
+    "SizeModifier": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.5,
+      "maximum": 1
+    },
+    "Specific": {
+      "type": "array"
+    },
+    "Submerge": {
+      "type": "boolean"
+    },
+    "TerrainHeightThreshold": {
+      "type": "object"
+    },
+    "Threshold": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.2,
+      "maximum": 0.695
+    },
+    "Thresholds": {
+      "type": "array"
+    },
+    "Tint": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "0xd5b656",
+        "5b9e28"
+      ]
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "DISTORTED",
+        "BLEND",
+        "EMPTY_LINE"
+      ]
+    },
+    "Types": {
+      "type": "array"
+    },
+    "UniquePrefabs": {
+      "type": "object"
+    },
+    "UniqueZones": {
+      "type": "array"
+    },
+    "Water": {
+      "type": "object"
+    },
+    "Weight": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 1,
+      "maximum": 100
+    },
+    "Width": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20000
+    },
+    "Yaw": {
+      "type": "array"
+    },
+    "YawAdd": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 0
+    },
+    "anchorX": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "anchorY": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "anchorZ": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "blockIdVersion": {
+      "type": "integer",
+      "minimum": 8,
+      "maximum": 10
+    },
+    "blocks": {
+      "type": "array"
+    },
+    "entities": {
+      "type": "array"
+    },
+    "fluids": {
+      "type": "array"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 8,
+      "maximum": 8
+    }
+  }
+}

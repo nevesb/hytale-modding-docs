@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "block-definition",
+  "description": "Block type definitions — textures, materials, light",
+  "type": "object",
+  "properties": {
+    "$Comment": {
+      "type": "string",
+      "examples": [
+        "Including Plant group as a hack around for now",
+        "Specifies the blocks on the bottom of Drylands Hidden Oasis, used for spawns."
+      ]
+    },
+    "BlockParticleSetId": {
+      "type": "string",
+      "examples": [
+        "Lava",
+        "Water",
+        "Snow"
+      ]
+    },
+    "BlockSoundSetId": {
+      "type": "string",
+      "examples": [
+        "Empty",
+        "Mud",
+        "Water"
+      ]
+    },
+    "Boxes": {
+      "type": "array"
+    },
+    "ColorsFilter": {
+      "type": "array"
+    },
+    "ColorsSaturation": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 1.6
+    },
+    "DirectMigrations": {
+      "type": "object"
+    },
+    "DistortionAmplitude": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 10
+    },
+    "DistortionFrequency": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 8
+    },
+    "DrawType": {
+      "type": "string",
+      "examples": [
+        "None"
+      ]
+    },
+    "Effect": {
+      "type": "array"
+    },
+    "Entries": {
+      "type": "array"
+    },
+    "ExcludeBlockTypes": {
+      "type": "array"
+    },
+    "FluidFXId": {
+      "type": "string",
+      "examples": [
+        "Lava",
+        "Slime",
+        "Water"
+      ]
+    },
+    "Fog": {
+      "type": "string",
+      "examples": [
+        "Color",
+        "ColorLight",
+        "EnvironmentTint"
+      ]
+    },
+    "FogColor": {
+      "type": "string",
+      "examples": [
+        "#ff2d00",
+        "#4D2E20",
+        "#2D8E35"
+      ]
+    },
+    "FogDepthFalloff": {
+      "type": "number",
+      "minimum": 1.3,
+      "maximum": 1.3
+    },
+    "FogDepthStart": {
+      "type": "integer",
+      "minimum": 95,
+      "maximum": 95
+    },
+    "FogDistance": {
+      "type": "array"
+    },
+    "IncludeBlockTypes": {
+      "type": "array"
+    },
+    "IncludeHitboxTypes": {
+      "type": "array"
+    },
+    "Interactions": {
+      "type": "object"
+    },
+    "Light": {
+      "type": "object"
+    },
+    "Material": {
+      "type": "string",
+      "examples": [
+        "Solid"
+      ]
+    },
+    "MaxFluidLevel": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8
+    },
+    "MovementSettings": {
+      "type": "object"
+    },
+    "Opacity": {
+      "type": "string",
+      "examples": [
+        "Transparent"
+      ]
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Lava_Source",
+        "Poison_Source",
+        "Slime_Source"
+      ]
+    },
+    "Particle": {
+      "type": "object"
+    },
+    "ParticleColor": {
+      "type": "string",
+      "examples": [
+        "#f94e11",
+        "#ccbb33",
+        "#ff8776"
+      ]
+    },
+    "Particles": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "SoundEvents": {
+      "type": "object"
+    },
+    "StageTextures": {
+      "type": "array"
+    },
+    "Tags": {
+      "type": "object"
+    },
+    "Textures": {
+      "type": "array"
+    },
+    "Ticker": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "environment",
+  "description": "Biome environment configurations",
+  "type": "object",
+  "properties": {
+    "$Comment": {
+      "type": "string",
+      "examples": [
+        "B9"
+      ]
+    },
+    "BlockModificationAllowed": {
+      "type": "boolean"
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Env_Forgotten_Temple_Base",
+        "Env_Zone0",
+        "Env_Zone1"
+      ]
+    },
+    "SpawnDensity": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "Tags": {
+      "type": "object"
+    },
+    "WaterTint": {
+      "type": "string",
+      "examples": [
+        "#1983d9",
+        "#198dea",
+        "#2076b5"
+      ]
+    },
+    "WeatherForecasts": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "Tags"
+  ]
+}

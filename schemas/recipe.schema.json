@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "recipe",
+  "description": "Crafting recipes — inputs, outputs, bench requirements",
+  "type": "object",
+  "properties": {
+    "BenchRequirement": {
+      "type": "array"
+    },
+    "Input": {
+      "type": "array"
+    },
+    "Output": {
+      "type": "array"
+    },
+    "PrimaryOutput": {
+      "type": "object"
+    },
+    "TimeSeconds": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 4
+    }
+  },
+  "required": [
+    "BenchRequirement",
+    "Input",
+    "Output",
+    "PrimaryOutput",
+    "TimeSeconds"
+  ]
+}

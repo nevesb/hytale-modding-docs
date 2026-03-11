@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "npc-groups",
+  "description": "NPC groupings for spawn and interaction rules",
+  "type": "object",
+  "properties": {
+    "ExcludeGroups": {
+      "type": "array"
+    },
+    "ExcludeRoles": {
+      "type": "array"
+    },
+    "IncludeGroups": {
+      "type": "array"
+    },
+    "IncludeRoles": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "IncludeRoles"
+  ]
+}

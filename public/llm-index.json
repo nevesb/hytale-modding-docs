@@ -1,0 +1,531 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Machine-readable index of all Hytale Modding Manual pages and schemas for LLM consumption",
+  "version": "0.1.0",
+  "base_url": "https://nevesb.github.io/hytale-modding-docs",
+  "locales": ["en-US", "es", "pt-BR"],
+  "schemas_dir": "schemas/",
+  "pages": [
+    {
+      "path": "getting-started/installation",
+      "title": "Installation & Setup",
+      "category": "getting-started",
+      "description": "Tools, mod folder structure, manifest.json setup"
+    },
+    {
+      "path": "getting-started/server-setup",
+      "title": "Server Setup",
+      "category": "getting-started",
+      "description": "Local development server configuration for testing mods"
+    },
+    {
+      "path": "getting-started/project-structure",
+      "title": "Project Structure",
+      "category": "getting-started",
+      "description": "Complete folder breakdown of Hytale asset organization"
+    },
+    {
+      "path": "getting-started/asset-overview",
+      "title": "Asset Overview",
+      "category": "getting-started",
+      "description": "File formats: .blockymodel, .blockyanim, .json, .png"
+    },
+    {
+      "path": "getting-started/json-basics",
+      "title": "JSON Basics",
+      "category": "getting-started",
+      "description": "Common patterns: inheritance, computed values, weights, chaining, translation keys"
+    },
+    {
+      "path": "reference/concepts/inheritance-and-templates",
+      "title": "Inheritance & Templates",
+      "category": "concepts",
+      "description": "Reference/Modify, Parent, Inherits patterns across JSON configs",
+      "schema": "schemas/npc-roles.schema.json"
+    },
+    {
+      "path": "reference/concepts/weight-system",
+      "title": "Weight System",
+      "category": "concepts",
+      "description": "Weighted random selection in drops, spawning, and loot tables",
+      "schema": "schemas/drop-table.schema.json"
+    },
+    {
+      "path": "reference/concepts/interaction-chaining",
+      "title": "Interaction Chaining",
+      "category": "concepts",
+      "description": "How item interactions chain together for complex behaviors",
+      "schema": "schemas/item-interaction.schema.json"
+    },
+    {
+      "path": "reference/concepts/tag-patterns",
+      "title": "Tag Patterns",
+      "category": "concepts",
+      "description": "Tag-based filtering and matching system",
+      "schema": "schemas/tag-pattern.schema.json"
+    },
+    {
+      "path": "reference/concepts/time-schedules",
+      "title": "Time Schedules",
+      "category": "concepts",
+      "description": "In-game time ranges for weather, spawning, and events"
+    },
+    {
+      "path": "reference/concepts/response-curves",
+      "title": "Response Curves",
+      "category": "concepts",
+      "description": "Mathematical curves for AI decision-making and gameplay scaling",
+      "schema": "schemas/response-curve.schema.json"
+    },
+    {
+      "path": "reference/concepts/localization-keys",
+      "title": "Localization Keys",
+      "category": "concepts",
+      "description": "Translation key system for .lang files"
+    },
+    {
+      "path": "reference/npc-system/npc-roles",
+      "title": "NPC Roles",
+      "category": "npc-system",
+      "description": "Complete NPC role definition with stats, behaviors, and equipment",
+      "schema": "schemas/npc-roles.schema.json"
+    },
+    {
+      "path": "reference/npc-system/npc-templates",
+      "title": "NPC Templates",
+      "category": "npc-system",
+      "description": "Base templates for NPC inheritance (Template_Monster, Template_Animal, etc.)"
+    },
+    {
+      "path": "reference/npc-system/npc-spawn-rules",
+      "title": "NPC Spawn Rules",
+      "category": "npc-system",
+      "description": "Spawn conditions: biomes, time ranges, weights, group sizes",
+      "schema": "schemas/npc-spawn.schema.json"
+    },
+    {
+      "path": "reference/npc-system/npc-attitudes",
+      "title": "NPC Attitudes",
+      "category": "npc-system",
+      "description": "Hostility, neutrality, and faction relationships",
+      "schema": "schemas/npc-attitude.schema.json"
+    },
+    {
+      "path": "reference/npc-system/npc-decision-making",
+      "title": "NPC Decision Making",
+      "category": "npc-system",
+      "description": "AI behavior trees and decision priorities",
+      "schema": "schemas/npc-decision-making.schema.json"
+    },
+    {
+      "path": "reference/npc-system/npc-combat-balancing",
+      "title": "NPC Combat Balancing",
+      "category": "npc-system",
+      "description": "Combat stats, damage scaling, and difficulty tuning",
+      "schema": "schemas/npc-balancing.schema.json"
+    },
+    {
+      "path": "reference/npc-system/npc-groups",
+      "title": "NPC Groups",
+      "category": "npc-system",
+      "description": "Group behavior, pack mechanics, and social NPCs",
+      "schema": "schemas/npc-groups.schema.json"
+    },
+    {
+      "path": "reference/item-system/item-definitions",
+      "title": "Item Definitions",
+      "category": "item-system",
+      "description": "Complete item configuration: stats, stacking, categories, interactions",
+      "schema": "schemas/item-definition.schema.json"
+    },
+    {
+      "path": "reference/item-system/block-definitions",
+      "title": "Block Definitions",
+      "category": "item-system",
+      "description": "Block properties: hardness, sounds, light, states",
+      "schema": "schemas/block-definition.schema.json"
+    },
+    {
+      "path": "reference/item-system/item-categories",
+      "title": "Item Categories",
+      "category": "item-system",
+      "description": "Categorization system for inventory and crafting",
+      "schema": "schemas/item-category.schema.json"
+    },
+    {
+      "path": "reference/item-system/item-qualities",
+      "title": "Item Qualities",
+      "category": "item-system",
+      "description": "Rarity tiers and quality modifiers",
+      "schema": "schemas/quality.schema.json"
+    },
+    {
+      "path": "reference/item-system/item-interactions",
+      "title": "Item Interactions",
+      "category": "item-system",
+      "description": "Use actions, placement, consumption, and interaction chains",
+      "schema": "schemas/item-interaction.schema.json"
+    },
+    {
+      "path": "reference/item-system/item-groups",
+      "title": "Item Groups",
+      "category": "item-system",
+      "description": "Logical grouping of items for recipes and loot",
+      "schema": "schemas/item-groups.schema.json"
+    },
+    {
+      "path": "reference/item-system/resource-types",
+      "title": "Resource Types",
+      "category": "item-system",
+      "description": "Resource classification (wood, stone, metal, etc.)",
+      "schema": "schemas/resource-types.schema.json"
+    },
+    {
+      "path": "reference/crafting-system/recipes",
+      "title": "Recipes",
+      "category": "crafting-system",
+      "description": "Crafting recipe definitions with ingredients and outputs",
+      "schema": "schemas/recipe.schema.json"
+    },
+    {
+      "path": "reference/crafting-system/bench-definitions",
+      "title": "Bench Definitions",
+      "category": "crafting-system",
+      "description": "Crafting bench item definitions and bench-specific properties"
+    },
+    {
+      "path": "reference/crafting-system/salvage",
+      "title": "Salvage",
+      "category": "crafting-system",
+      "description": "Item salvage/disassembly recipes"
+    },
+    {
+      "path": "reference/combat-and-projectiles/projectiles",
+      "title": "Projectiles",
+      "category": "combat-and-projectiles",
+      "description": "Projectile entity definitions and behavior",
+      "schema": "schemas/projectile.schema.json"
+    },
+    {
+      "path": "reference/combat-and-projectiles/projectile-configs",
+      "title": "Projectile Configs",
+      "category": "combat-and-projectiles",
+      "description": "Projectile behavior configuration: speed, gravity, damage",
+      "schema": "schemas/projectile-config.schema.json"
+    },
+    {
+      "path": "reference/combat-and-projectiles/damage-types",
+      "title": "Damage Types",
+      "category": "combat-and-projectiles",
+      "description": "Damage type definitions and resistances",
+      "schema": "schemas/damage-type.schema.json"
+    },
+    {
+      "path": "reference/economy-and-progression/drop-tables",
+      "title": "Drop Tables",
+      "category": "economy-and-progression",
+      "description": "Loot drop definitions with weights and conditions",
+      "schema": "schemas/drop-table.schema.json"
+    },
+    {
+      "path": "reference/economy-and-progression/barter-shops",
+      "title": "Barter Shops",
+      "category": "economy-and-progression",
+      "description": "NPC trading with fixed and pool-based slots",
+      "schema": "schemas/barter-shop.schema.json"
+    },
+    {
+      "path": "reference/economy-and-progression/farming-coops",
+      "title": "Farming Coops",
+      "category": "economy-and-progression",
+      "description": "Animal farming: coops, production, and feeding",
+      "schema": "schemas/farming.schema.json"
+    },
+    {
+      "path": "reference/world-and-environment/environments",
+      "title": "Environments",
+      "category": "world-and-environment",
+      "description": "Biome environment definitions: lighting, fog, ambient",
+      "schema": "schemas/environment.schema.json"
+    },
+    {
+      "path": "reference/world-and-environment/weather-system",
+      "title": "Weather System",
+      "category": "world-and-environment",
+      "description": "Weather types, transitions, and effects",
+      "schema": "schemas/weather.schema.json"
+    },
+    {
+      "path": "reference/models-and-visuals/server-models",
+      "title": "Server Models",
+      "category": "models-and-visuals",
+      "description": "Server-side model definitions with animation sets",
+      "schema": "schemas/model-definition.schema.json"
+    },
+    {
+      "path": "reference/game-configuration/gameplay-configs",
+      "title": "Gameplay Configs",
+      "category": "game-configuration",
+      "description": "Global gameplay settings and game rules",
+      "schema": "schemas/gameplay-config.schema.json"
+    },
+    {
+      "path": "tutorials/beginner/setup-dev-environment",
+      "title": "Setup Dev Environment",
+      "category": "tutorials-beginner",
+      "description": "Tools, folder structure, and testing workflow for mod development"
+    },
+    {
+      "path": "tutorials/beginner/create-a-block",
+      "title": "Create a Block",
+      "category": "tutorials-beginner",
+      "description": "Step-by-step: texture, block JSON, BlockTypeList entry"
+    },
+    {
+      "path": "tutorials/beginner/create-an-item",
+      "title": "Create an Item",
+      "category": "tutorials-beginner",
+      "description": "Step-by-step: item definition, recipe, icon setup"
+    },
+    {
+      "path": "tutorials/beginner/create-an-npc",
+      "title": "Create an NPC",
+      "category": "tutorials-beginner",
+      "description": "Step-by-step: role file, model, spawn rule for a custom NPC"
+    },
+    {
+      "path": "reference/npc-system/npc-flocks",
+      "title": "NPC Flocks",
+      "category": "npc-system",
+      "description": "Group spawning behavior with weighted size selection",
+      "schema": "schemas/npc-flocks.schema.json"
+    },
+    {
+      "path": "reference/combat-and-projectiles/entity-stats",
+      "title": "Entity Stats",
+      "category": "combat-and-projectiles",
+      "description": "Stat definitions: health, immunity, regen rules, thresholds"
+    },
+    {
+      "path": "reference/combat-and-projectiles/entity-effects",
+      "title": "Entity Effects",
+      "category": "combat-and-projectiles",
+      "description": "Status effects: burn, poison, buffs, stat modifiers, DoT"
+    },
+    {
+      "path": "reference/crafting-system/bench-requirements",
+      "title": "Bench Requirements",
+      "category": "crafting-system",
+      "description": "How recipes connect to specific crafting benches and tiers"
+    },
+    {
+      "path": "reference/economy-and-progression/farming-modifiers",
+      "title": "Farming Modifiers",
+      "category": "economy-and-progression",
+      "description": "Water, light, fertilizer modifiers for crop growth"
+    },
+    {
+      "path": "reference/world-and-environment/world-generation",
+      "title": "World Generation",
+      "category": "world-and-environment",
+      "description": "HytaleGenerator configs for terrain and biome generation",
+      "schema": "schemas/world-generation.schema.json"
+    },
+    {
+      "path": "reference/world-and-environment/world-masks",
+      "title": "World Masks",
+      "category": "world-and-environment",
+      "description": "World mask definitions for terrain shaping",
+      "schema": "schemas/world-mask.schema.json"
+    },
+    {
+      "path": "reference/world-and-environment/portal-types",
+      "title": "Portal Types",
+      "category": "world-and-environment",
+      "description": "Portal definitions for dungeon and dimension entries",
+      "schema": "schemas/portal-type.schema.json"
+    },
+    {
+      "path": "reference/models-and-visuals/animation-sets",
+      "title": "Animation Sets",
+      "category": "models-and-visuals",
+      "description": "Server-side animation set definitions for NPC models"
+    },
+    {
+      "path": "reference/models-and-visuals/client-models",
+      "title": "Client Models",
+      "category": "models-and-visuals",
+      "description": "Client-side .blockymodel format for blocks and items"
+    },
+    {
+      "path": "reference/models-and-visuals/client-animations",
+      "title": "Client Animations",
+      "category": "models-and-visuals",
+      "description": "Client-side .blockyanim format for block animations"
+    },
+    {
+      "path": "reference/models-and-visuals/particles",
+      "title": "Particles",
+      "category": "models-and-visuals",
+      "description": "Particle effect definitions and emitter configs",
+      "schema": "schemas/particle.schema.json"
+    },
+    {
+      "path": "reference/models-and-visuals/block-textures",
+      "title": "Block Textures",
+      "category": "models-and-visuals",
+      "description": "Block texture naming conventions and face suffixes"
+    },
+    {
+      "path": "reference/game-configuration/camera-effects",
+      "title": "Camera Effects",
+      "category": "game-configuration",
+      "description": "Camera shake, zoom, FOV, and visual effects",
+      "schema": "schemas/camera-effect.schema.json"
+    },
+    {
+      "path": "reference/game-configuration/macro-commands",
+      "title": "Macro Commands",
+      "category": "game-configuration",
+      "description": "Command macros with parameter substitution",
+      "schema": "schemas/macro-command.schema.json"
+    },
+    {
+      "path": "reference/game-configuration/block-type-lists",
+      "title": "Block Type Lists",
+      "category": "game-configuration",
+      "description": "Block type grouping and registration",
+      "schema": "schemas/block-type-list.schema.json"
+    },
+    {
+      "path": "reference/game-configuration/instances",
+      "title": "Instances",
+      "category": "game-configuration",
+      "description": "Dungeon/instance definitions with spawn points and objectives",
+      "schema": "schemas/instance.schema.json"
+    },
+    {
+      "path": "reference/game-configuration/objectives",
+      "title": "Objectives",
+      "category": "game-configuration",
+      "description": "Objective/quest definitions, triggers, and rewards",
+      "schema": "schemas/objective.schema.json"
+    },
+    {
+      "path": "tutorials/intermediate/create-a-crafting-bench",
+      "title": "Create a Crafting Bench",
+      "category": "tutorials-intermediate",
+      "description": "Custom crafting bench with recipes and categories"
+    },
+    {
+      "path": "tutorials/intermediate/custom-npc-spawning",
+      "title": "Custom NPC Spawning",
+      "category": "tutorials-intermediate",
+      "description": "Spawn rules with environments, time ranges, and biomes"
+    },
+    {
+      "path": "tutorials/intermediate/projectile-weapons",
+      "title": "Projectile Weapons",
+      "category": "tutorials-intermediate",
+      "description": "Projectile definition, config, and interaction chain"
+    },
+    {
+      "path": "tutorials/intermediate/custom-trees-and-saplings",
+      "title": "Custom Trees & Saplings",
+      "category": "tutorials-intermediate",
+      "description": "Block definitions with sapling growth and prefabs"
+    },
+    {
+      "path": "tutorials/intermediate/custom-loot-tables",
+      "title": "Custom Loot Tables",
+      "category": "tutorials-intermediate",
+      "description": "Drop containers with weights, nesting, and conditions"
+    },
+    {
+      "path": "tutorials/intermediate/npc-shops-and-trading",
+      "title": "NPC Shops & Trading",
+      "category": "tutorials-intermediate",
+      "description": "Barter shops with fixed and pool-based trading"
+    },
+    {
+      "path": "tutorials/advanced/custom-dungeons",
+      "title": "Custom Dungeons",
+      "category": "tutorials-advanced",
+      "description": "Prefabs, instances, portals, and dungeon loot"
+    },
+    {
+      "path": "tutorials/advanced/world-generation-mods",
+      "title": "World Generation Mods",
+      "category": "tutorials-advanced",
+      "description": "Modifying world gen via HytaleGenerator configs"
+    },
+    {
+      "path": "tutorials/advanced/npc-ai-behavior-trees",
+      "title": "NPC AI Behavior Trees",
+      "category": "tutorials-advanced",
+      "description": "DecisionMaking, behavior priorities, combat actions"
+    },
+    {
+      "path": "tutorials/advanced/custom-combat-system",
+      "title": "Custom Combat System",
+      "category": "tutorials-advanced",
+      "description": "Damage types, effects, projectile interactions, stats"
+    },
+    {
+      "path": "tutorials/advanced/farming-and-coops",
+      "title": "Farming & Coops",
+      "category": "tutorials-advanced",
+      "description": "Coops, modifiers, growth system, animal management"
+    },
+    {
+      "path": "tutorials/advanced/mod-packaging",
+      "title": "Mod Packaging & Distribution",
+      "category": "tutorials-advanced",
+      "description": "Manifest, namespace, versioning, and distribution"
+    },
+    {
+      "path": "tutorials/showcase/dude-vs-dungeon",
+      "title": "Showcase: Dude VS Dungeon Mod",
+      "category": "tutorials-showcase",
+      "description": "Complete mod walkthrough with NPCs, items, dungeons, and loot"
+    }
+  ],
+  "schemas": [
+    { "file": "schemas/npc-roles.schema.json", "title": "NPC Roles", "asset_path": "Assets/Server/NPC/Roles/" },
+    { "file": "schemas/npc-spawn.schema.json", "title": "NPC Spawn Rules", "asset_path": "Assets/Server/NPC/Spawn/" },
+    { "file": "schemas/npc-attitude.schema.json", "title": "NPC Attitudes", "asset_path": "Assets/Server/NPC/Attitude/" },
+    { "file": "schemas/npc-decision-making.schema.json", "title": "NPC Decision Making", "asset_path": "Assets/Server/NPC/DecisionMaking/" },
+    { "file": "schemas/npc-balancing.schema.json", "title": "NPC Balancing", "asset_path": "Assets/Server/NPC/Balancing/" },
+    { "file": "schemas/npc-groups.schema.json", "title": "NPC Groups", "asset_path": "Assets/Server/NPC/Groups/" },
+    { "file": "schemas/npc-flocks.schema.json", "title": "NPC Flocks", "asset_path": "Assets/Server/NPC/Flocks/" },
+    { "file": "schemas/item-definition.schema.json", "title": "Item Definitions", "asset_path": "Assets/Server/Item/Items/" },
+    { "file": "schemas/block-definition.schema.json", "title": "Block Definitions", "asset_path": "Assets/Server/Item/Block/Blocks/" },
+    { "file": "schemas/recipe.schema.json", "title": "Recipes", "asset_path": "Assets/Server/Item/Recipes/" },
+    { "file": "schemas/item-category.schema.json", "title": "Item Categories", "asset_path": "Assets/Server/Item/Category/" },
+    { "file": "schemas/quality.schema.json", "title": "Item Qualities", "asset_path": "Assets/Server/Item/Qualities/" },
+    { "file": "schemas/item-interaction.schema.json", "title": "Item Interactions", "asset_path": "Assets/Server/Item/Interactions/" },
+    { "file": "schemas/item-groups.schema.json", "title": "Item Groups", "asset_path": "Assets/Server/Item/Groups/" },
+    { "file": "schemas/resource-types.schema.json", "title": "Resource Types", "asset_path": "Assets/Server/Item/ResourceTypes/" },
+    { "file": "schemas/drop-table.schema.json", "title": "Drop Tables", "asset_path": "Assets/Server/Drops/" },
+    { "file": "schemas/projectile.schema.json", "title": "Projectiles", "asset_path": "Assets/Server/Projectiles/" },
+    { "file": "schemas/projectile-config.schema.json", "title": "Projectile Configs", "asset_path": "Assets/Server/ProjectileConfigs/" },
+    { "file": "schemas/damage-type.schema.json", "title": "Damage Types", "asset_path": "Assets/Server/Entity/Damage/" },
+    { "file": "schemas/model-definition.schema.json", "title": "Model Definitions", "asset_path": "Assets/Server/Models/" },
+    { "file": "schemas/barter-shop.schema.json", "title": "Barter Shops", "asset_path": "Assets/Server/BarterShops/" },
+    { "file": "schemas/farming.schema.json", "title": "Farming", "asset_path": "Assets/Server/Farming/" },
+    { "file": "schemas/environment.schema.json", "title": "Environments", "asset_path": "Assets/Server/Environments/" },
+    { "file": "schemas/weather.schema.json", "title": "Weather", "asset_path": "Assets/Server/Weathers/" },
+    { "file": "schemas/gameplay-config.schema.json", "title": "Gameplay Config", "asset_path": "Assets/Server/GameplayConfigs/" },
+    { "file": "schemas/world-generation.schema.json", "title": "World Generation", "asset_path": "Assets/Server/HytaleGenerator/" },
+    { "file": "schemas/world-mask.schema.json", "title": "World Masks", "asset_path": "Assets/Server/World/" },
+    { "file": "schemas/camera-effect.schema.json", "title": "Camera Effects", "asset_path": "Assets/Server/Camera/" },
+    { "file": "schemas/block-type-list.schema.json", "title": "Block Type Lists", "asset_path": "Assets/Server/BlockTypeList/" },
+    { "file": "schemas/portal-type.schema.json", "title": "Portal Types", "asset_path": "Assets/Server/PortalTypes/" },
+    { "file": "schemas/particle.schema.json", "title": "Particles", "asset_path": "Assets/Server/Particles/" },
+    { "file": "schemas/tag-pattern.schema.json", "title": "Tag Patterns", "asset_path": "Assets/Server/TagPatterns/" },
+    { "file": "schemas/response-curve.schema.json", "title": "Response Curves", "asset_path": "Assets/Server/ResponseCurves/" },
+    { "file": "schemas/instance.schema.json", "title": "Instances", "asset_path": "Assets/Server/Instances/" },
+    { "file": "schemas/objective.schema.json", "title": "Objectives", "asset_path": "Assets/Server/Objective/" },
+    { "file": "schemas/macro-command.schema.json", "title": "Macro Commands", "asset_path": "Assets/Server/MacroCommands/" }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "damage-type",
+  "description": "Damage type hierarchy",
+  "type": "object",
+  "properties": {
+    "$Comment": {
+      "type": "string",
+      "examples": [
+        "This damage type exists to facilitate sub types",
+        "Damage type for environmental hazards like plants (bushes, cactus, etc.)"
+      ]
+    },
+    "BypassResistances": {
+      "type": "boolean"
+    },
+    "DamageTextColor": {
+      "type": "string",
+      "examples": [
+        "#00FF00"
+      ]
+    },
+    "DurabilityLoss": {
+      "type": "boolean"
+    },
+    "Inherits": {
+      "type": "string",
+      "examples": [
+        "Physical",
+        "Environment",
+        "Elemental"
+      ]
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Physical",
+        "Environment",
+        "Elemental"
+      ]
+    },
+    "StaminaLoss": {
+      "type": "boolean"
+    }
+  }
+}

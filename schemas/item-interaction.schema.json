@@ -1,0 +1,598 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "item-interaction",
+  "description": "Item and block interaction chains",
+  "type": "object",
+  "properties": {
+    "$Comment": {
+      "type": "string",
+      "examples": [
+        "[TMP] Check if T2 or T3 HealthRegen buff is NOT active - allows T1 to apply",
+        "[TMP] Check if T3 HealthRegen buff is NOT active - allows T2 to apply",
+        "[TMP] HealthRegen T3 always applies (highest tier)"
+      ]
+    },
+    "AdjustHeldItemDurability": {
+      "type": "number",
+      "minimum": -0.5,
+      "maximum": -0.5
+    },
+    "AdjustHeldItemQuantity": {
+      "type": "integer",
+      "minimum": -1,
+      "maximum": -1
+    },
+    "AdjustVertical": {
+      "type": "boolean"
+    },
+    "AllowDragPlacement": {
+      "type": "boolean"
+    },
+    "AllowIndefiniteHold": {
+      "type": "boolean"
+    },
+    "AngledDamage": {
+      "type": "array"
+    },
+    "AngledWielding": {
+      "type": "object"
+    },
+    "Back": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Mace_Swings_Up"
+      ]
+    },
+    "Block": {
+      "type": "string",
+      "examples": [
+        "Teleporter"
+      ]
+    },
+    "BlockTypeToPlace": {
+      "type": "string",
+      "examples": [
+        "Rock_Stone",
+        "Tree_Sap_Glob"
+      ]
+    },
+    "BlockedEffects": {
+      "type": "object"
+    },
+    "BlockedInteractions": {
+      "type": "object"
+    },
+    "CancelOnItemChange": {
+      "type": "boolean"
+    },
+    "CancelOnOtherClick": {
+      "type": "boolean"
+    },
+    "ChainId": {
+      "type": "string",
+      "examples": [
+        "Sword_Combo",
+        "Sword_Swings",
+        "Debug_Combo"
+      ]
+    },
+    "ChainingAllowance": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.5,
+      "maximum": 5
+    },
+    "ChangeVelocityType": {
+      "type": "string",
+      "examples": [
+        "Set",
+        "Add"
+      ]
+    },
+    "Changes": {
+      "type": "object"
+    },
+    "Click": {
+      "type": "object"
+    },
+    "CloseOnBlockRemove": {
+      "type": "boolean"
+    },
+    "CollisionNext": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Daggers_Pounce_Stab"
+      ]
+    },
+    "Config": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Projectile_Config_Scarak_Seeker_Spitball",
+        "Projectile_Config_Goblin_Lobber_Bomb",
+        "Projectile_Config_Bow_Bomb_Boomshot"
+      ]
+    },
+    "Context": {
+      "type": "string",
+      "examples": [
+        "Milk",
+        "Shear"
+      ]
+    },
+    "Costs": {
+      "type": "object"
+    },
+    "Crouching": {
+      "type": "boolean"
+    },
+    "DamageCalculator": {
+      "type": "object"
+    },
+    "DamageEffects": {
+      "type": "object"
+    },
+    "DamageModifiers": {
+      "type": "object"
+    },
+    "DefaultValue": {
+      "type": "object"
+    },
+    "Delay": {
+      "type": "object"
+    },
+    "Direction": {
+      "type": "object"
+    },
+    "DisplayProgress": {
+      "type": "boolean"
+    },
+    "Duration": {
+      "type": "integer",
+      "minimum": 86400,
+      "maximum": 86400
+    },
+    "EffectId": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Damage_High"
+      ]
+    },
+    "Effects": {
+      "type": "object"
+    },
+    "Entity": {
+      "type": "string",
+      "examples": [
+        "User",
+        "Target"
+      ]
+    },
+    "EntityEffectIds": {
+      "type": "array"
+    },
+    "EntityId": {
+      "type": "string",
+      "examples": [
+        "Sheep"
+      ]
+    },
+    "EntityStatsOnHit": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "FailOnDamage": {
+      "type": "boolean"
+    },
+    "Failed": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Block_Secondary",
+        "Stamina_Bar_Flash",
+        "Weapon_Battleaxe_Primary_Chain"
+      ]
+    },
+    "Flags": {
+      "type": "object"
+    },
+    "Flying": {
+      "type": "boolean"
+    },
+    "Force": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 2,
+      "maximum": 50
+    },
+    "Forces": {
+      "type": "array"
+    },
+    "ForkInteractions": {
+      "type": "object"
+    },
+    "Forks": {
+      "type": "object"
+    },
+    "GroundCheckDelay": {
+      "type": "number",
+      "minimum": 0.3,
+      "maximum": 0.4
+    },
+    "GroundNext": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Daggers_Pounce_Sweep"
+      ]
+    },
+    "Harvest": {
+      "type": "boolean"
+    },
+    "Held": {
+      "type": "object"
+    },
+    "HitBlock": {
+      "type": "object"
+    },
+    "HitEntity": {
+      "type": "object"
+    },
+    "Horizontal": {
+      "type": "boolean"
+    },
+    "HorizontalSpeedMultiplier": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0.4,
+      "maximum": 1
+    },
+    "InstanceKey": {
+      "type": "string",
+      "examples": [
+        "Persistent"
+      ]
+    },
+    "InstanceName": {
+      "type": "string",
+      "examples": [
+        "Persistent"
+      ]
+    },
+    "InteractionModifierId": {
+      "type": "string",
+      "examples": [
+        "Dodge"
+      ]
+    },
+    "Interactions": {
+      "type": "array"
+    },
+    "ItemToRemove": {
+      "type": "object"
+    },
+    "Jumping": {
+      "type": "boolean"
+    },
+    "Left": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Mace_Swings_Left"
+      ]
+    },
+    "Lenient": {
+      "type": "boolean"
+    },
+    "LessThan": {
+      "type": "boolean"
+    },
+    "Match": {
+      "type": "string",
+      "examples": [
+        "None",
+        "All"
+      ]
+    },
+    "Matchers": {
+      "type": "array"
+    },
+    "MaxPlacementDistance": {
+      "type": "integer",
+      "minimum": 20,
+      "maximum": 20
+    },
+    "MouseSensitivityAdjustmentDuration": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 2.0
+    },
+    "MouseSensitivityAdjustmentTarget": {
+      "type": "number",
+      "minimum": 0.25,
+      "maximum": 0.3
+    },
+    "Next": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Consume_Charge",
+        "Consume_Charge_Food_T1",
+        "Consume_Charge_Food_T2"
+      ]
+    },
+    "Offset": {
+      "type": "object"
+    },
+    "OriginSource": {
+      "type": "string",
+      "examples": [
+        "Entity",
+        "Block"
+      ]
+    },
+    "Page": {
+      "type": "object"
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Explode_Generic",
+        "DamageEntityParent",
+        "Bomb_Explode"
+      ]
+    },
+    "PersonalReturnPoint": {
+      "type": "boolean"
+    },
+    "PositionOffset": {
+      "type": "object"
+    },
+    "PrefabPath": {
+      "type": "string",
+      "examples": [
+        "Goblin_Thief_Chest.prefab.json",
+        "Example_Portal1.prefab.json"
+      ]
+    },
+    "PreviewStatConditions": {
+      "type": "object"
+    },
+    "ProjectileId": {
+      "type": "string",
+      "examples": [
+        "Eye_Void_Blast",
+        "Arrow_FullCharge",
+        "GunPvP_Assault_Rifle_Bullet"
+      ]
+    },
+    "RaycastDistance": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 3
+    },
+    "RaycastHeightOffset": {
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 1.8
+    },
+    "RefreshModifiers": {
+      "type": "array"
+    },
+    "RemoveBlockAfter": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 5
+    },
+    "RemoveItemInHand": {
+      "type": "boolean"
+    },
+    "Repeat": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "RequireNotBroken": {
+      "type": "boolean"
+    },
+    "RequiredGameMode": {
+      "type": "string",
+      "examples": [
+        "Adventure",
+        "Creative"
+      ]
+    },
+    "Right": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Mace_Swings_Right"
+      ]
+    },
+    "Rotation": {
+      "type": "object"
+    },
+    "RotationYaw": {
+      "type": "string",
+      "examples": [
+        "OneEighty"
+      ]
+    },
+    "RunTime": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 10
+    },
+    "Selector": {
+      "type": "object"
+    },
+    "SpawnOffset": {
+      "type": "object"
+    },
+    "StaminaCost": {
+      "type": "object"
+    },
+    "StatModifiers": {
+      "type": "object"
+    },
+    "States": {
+      "type": "object"
+    },
+    "Swimming": {
+      "type": "boolean"
+    },
+    "Tags": {
+      "type": "object"
+    },
+    "TargetedDamage": {
+      "type": "object"
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "Simple",
+        "UseBlock",
+        "Condition"
+      ]
+    },
+    "Value": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 2
+    },
+    "ValueType": {
+      "type": "string",
+      "examples": [
+        "Percent",
+        "Absolute"
+      ]
+    },
+    "Var": {
+      "type": "string",
+      "examples": [
+        "Variable"
+      ]
+    },
+    "VelocityConfig": {
+      "type": "object"
+    },
+    "VelocityType": {
+      "type": "string",
+      "examples": [
+        "Set"
+      ]
+    },
+    "VerticalClamp": {
+      "type": "array"
+    },
+    "WaitForCollision": {
+      "type": "boolean"
+    },
+    "WaitForGround": {
+      "type": "boolean"
+    },
+    "WorldSoundEventId": {
+      "type": "string",
+      "examples": [
+        "SFX_Hoe_T1_Till"
+      ]
+    }
+  },
+  "required": [
+    "Type"
+  ]
+}

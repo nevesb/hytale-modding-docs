@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "projectile-config",
+  "description": "Advanced projectile configurations with physics and interactions",
+  "type": "object",
+  "properties": {
+    "Interactions": {
+      "type": "object"
+    },
+    "LaunchForce": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 5,
+      "maximum": 150
+    },
+    "LaunchLocalSoundEventId": {
+      "type": "string",
+      "examples": [
+        "SFX_Bow_T2_Shoot_Local",
+        "SFX_Bow_T2_Shoot",
+        "SFX_Bow_T2_Signature_Shoot_Local"
+      ]
+    },
+    "LaunchWorldSoundEventId": {
+      "type": "string",
+      "examples": [
+        "SFX_Bow_T2_Shoot",
+        "SFX_Bow_T2_Signature_Shoot",
+        "SFX_Bow_T1_Shoot"
+      ]
+    },
+    "Model": {
+      "type": "string",
+      "examples": [
+        "Scarak_Seeker_Spitball",
+        "Ice_Ball",
+        "Bomb_Fire_Goblin"
+      ]
+    },
+    "Parent": {
+      "type": "string",
+      "examples": [
+        "Projectile_Config_Goblin_Lobber_Bomb",
+        "Projectile_Config_Arrow_Base",
+        "Projectile_Config_Bomb_Base"
+      ]
+    },
+    "Physics": {
+      "type": "object"
+    },
+    "SpawnOffset": {
+      "type": "object"
+    },
+    "SpawnRotationOffset": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "Parent"
+  ]
+}

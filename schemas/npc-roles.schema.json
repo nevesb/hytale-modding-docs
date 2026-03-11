@@ -1,0 +1,581 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "npc-roles",
+  "description": "NPC role definitions — behavior, stats, AI, and appearance",
+  "type": "object",
+  "properties": {
+    "$Comment": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "DisplayState",
+        "Debug: DisplayState",
+        "DoubleTestCheck"
+      ]
+    },
+    "$TODO": {
+      "type": "string",
+      "examples": [
+        "Deprecated, remove",
+        "This should in future validate that either the WakeupSensor or DayTimePeriod are passed."
+      ]
+    },
+    "Appearance": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Mannequin",
+        "Golem_Guardian_Void",
+        "Bramblekin"
+      ]
+    },
+    "ApplyAvoidance": {
+      "type": "boolean"
+    },
+    "ApplySeparation": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "Armor": {
+      "type": "array"
+    },
+    "AttitudeGroup": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Trork",
+        "Attack_Tests",
+        "Attack_Dummy"
+      ]
+    },
+    "AvoidanceMode": {
+      "type": "string",
+      "examples": [
+        "Slowdown"
+      ]
+    },
+    "BreathesInAir": {
+      "type": "boolean"
+    },
+    "BreathesInWater": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "BusyStates": {
+      "type": "array"
+    },
+    "Class": {
+      "type": "string",
+      "examples": [
+        "Instruction",
+        "Sensor",
+        "ActionList"
+      ]
+    },
+    "CollisionDistance": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "CollisionForceFalloff": {
+      "type": "number",
+      "minimum": 0.15,
+      "maximum": 0.25
+    },
+    "CollisionRadius": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 0.5
+    },
+    "CollisionViewAngle": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 0
+    },
+    "CombatConfig": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "CAE_Test_Combat_Knight",
+        "CAE_Test_Combat_Action_Evaluator",
+        "CAE_Test_Combat_Elite_Goblin"
+      ]
+    },
+    "Comment": {
+      "type": "string",
+      "examples": [
+        "DisplayState",
+        "DisplayCustom, ProbeBlockCollisions, MotionControllerSteer, MotionControllerMove, Collisions"
+      ]
+    },
+    "Content": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "CorpseStaysInFlock": {
+      "type": "boolean"
+    },
+    "DeathAnimationTime": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "DeathInstruction": {
+      "type": "object"
+    },
+    "Debug": {
+      "type": "string",
+      "examples": [
+        "DisplayState",
+        "DisplayLightLevel",
+        "DisplayCustom"
+      ]
+    },
+    "DefaultNPCAttitude": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Ignore",
+        "Hostile",
+        "Neutral"
+      ]
+    },
+    "DefaultOffHandSlot": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 0
+    },
+    "DefaultPlayerAttitude": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Hostile",
+        "Neutral",
+        "Ignore"
+      ]
+    },
+    "DefaultState": {
+      "type": "string",
+      "examples": [
+        ".Default",
+        ".DroppedMeat",
+        ".Sleep"
+      ]
+    },
+    "DefaultSubState": {
+      "type": "string",
+      "examples": [
+        "Start",
+        "Default"
+      ]
+    },
+    "DisableDamageFlock": {
+      "type": "boolean"
+    },
+    "DisableDamageGroups": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "DisplayNames": {
+      "type": "array"
+    },
+    "DropList": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Drop_Golem_Guardian_Void",
+        "Empty",
+        "Drop_Bramblekin"
+      ]
+    },
+    "EntityAvoidanceStrength": {
+      "type": "number",
+      "minimum": 0.05,
+      "maximum": 0.29
+    },
+    "FailReason": {
+      "type": "string",
+      "examples": [
+        "The item or droplist with the name \"Weapon_Mace_Crusde\" does not exist for attribute \"HotbarItems\""
+      ]
+    },
+    "FlockAllowedNPC": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "FlockCanLead": {
+      "type": "boolean"
+    },
+    "FlockInfluenceRange": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 4
+    },
+    "FlockSpawnTypes": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "FlockSpawnTypesRandom": {
+      "type": "boolean"
+    },
+    "HeadPitchAngleRange": {
+      "type": "array"
+    },
+    "HotbarItems": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "HotbarSize": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 5
+    },
+    "Instructions": {
+      "type": "array"
+    },
+    "InteractionInstruction": {
+      "type": "object"
+    },
+    "InteractionVars": {
+      "type": "object"
+    },
+    "Interface": {
+      "type": "string",
+      "examples": [
+        "Hytale.Instruction.AttackSequence",
+        "Hytale.Instruction.Goblin.Panic",
+        "Hytale.Instruction.Intelligent.Idle"
+      ]
+    },
+    "InventorySize": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 10
+    },
+    "Invulnerable": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "IsMemory": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "ItemAttitudeGroup": {
+      "type": "string",
+      "examples": [
+        "Test"
+      ]
+    },
+    "KnockbackScale": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "MaxHealth": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "minimum": 1,
+      "maximum": 74
+    },
+    "MemoriesCategory": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Kweebec",
+        "Voidspawn"
+      ]
+    },
+    "MemoriesNameOverride": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "Kweebec_Sapling"
+      ]
+    },
+    "Modify": {
+      "type": "object"
+    },
+    "MotionControllerList": {
+      "type": "array"
+    },
+    "NameTranslationKey": {
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "server.npcRoles.Empty_Role.name",
+        "server.npcRoles.Klops_Merchant.name",
+        "server.npcRoles.Spectre_Void.name"
+      ]
+    },
+    "OffHandItems": {
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "OffHandSlots": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "OverrideHeadPitchAngle": {
+      "type": "boolean"
+    },
+    "Parameters": {
+      "type": "object"
+    },
+    "PickupDropOnDeath": {
+      "type": "boolean"
+    },
+    "PossibleInventoryItems": {
+      "type": "string",
+      "examples": [
+        "Drop_Arrows"
+      ]
+    },
+    "Reference": {
+      "type": "string",
+      "examples": [
+        "Template_Swimming_Passive",
+        "Template_Swimming_Aggressive",
+        "Template_Animal_Neutral"
+      ]
+    },
+    "ResetOnStateChange": {
+      "type": "boolean"
+    },
+    "SeparationDistance": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "minimum": 1,
+      "maximum": 3
+    },
+    "SeparationDistanceTarget": {
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "minimum": 0.5,
+      "maximum": 1.5
+    },
+    "SeparationFarRadiusTarget": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 8
+    },
+    "SeparationNearRadiusTarget": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "SeparationWeight": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minimum": 1,
+      "maximum": 1.2
+    },
+    "SpawnParticles": {
+      "type": "string",
+      "examples": [
+        "Undead_Digging",
+        "Explosion_Medium"
+      ]
+    },
+    "SpawnParticlesOffset": {
+      "type": "array"
+    },
+    "StartState": {
+      "type": "string",
+      "examples": [
+        "Idle",
+        "Random",
+        "start"
+      ]
+    },
+    "StateEvaluator": {
+      "type": "object"
+    },
+    "StateTransitions": {
+      "type": "array"
+    },
+    "TestType": {
+      "type": "string",
+      "examples": [
+        "Normal",
+        "Failing"
+      ]
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "Generic",
+        "Variant",
+        "Abstract"
+      ]
+    }
+  },
+  "required": [
+    "Parameters",
+    "Type"
+  ]
+}

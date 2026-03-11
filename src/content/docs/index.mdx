@@ -1,0 +1,36 @@
+---
+title: Hytale Modding Manual
+description: Comprehensive documentation for creating Hytale mods — JSON schemas, tutorials, and reference guides.
+template: splash
+hero:
+  tagline: The complete reference for Hytale server modding. Every JSON field documented, with step-by-step tutorials.
+  actions:
+    - text: Get Started
+      link: /hytale-modding-docs/getting-started/installation/
+      icon: right-arrow
+      variant: primary
+    - text: Reference Docs
+      link: /hytale-modding-docs/reference/concepts/inheritance-and-templates/
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+	<Card title="NPC System" icon="document">
+		Define NPC roles, behaviors, AI decision making, spawning rules, and combat balancing.
+		[Explore NPC Reference](/hytale-modding-docs/reference/npc-system/npc-roles/)
+	</Card>
+	<Card title="Item System" icon="puzzle">
+		Create items, blocks, weapons, tools, and food. Configure qualities, interactions, and categories.
+		[Explore Item Reference](/hytale-modding-docs/reference/item-system/item-definitions/)
+	</Card>
+	<Card title="Crafting & Recipes" icon="setting">
+		Set up crafting benches, recipes, salvage tables, and processing workflows.
+		[Explore Crafting Reference](/hytale-modding-docs/reference/crafting-system/recipes/)
+	</Card>
+	<Card title="World & Environment" icon="sun">
+		Configure biomes, weather systems, world generation, and portal types.
+		[Explore World Reference](/hytale-modding-docs/reference/world-and-environment/environments/)
+	</Card>
+</CardGrid>

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "camera-effect",
+  "description": "Camera effect definitions",
+  "type": "object",
+  "properties": {
+    "CameraShake": {
+      "type": "string",
+      "examples": [
+        "Battleaxe_Bash",
+        "Battleaxe_Downstrike",
+        "Battleaxe_Downstrike_Jump"
+      ]
+    },
+    "FirstPerson": {
+      "type": "object"
+    },
+    "Intensity": {
+      "type": "object"
+    },
+    "ThirdPerson": {
+      "type": "object"
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "CameraShake"
+      ]
+    }
+  }
+}

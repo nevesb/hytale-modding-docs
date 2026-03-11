@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "npc-balancing",
+  "description": "Combat AI behavior trees and action evaluators",
+  "type": "object",
+  "properties": {
+    "CombatActionEvaluator": {
+      "type": "object"
+    },
+    "EntityEffect": {
+      "type": "string",
+      "examples": [
+        "Immunity_Fire"
+      ]
+    },
+    "TargetMemoryDuration": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 10
+    },
+    "Type": {
+      "type": "string",
+      "examples": [
+        "CombatActionEvaluator"
+      ]
+    }
+  },
+  "required": [
+    "CombatActionEvaluator",
+    "TargetMemoryDuration",
+    "Type"
+  ]
+}
