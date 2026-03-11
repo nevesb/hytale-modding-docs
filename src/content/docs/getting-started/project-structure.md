@@ -64,3 +64,16 @@ The `Common/` folder contains client-side assets rendered by the game client.
 | `Common/Particles/` | Particle effect definitions |
 | `Common/UI/` | UI layout definitions |
 | `Common/BlockTextures/` | Block face textures |
+
+## Notes About Modern Plugin Workflows
+
+If you are building **Java server plugins with asset packs**, community guides often describe the asset side of the plugin under `resources/Common/...` and `resources/Server/...`. The extracted vanilla assets documented in this manual still use the `Assets/...` structure, so you should translate paths based on the workflow you are following.
+
+- For server JSON extracted from the game, keep using the `Assets/Server/...` references documented here.
+- For plugin-packaged UI, look for `.ui` files under `resources/Common/UI/Custom`.
+- For plugin projects that ship custom art, make sure `manifest.json` enables `"IncludesAssetPack": true`.
+
+## Related Pages
+
+- [Custom UI](/hytale-modding-docs/reference/game-configuration/custom-ui) — server-controlled pages, HUDs, `.ui` files, and event flow
+- [Java Server Plugins](/hytale-modding-docs/getting-started/java-server-plugins) — when to use Java instead of JSON-only content

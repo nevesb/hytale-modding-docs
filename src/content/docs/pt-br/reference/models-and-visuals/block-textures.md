@@ -66,9 +66,32 @@ Para um bloco chamado `Calcite_Brick`:
 | Propriedade | Valor | Descrição |
 |-------------|-------|-----------|
 | Formato | PNG | Imagens PNG RGBA padrão. |
-| Resolução | 16x16 pixels (padrão) | Todas as texturas de blocos usam a mesma resolução para empacotamento no atlas. |
+| Densidade de pixels | 32 px por face de bloco | O guia do Hytale Modding descreve blocos com padrão de densidade de 32 px. |
 | Transparência | Suportada | Canal alfa permite blocos parcialmente transparentes (vidro, folhas). |
 | Espaço de Cor | sRGB | Espaço de cor padrão; o motor cuida da conversão linear. |
+
+## Guia Prático de Tamanhos
+
+A referência do Hytale Modding diferencia melhor **densidade de pixels** de tamanho fixo de arquivo. A regra mais segura é combinar a densidade do tipo de asset, em vez de forçar tudo para a mesma resolução.
+
+| Tipo de asset | Densidade recomendada | Exemplos práticos | Observações |
+|---------------|-----------------------|-------------------|-------------|
+| Blocos cúbicos | 32 px por face de bloco | `32x32` para uma face normal, `64x64` para uma variante 2x mantendo a mesma densidade | Este é o padrão mais claramente documentado. |
+| Modelos de player | 64 px de densidade | `64x64`, `128x128` | Tamanhos maiores funcionam se preservarem a mesma densidade visual. |
+| Modelos de NPC / mob | 64 px de densidade | `64x64`, `128x128` | O guia externo descreve mobs como "provavelmente também 64px"; trate isso como melhor prática atual, não como regra absoluta do engine. |
+| Equipamentos / itens segurados com modelo | 64 px de densidade | textura de espada `64x64`, textura de armadura `128x128` | Isso vale para texturas de modelo, não para ícones de inventário. |
+| Ícones de item / UI | Varia conforme a direção de arte da UI | `32x32`, `64x64`, `128x128` | A referência não define uma densidade canônica única para ícones, então mantenha consistência dentro do mesmo conjunto visual. |
+
+### Exemplos
+
+- Um bloco de pedra simples: uma textura `32x32`, opcionalmente com variantes `_Top`, `_Side` e `_Bottom`.
+- Uma textura de peitoral de player: `64x64` ou `128x128`, desde que respeite a densidade de 64 px do modelo do personagem.
+- Uma textura de NPC grande ou chefe: `128x128` ainda pode estar correta se o modelo preservar a mesma densidade visual dos demais personagens 64 px.
+- Um ícone de espada no inventário: mantenha alinhado com o restante do atlas de ícones; isso é uma decisão de UI, não a mesma regra de blocos ou personagens.
+
+## Nota de Precisão
+
+Uma versão anterior deste manual descrevia texturas de blocos como "16x16 pixels (padrão)". Isso era rígido demais em relação à referência atual do Hytale Modding, que aponta para um padrão de **densidade de 32 px para blocos**.
 
 ## Categorias Comuns de Material
 

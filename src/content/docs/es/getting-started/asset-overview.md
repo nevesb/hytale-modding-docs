@@ -37,15 +37,17 @@ El formato de animación de Hytale. Basado en JSON, contiene:
 ### Texturas (`.png`)
 
 Imágenes PNG estándar usadas para:
-- Caras de bloques (normalmente 16x16 o 32x32)
+- Caras de bloques
 - Texturas de modelos (la resolución varía según la complejidad del modelo)
 - Elementos de interfaz e íconos
 - Efectos de partículas
 
 Hytale utiliza texturas con estilo pixel art. Resoluciones comunes:
-- **16x16** — Bloques simples y objetos pequeños
-- **32x32** — Bloques detallados y equipamiento
-- **64x64** — Modelos grandes o complejos
+- **Densidad de 32 px** — Bloques cúbicos estándar
+- **Densidad de 64 px** — Modelos de jugador y la mayor parte del equipamiento a escala de personaje
+- **Densidad de 64 px (mejor suposición actual)** — NPCs y mobs, según la referencia de la comunidad Hytale Modding
+
+Al elegir el tamaño de una textura, primero iguala la densidad del tipo de asset. Por ejemplo, la cara de un bloque puede ser `32x32`, mientras que una textura de personaje puede ser `64x64` o `128x128` si mantiene la misma densidad visual.
 
 ## Conceptos clave
 

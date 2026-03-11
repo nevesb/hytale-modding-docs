@@ -66,9 +66,32 @@ For a block named `Calcite_Brick`:
 | Property | Value | Description |
 |----------|-------|-------------|
 | Format | PNG | Standard RGBA PNG images. |
-| Resolution | 16x16 pixels (standard) | All block textures use the same resolution for atlas packing. |
+| Pixel density | 32 px per block face | The Hytale Modding reference describes blocks as using a 32 px density standard. |
 | Transparency | Supported | Alpha channel enables partially transparent blocks (glass, leaves). |
 | Colour Space | sRGB | Standard colour space; the engine handles linear conversion. |
+
+## Practical Size Guide
+
+The Hytale Modding reference distinguishes **pixel density** more clearly than fixed export sizes. The safest rule is to match the asset type's density instead of forcing every texture into the same dimensions.
+
+| Asset type | Recommended density | Practical examples | Notes |
+|------------|---------------------|--------------------|-------|
+| Cube blocks | 32 px per block face | `32x32` for a normal cube face, `64x64` for a 2x upscaled variant that keeps the same density | This is the clearest documented standard. |
+| Player models | 64 px density | `64x64`, `128x128` | Higher sizes are fine if they keep the same visual density. |
+| NPC / mob models | 64 px density | `64x64`, `128x128` | The external guide phrases mobs as "likely also 64px"; treat this as current best practice, not a hard engine rule. |
+| Equipment / held item models | 64 px density | sword sheet `64x64`, armor sheet `128x128` | This applies to model textures, not inventory icons. |
+| Inventory / UI item icons | Varies by UI art direction | `32x32`, `64x64`, `128x128` | The reference guide does not define a single canonical icon density, so keep icons consistent within the same UI set. |
+
+### Examples
+
+- A simple stone block: one `32x32` face texture, optionally with `_Top`, `_Side`, and `_Bottom` variants.
+- A player chest armor texture: `64x64` or `128x128`, as long as proportions match the player model's 64 px density.
+- A large boss NPC texture: `128x128` can still be correct if the model is built to preserve the same density as other 64 px characters.
+- A sword icon for inventory UI: keep it aligned with the rest of your icon atlas; this is a UI asset decision, not the same rule as block or character texture density.
+
+## Notes on Accuracy
+
+An earlier version of this manual described block textures as "16x16 pixels (standard)". That was too strict compared with the current Hytale Modding reference, which points to a **32 px block density** standard instead.
 
 ## Common Material Categories
 
