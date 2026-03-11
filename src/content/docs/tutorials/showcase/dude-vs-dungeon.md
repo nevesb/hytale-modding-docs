@@ -56,7 +56,7 @@ dude_vs_dungeon/
 ## System Interactions
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A["Player Finds<br/>Dungeon Portal"] --> B[Enter Instance]
     B --> C["Dungeon Instance<br/>Loads Prefab]
 
@@ -75,10 +75,10 @@ flowchart TD
 
     K --> M["Player Crafts<br/>DungeonBlade at Bench"]
 
-    style A fill:#2d5a27,color:#fff
-    style G fill:#8b2500,color:#fff
-    style L fill:#4a3d8f,color:#fff
-    style M fill:#2d6a8f,color:#fff
+    style A fill:darkgreen,color:white
+    style G fill:darkred,color:white
+    style L fill:rebeccapurple,color:white
+    style M fill:steelblue,color:white
 ```
 
 ## Key Files Explained
@@ -149,7 +149,7 @@ The boss has multiple combat phases driven by health thresholds:
 ### Combat Flow
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A["Boss Spawns<br/>HP: 500/500"] --> B[Default ActionSet]
     B --> C{Player in Range?}
     C -->|"Yes, < 5 blocks"| D["SlashAttack<br/>High score"]
@@ -165,9 +165,9 @@ flowchart TD
     J -->|"No"| I
     J -->|"Yes"| K[Return to Idle]
 
-    style A fill:#2d5a27,color:#fff
-    style G fill:#8b2500,color:#fff
-    style H fill:#8b6500,color:#fff
+    style A fill:darkgreen,color:white
+    style G fill:darkred,color:white
+    style H fill:darkgoldenrod,color:white
 ```
 
 ### 3. Boss Loot Table

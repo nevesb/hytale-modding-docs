@@ -17,29 +17,29 @@ Dados objetos con pesos `[70, 25, 5]`, las probabilidades son:
 ## Cómo funciona la selección por peso
 
 ```mermaid
-flowchart TD
-    A[Weight Pool] --> B["Item A<br/>Weight: 70"]
-    A --> C["Item B<br/>Weight: 25"]
-    A --> D["Item C<br/>Weight: 5"]
+flowchart TD;
+    A[Weight Pool] --> B["Item A<br>Weight: 70"]
+    A --> C["Item B<br>Weight: 25"]
+    A --> D["Item C<br>Weight: 5"]
 
     B --> E[Total = 100]
     C --> E
     D --> E
 
-    E --> F["Roll Random<br/>0-100"]
-    F -->|"0-70"| G["Item A Selected<br/>70% chance"]
-    F -->|"71-95"| H["Item B Selected<br/>25% chance"]
-    F -->|"96-100"| I["Item C Selected<br/>5% chance"]
+    E --> F["Roll Random<br>0-100"]
+    F -->|"0-70"| G["Item A Selected<br>70% chance"]
+    F -->|"71-95"| H["Item B Selected<br>25% chance"]
+    F -->|"96-100"| I["Item C Selected<br>5% chance"]
 
-    style G fill:#2d5a27,color:#fff
-    style H fill:#2d6a8f,color:#fff
-    style I fill:#8b6500,color:#fff
+    style G fill:darkgreen,color:white
+    style H fill:steelblue,color:white
+    style I fill:darkgoldenrod,color:white
 ```
 
 ### Ejemplo de pesos anidados (Tablas de drops)
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A[Monster Dies] --> B[Drop Table]
     B --> C{Roll Weight Pool}
     C -->|"Weight: 60"| D[Common Drops]
@@ -56,10 +56,10 @@ flowchart TD
 
     F --> M[1x Diamond]
 
-    style D fill:#2d5a27,color:#fff
-    style E fill:#2d6a8f,color:#fff
-    style F fill:#8b6500,color:#fff
-    style M fill:#4a3d8f,color:#fff
+    style D fill:darkgreen,color:white
+    style E fill:steelblue,color:white
+    style F fill:darkgoldenrod,color:white
+    style M fill:rebeccapurple,color:white
 ```
 
 ## Sistemas que usan pesos

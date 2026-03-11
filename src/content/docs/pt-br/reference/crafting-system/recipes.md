@@ -10,42 +10,42 @@ Receitas de fabricacao definem a transformacao de itens ou recursos de entrada e
 ## Como a Fabricacao Funciona
 
 ```mermaid
-flowchart TD
-    A["Jogador Abre<br/>Bancada de Fabricacao"] --> B[Mostrar Receitas Disponiveis]
-    B --> C["Possui Materiais<br/>Necessarios?"]
+flowchart TD;
+    A["Jogador Abre<br>Bancada de Fabricacao"] --> B[Mostrar Receitas Disponiveis]
+    B --> C["Possui Materiais<br>Necessarios?"]
     C -->|"Nao"| D[Receita Indisponivel]
     C -->|"Sim"| E[Jogador Clica em Fabricar]
 
-    E --> F["Bancada Corresponde<br/>ao Requisito da Receita?"]
+    E --> F["Bancada Corresponde<br>ao Requisito da Receita?"]
     F -->|"Nao"| D
     F -->|"Sim"| G[Consumir Entradas]
 
     G --> H["ProcessingTime > 0?"]
-    H -->|"Sim"| I["Aguardar Temporizador<br/>ex: 5 segundos"]
+    H -->|"Sim"| I["Aguardar Temporizador<br>ex: 5 segundos"]
     H -->|"Nao"| J[Fabricacao Instantanea]
 
     I --> K[Produzir Itens de Saida]
     J --> K
 
-    K --> L["Adicionar ao Inventario<br/>ou Derrubar"]
+    K --> L["Adicionar ao Inventario<br>ou Derrubar"]
 
-    style A fill:#2d5a27,color:#fff
-    style D fill:#8b2500,color:#fff
-    style K fill:#4a3d8f,color:#fff
+    style A fill:darkgreen,color:white
+    style D fill:darkred,color:white
+    style K fill:rebeccapurple,color:white
 ```
 
 ### Resolucao de Receitas com Grupos
 
 ```mermaid
-flowchart LR
-    A["Entrada da Receita:<br/>Grupo 'AnyWood' x4"] --> B{Jogador Possui?}
+flowchart LR;
+    A["Entrada da Receita:<br>Grupo 'AnyWood' x4"] --> B{Jogador Possui?}
     B -->|"Madeira de Carvalho x4"| C[Valido]
-    B -->|"Madeira de Betula x2<br/>+ Madeira de Pinho x2"| D["Valido<br/>Itens mistos do grupo"]
-    B -->|"Pedra x4"| E["Invalido<br/>Nao esta no grupo"]
+    B -->|"Madeira de Betula x2<br>+ Madeira de Pinho x2"| D["Valido<br>Itens mistos do grupo"]
+    B -->|"Pedra x4"| E["Invalido<br>Nao esta no grupo"]
 
-    style C fill:#2d5a27,color:#fff
-    style D fill:#2d5a27,color:#fff
-    style E fill:#8b2500,color:#fff
+    style C fill:darkgreen,color:white
+    style D fill:darkgreen,color:white
+    style E fill:darkred,color:white
 ```
 
 ## Localizacao dos Arquivos

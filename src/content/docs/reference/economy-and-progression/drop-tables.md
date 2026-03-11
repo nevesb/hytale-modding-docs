@@ -10,7 +10,7 @@ Drop tables define what items are produced when a container is opened, an NPC is
 ## How Drop Tables Work
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A[NPC Dies / Block Breaks] --> B[Lookup Drop Table]
     B --> C{Container Type?}
 
@@ -18,31 +18,31 @@ flowchart TD
     C -->|"Choice"| E[Pick ONE by Weight]
     C -->|"Single"| F[Always Drop This Item]
 
-    D --> G["Child 1: Guaranteed<br/>Single → 3x Bone"]
-    D --> H["Child 2: Random Loot<br/>Choice → Weighted Pool"]
+    D --> G["Child 1: Guaranteed<br>Single → 3x Bone"]
+    D --> H["Child 2: Random Loot<br>Choice → Weighted Pool"]
 
     H --> I{Roll Weights}
-    I -->|"Weight: 60"| J["Common:<br/>5x Stone"]
-    I -->|"Weight: 30"| K["Uncommon:<br/>1x Iron"]
-    I -->|"Weight: 10"| L["Rare:<br/>1x Diamond"]
+    I -->|"Weight: 60"| J["Common:<br>5x Stone"]
+    I -->|"Weight: 30"| K["Uncommon:<br>1x Iron"]
+    I -->|"Weight: 10"| L["Rare:<br>1x Diamond"]
 
     G --> M[Final Drops]
     J --> M
     K --> M
     L --> M
 
-    style A fill:#8b2500,color:#fff
-    style M fill:#2d5a27,color:#fff
-    style L fill:#8b6500,color:#fff
+    style A fill:darkred,color:white
+    style M fill:darkgreen,color:white
+    style L fill:darkgoldenrod,color:white
 ```
 
 ### Container Nesting Example
 
 ```mermaid
-flowchart TD
-    A[Root: Multiple] --> B["Single<br/>1x XP Orb<br/>Guaranteed"]
-    A --> C["Choice<br/>Weighted random"]
-    A --> D["Choice<br/>Weighted random"]
+flowchart TD;
+    A[Root: Multiple] --> B["Single<br>1x XP Orb<br>Guaranteed"]
+    A --> C["Choice<br>Weighted random"]
+    A --> D["Choice<br>Weighted random"]
 
     C -->|"70%"| E[Nothing]
     C -->|"30%"| F[1x Feather]
@@ -50,9 +50,9 @@ flowchart TD
     D -->|"90%"| G[Nothing]
     D -->|"10%"| H[1x Rare Egg]
 
-    style B fill:#2d5a27,color:#fff
-    style F fill:#2d6a8f,color:#fff
-    style H fill:#8b6500,color:#fff
+    style B fill:darkgreen,color:white
+    style F fill:steelblue,color:white
+    style H fill:darkgoldenrod,color:white
 ```
 
 ## File Location

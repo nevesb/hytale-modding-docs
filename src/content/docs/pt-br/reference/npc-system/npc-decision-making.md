@@ -72,7 +72,7 @@ Uma `Curve` pode ser um atalho de string nomeada ou um objeto inline:
 ## Como a Tomada de Decisao do NPC Funciona
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A[NPC Idle] --> B{Scan for Threats}
     B -->|"No threat"| C{Check Needs}
     B -->|"Threat detected"| D[Evaluate Combat Actions]
@@ -82,17 +82,17 @@ flowchart TD
     C -->|"All good"| A
 
     D --> G[Score Each Action]
-    G --> H["OwnStatPercent<br/>Health check"]
-    G --> I["TargetDistance<br/>Range check"]
-    G --> J["TimeSinceLastUsed<br/>Cooldown check"]
-    G --> K["Randomiser<br/>Noise factor"]
+    G --> H["OwnStatPercent<br>Health check"]
+    G --> I["TargetDistance<br>Range check"]
+    G --> J["TimeSinceLastUsed<br>Cooldown check"]
+    G --> K["Randomiser<br>Noise factor"]
 
     H --> L[Multiply Scores]
     I --> L
     J --> L
     K --> L
 
-    L --> M["Pick Highest<br/>Utility Score"]
+    L --> M["Pick Highest<br>Utility Score"]
     M -->|"Melee wins"| N[Move to Target → Attack]
     M -->|"Ranged wins"| O[Keep Distance → Shoot]
     M -->|"Flee wins"| P[Run Away]
@@ -107,10 +107,10 @@ flowchart TD
     R -->|"Yes"| A
     R -->|"No"| P
 
-    style A fill:#2d5a27,color:#fff
-    style D fill:#8b2500,color:#fff
-    style M fill:#4a3d8f,color:#fff
-    style E fill:#2d6a8f,color:#fff
+    style A fill:darkgreen,color:white
+    style D fill:darkred,color:white
+    style M fill:rebeccapurple,color:white
+    style E fill:steelblue,color:white
 ```
 
 ### Como a Pontuacao de Utilidade Funciona
@@ -118,26 +118,26 @@ flowchart TD
 Cada acao disponivel tem uma lista de `Conditions`. O NPC avalia cada condicao para produzir uma pontuacao entre 0 e 1, e entao **multiplica** todas as pontuacoes. A acao com a maior pontuacao final vence.
 
 ```mermaid
-flowchart LR
-    A[Action: Melee Attack] --> B["Condition 1<br/>TargetDistance<br/>Score: 0.9"]
-    A --> C["Condition 2<br/>OwnHealth<br/>Score: 0.7"]
-    A --> D["Condition 3<br/>TimeSinceUsed<br/>Score: 0.5"]
+flowchart LR;
+    A[Action: Melee Attack] --> B["Condition 1<br>TargetDistance<br>Score: 0.9"]
+    A --> C["Condition 2<br>OwnHealth<br>Score: 0.7"]
+    A --> D["Condition 3<br>TimeSinceUsed<br>Score: 0.5"]
 
-    B --> E["0.9 × 0.7 × 0.5<br/>= 0.315"]
+    B --> E["0.9 × 0.7 × 0.5<br>= 0.315"]
     C --> E
     D --> E
 
-    F[Action: Flee] --> G["Condition 1<br/>OwnHealth<br/>Score: 0.9"]
-    F --> H["Condition 2<br/>Randomiser<br/>Score: 0.95"]
+    F[Action: Flee] --> G["Condition 1<br>OwnHealth<br>Score: 0.9"]
+    F --> H["Condition 2<br>Randomiser<br>Score: 0.95"]
 
-    G --> I["0.9 × 0.95<br/>= 0.855"]
+    G --> I["0.9 × 0.95<br>= 0.855"]
     H --> I
 
     E --> J{Compare}
     I --> J
     J -->|"0.855 > 0.315"| K[Flee wins!]
 
-    style K fill:#8b2500,color:#fff
+    style K fill:darkred,color:white
 ```
 
 ## Exemplos

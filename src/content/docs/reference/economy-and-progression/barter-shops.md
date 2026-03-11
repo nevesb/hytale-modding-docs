@@ -10,35 +10,35 @@ Barter shops define the inventory of NPC merchants: what they sell, what they ac
 ## How NPC Trading Works
 
 ```mermaid
-flowchart TD
-    A["Player Interacts<br/>with Merchant NPC"] --> B[Load Barter Shop]
+flowchart TD;
+    A["Player Interacts<br>with Merchant NPC"] --> B[Load Barter Shop]
     B --> C[Display Trade Slots]
 
-    C --> D["Fixed Slots<br/>Always same trades"]
-    C --> E["Pool Slots<br/>Randomly selected"]
+    C --> D["Fixed Slots<br>Always same trades"]
+    C --> E["Pool Slots<br>Randomly selected"]
 
-    E --> F["Shop Refresh<br/>Time Reached?"]
-    F -->|"Yes"| G["Roll New Trades<br/>from Weighted Pool"]
+    E --> F["Shop Refresh<br>Time Reached?"]
+    F -->|"Yes"| G["Roll New Trades<br>from Weighted Pool"]
     F -->|"No"| H[Keep Current Trades]
 
     D --> I[Player Selects Trade]
     G --> I
     H --> I
 
-    I --> J["Has Payment<br/>Items?"]
+    I --> J["Has Payment<br>Items?"]
     J -->|"No"| K[Trade Unavailable]
     J -->|"Yes"| L{Stock > 0?}
     L -->|"No"| M[Out of Stock]
     L -->|"Yes"| N[Execute Trade]
 
-    N --> O["Remove Payment<br/>from Player"]
-    O --> P["Give Output<br/>to Player"]
+    N --> O["Remove Payment<br>from Player"]
+    O --> P["Give Output<br>to Player"]
     P --> Q[Decrease Stock]
 
-    style A fill:#2d5a27,color:#fff
-    style K fill:#8b2500,color:#fff
-    style M fill:#8b6500,color:#fff
-    style P fill:#4a3d8f,color:#fff
+    style A fill:darkgreen,color:white
+    style K fill:darkred,color:white
+    style M fill:darkgoldenrod,color:white
+    style P fill:rebeccapurple,color:white
 ```
 
 ## File Location

@@ -17,60 +17,60 @@ Arquivos de regras de spawn vinculam roles de NPC a localizacoes e condicoes do 
 ## Como o Spawn de NPC Funciona
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A[World Loads Chunk] --> B{Check Spawn Sources}
 
     B --> C[Beacon Spawns]
     B --> D[World Spawns]
     B --> E[Marker Spawns]
 
-    C --> F["Environment<br/>Matches?"]
-    F -->|"Yes"| G["Player in<br/>Range?"]
+    C --> F["Environment<br>Matches?"]
+    F -->|"Yes"| G["Player in<br>Range?"]
     F -->|"No"| Z[Skip]
-    G -->|"Yes"| H["Light Level<br/>OK?"]
+    G -->|"Yes"| H["Light Level<br>OK?"]
     G -->|"No"| Z
     H -->|"Yes"| I[Select NPC by Weight]
     H -->|"No"| Z
 
-    D --> J["Environment<br/>Matches?"]
-    J -->|"Yes"| K["DayTimeRange<br/>OK?"]
+    D --> J["Environment<br>Matches?"]
+    J -->|"Yes"| K["DayTimeRange<br>OK?"]
     J -->|"No"| Z
     K -->|"Yes"| L[Select NPC by Weight]
     K -->|"No"| Z
 
-    E --> M["Player Near<br/>Marker?"]
-    M -->|"Yes"| N["Respawn Timer<br/>Ready?"]
+    E --> M["Player Near<br>Marker?"]
+    M -->|"Yes"| N["Respawn Timer<br>Ready?"]
     M -->|"No"| Z
     N -->|"Yes"| O[Spawn Specific NPC]
     N -->|"No"| Z
 
-    I --> P["MaxSpawnedNPCs<br/>Reached?"]
+    I --> P["MaxSpawnedNPCs<br>Reached?"]
     P -->|"No"| Q[Spawn NPC]
     P -->|"Yes"| Z
     L --> Q
     O --> Q
 
-    Q --> R["Flock<br/>Defined?"]
-    R -->|"Yes"| S["Spawn Group<br/>Size: min-max"]
+    Q --> R["Flock<br>Defined?"]
+    R -->|"Yes"| S["Spawn Group<br>Size: min-max"]
     R -->|"No"| T[Spawn Single NPC]
 
-    style A fill:#2d5a27,color:#fff
-    style Q fill:#4a3d8f,color:#fff
-    style Z fill:#8b2500,color:#fff
+    style A fill:darkgreen,color:white
+    style Q fill:rebeccapurple,color:white
+    style Z fill:darkred,color:white
 ```
 
 ### Zonas de Supressao
 
 ```mermaid
-flowchart LR
-    A["NPC Tries to Spawn"] --> B["Inside Suppression<br/>Volume?"]
+flowchart LR;
+    A["NPC Tries to Spawn"] --> B["Inside Suppression<br>Volume?"]
     B -->|"No"| C[Spawn Allowed]
-    B -->|"Yes"| D["NPC Group in<br/>SuppressedGroups?"]
+    B -->|"Yes"| D["NPC Group in<br>SuppressedGroups?"]
     D -->|"No"| C
     D -->|"Yes"| E[Spawn Blocked]
 
-    style C fill:#2d5a27,color:#fff
-    style E fill:#8b2500,color:#fff
+    style C fill:darkgreen,color:white
+    style E fill:darkred,color:white
 ```
 
 ## Schema

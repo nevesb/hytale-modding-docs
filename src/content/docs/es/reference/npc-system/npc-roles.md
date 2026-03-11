@@ -10,22 +10,22 @@ Un archivo de rol de NPC define todo sobre un NPC específico: su apariencia vis
 ## Ciclo de vida del rol de NPC
 
 ```mermaid
-flowchart TD
-    A["Template File<br/>e.g. Template_Beasts_Passive"] --> B["Role File<br/>e.g. Chicken.json"]
+flowchart TD;
+    A["Template File<br>e.g. Template_Beasts_Passive"] --> B["Role File<br>e.g. Chicken.json"]
     B -->|"Reference + Modify"| C[Resolved NPC Definition]
 
     C --> D[Spawn into World]
     D --> E[Idle State]
 
     E --> F{Detect Player?}
-    F -->|"Passive NPC"| G["Continue Idle<br/>or Wander"]
+    F -->|"Passive NPC"| G["Continue Idle<br>or Wander"]
     F -->|"Hostile NPC"| H[Enter Combat]
     F -->|"Neutral NPC"| I{Was Attacked?}
 
     I -->|"No"| G
     I -->|"Yes"| H
 
-    H --> J["Evaluate Actions<br/>via Decision Making"]
+    H --> J["Evaluate Actions<br>via Decision Making"]
     J --> K[Attack / Chase]
     J --> L[Flee / Retreat]
     J --> M[Use Ability]
@@ -43,10 +43,10 @@ flowchart TD
     P -->|"Yes, NPC flees"| L
     P -->|"No"| E
 
-    style A fill:#4a3d8f,color:#fff
-    style B fill:#2d6a8f,color:#fff
-    style H fill:#8b2500,color:#fff
-    style E fill:#2d5a27,color:#fff
+    style A fill:rebeccapurple,color:white
+    style B fill:steelblue,color:white
+    style H fill:darkred,color:white
+    style E fill:darkgreen,color:white
 ```
 
 ## Ubicación de archivos

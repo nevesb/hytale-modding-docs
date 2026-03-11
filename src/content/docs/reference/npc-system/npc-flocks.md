@@ -10,13 +10,13 @@ Flock files define group spawning behavior — how many NPCs appear together whe
 ## How Flock Sizing Works
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A[Spawn Event Triggers] --> B{Flock Type?}
 
     B -->|"Weighted"| C[Roll Weighted Sizes]
-    B -->|"Range / Size array"| D["Pick Random<br/>in Range"]
+    B -->|"Range / Size array"| D["Pick Random<br>in Range"]
 
-    C --> E["MinSize = 3<br/>Weights: 60, 25, 15"]
+    C --> E["MinSize = 3<br>Weights: 60, 25, 15"]
     E --> F{Roll}
     F -->|"60%"| G[Spawn 3 NPCs]
     F -->|"25%"| H[Spawn 4 NPCs]
@@ -25,18 +25,18 @@ flowchart TD
     D --> J[Size: 2, 3]
     J --> K[Spawn 2-3 NPCs]
 
-    G --> L["MaxGrowSize<br/>Defined?"]
+    G --> L["MaxGrowSize<br>Defined?"]
     H --> L
     I --> L
     K --> L
 
-    L -->|"Yes"| M["Group can grow<br/>up to MaxGrowSize<br/>over time"]
-    L -->|"No"| N["Group stays<br/>at spawned size"]
+    L -->|"Yes"| M["Group can grow<br>up to MaxGrowSize<br>over time"]
+    L -->|"No"| N["Group stays<br>at spawned size"]
 
-    style A fill:#2d5a27,color:#fff
-    style G fill:#2d6a8f,color:#fff
-    style H fill:#2d6a8f,color:#fff
-    style I fill:#2d6a8f,color:#fff
+    style A fill:darkgreen,color:white
+    style G fill:steelblue,color:white
+    style H fill:steelblue,color:white
+    style I fill:steelblue,color:white
 ```
 
 ## File Location

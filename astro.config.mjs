@@ -108,6 +108,7 @@ export default defineConfig({
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/nevesb/hytale-modding-docs' },
 			],
+			customCss: ['./src/styles/home.css'],
 			sidebar: [
 				{
 					label: 'Getting Started',

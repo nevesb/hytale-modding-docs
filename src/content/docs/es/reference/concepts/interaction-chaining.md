@@ -10,33 +10,33 @@ Hytale construye comportamientos de juego complejos encadenando interacciones si
 ## Cómo funcionan las cadenas de interacción
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A[Player Uses Item] --> B{Condition Check}
     B -->|"Game Mode = Adventure"| C[Apply Effect]
     B -->|"Wrong Game Mode"| X[Chain Stops]
     C -->|"EffectId: Burning"| D[Deal Damage]
     D -->|"BaseDamage: Fire 10"| E[Chain Complete]
 
-    style A fill:#2d5a27,color:#fff
-    style X fill:#8b2500,color:#fff
-    style E fill:#2d6a8f,color:#fff
+    style A fill:darkgreen,color:white
+    style X fill:darkred,color:white
+    style E fill:steelblue,color:white
 ```
 
 ### Cadena de impacto de proyectil
 
 ```mermaid
-flowchart LR
-    A[Projectile Hits Entity] --> B["DamageEntity<br/>Fire: 15"]
-    B --> C["RemoveEntity<br/>Projectile destroyed"]
+flowchart LR;
+    A[Projectile Hits Entity] --> B["DamageEntity<br>Fire: 15"]
+    B --> C["RemoveEntity<br>Projectile destroyed"]
 
-    style A fill:#8b6500,color:#fff
-    style C fill:#8b2500,color:#fff
+    style A fill:darkgoldenrod,color:white
+    style C fill:darkred,color:white
 ```
 
 ### Cadena de arma compleja
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A[Player Swings Sword] --> B{Check Durability}
     B -->|"Has durability"| C[Damage Target]
     B -->|"Broken"| X[Play Break Sound]
@@ -47,8 +47,8 @@ flowchart TD
     F --> G
     G --> H[Reduce Durability]
 
-    style A fill:#2d5a27,color:#fff
-    style X fill:#8b2500,color:#fff
+    style A fill:darkgreen,color:white
+    style X fill:darkred,color:white
 ```
 
 ## Estructura de la cadena

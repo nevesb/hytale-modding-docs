@@ -10,47 +10,47 @@ Arquivos do Combat Action Evaluator (CAE) configuram o sistema de IA por utilida
 ## Fluxo de IA de Combate
 
 ```mermaid
-flowchart TD
+flowchart TD;
     A[NPC Enters Combat] --> B[Load Action Sets]
-    B --> C["Active Action Set<br/>e.g. Default Combat"]
+    B --> C["Active Action Set<br>e.g. Default Combat"]
 
-    C --> D["Evaluator Tick<br/>every N frames"]
+    C --> D["Evaluator Tick<br>every N frames"]
     D --> E[Score All Available Actions]
 
-    E --> F["Action: Melee Attack<br/>Conditions → Score: 0.7"]
-    E --> G["Action: Ranged Attack<br/>Conditions → Score: 0.3"]
-    E --> H["Action: Shield Block<br/>Conditions → Score: 0.85"]
-    E --> I["Action: Flee<br/>Conditions → Score: 0.2"]
+    E --> F["Action: Melee Attack<br>Conditions → Score: 0.7"]
+    E --> G["Action: Ranged Attack<br>Conditions → Score: 0.3"]
+    E --> H["Action: Shield Block<br>Conditions → Score: 0.85"]
+    E --> I["Action: Flee<br>Conditions → Score: 0.2"]
 
-    F --> J["Highest Score<br/>Above Threshold?"]
+    F --> J["Highest Score<br>Above Threshold?"]
     G --> J
     H --> J
     I --> J
 
     J -->|"Shield Block: 0.85"| K[Execute Shield Block]
-    J -->|"All below threshold"| L["Use Basic Attack<br/>from ActionSet"]
+    J -->|"All below threshold"| L["Use Basic Attack<br>from ActionSet"]
 
     K --> M{Action Complete}
     L --> M
     M --> D
 
-    style A fill:#8b2500,color:#fff
-    style K fill:#4a3d8f,color:#fff
-    style L fill:#2d6a8f,color:#fff
+    style A fill:darkred,color:white
+    style K fill:rebeccapurple,color:white
+    style L fill:steelblue,color:white
 ```
 
 ### Transicoes de Conjuntos de Acoes
 
 ```mermaid
-flowchart LR
-    A["Default Set<br/>Melee + Block"] -->|"HP < 30%"| B["Enraged Set<br/>Aggressive + No Block"]
-    A -->|"Target far away"| C["Ranged Set<br/>Projectile + Retreat"]
+flowchart LR;
+    A["Default Set<br>Melee + Block"] -->|"HP < 30%"| B["Enraged Set<br>Aggressive + No Block"]
+    A -->|"Target far away"| C["Ranged Set<br>Projectile + Retreat"]
     C -->|"Target close"| A
     B -->|"Healing received"| A
 
-    style A fill:#2d5a27,color:#fff
-    style B fill:#8b2500,color:#fff
-    style C fill:#2d6a8f,color:#fff
+    style A fill:darkgreen,color:white
+    style B fill:darkred,color:white
+    style C fill:steelblue,color:white
 ```
 
 ## Localizacao dos Arquivos
