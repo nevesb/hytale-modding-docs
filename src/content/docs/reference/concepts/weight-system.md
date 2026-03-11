@@ -33,7 +33,8 @@ flowchart TD;
 
     style G fill:darkgreen,color:white;
     style H fill:steelblue,color:white;
-    style I fill:darkgoldenrod,color:white;```
+    style I fill:darkgoldenrod,color:white;
+```
 
 ### Nested Weight Example (Drop Tables)
 
@@ -58,7 +59,8 @@ flowchart TD;
     style D fill:darkgreen,color:white;
     style E fill:steelblue,color:white;
     style F fill:darkgoldenrod,color:white;
-    style M fill:rebeccapurple,color:white;```
+    style M fill:rebeccapurple,color:white;
+```
 
 ## Systems Using Weights
 

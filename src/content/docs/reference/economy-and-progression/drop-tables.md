@@ -33,7 +33,8 @@ flowchart TD;
 
     style A fill:darkred,color:white;
     style M fill:darkgreen,color:white;
-    style L fill:darkgoldenrod,color:white;```
+    style L fill:darkgoldenrod,color:white;
+```
 
 ### Container Nesting Example
 
@@ -51,7 +52,8 @@ flowchart TD;
 
     style B fill:darkgreen,color:white;
     style F fill:steelblue,color:white;
-    style H fill:darkgoldenrod,color:white;```
+    style H fill:darkgoldenrod,color:white;
+```
 
 ## File Location
 

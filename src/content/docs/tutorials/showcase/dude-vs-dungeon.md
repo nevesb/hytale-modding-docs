@@ -78,7 +78,8 @@ flowchart TD;
     style A fill:darkgreen,color:white;
     style G fill:darkred,color:white;
     style L fill:rebeccapurple,color:white;
-    style M fill:steelblue,color:white;```
+    style M fill:steelblue,color:white;
+```
 
 ## Key Files Explained
 
@@ -166,7 +167,8 @@ flowchart TD;
 
     style A fill:darkgreen,color:white;
     style G fill:darkred,color:white;
-    style H fill:darkgoldenrod,color:white;```
+    style H fill:darkgoldenrod,color:white;
+```
 
 ### 3. Boss Loot Table
 

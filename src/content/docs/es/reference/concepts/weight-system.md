@@ -33,7 +33,8 @@ flowchart TD;
 
     style G fill:darkgreen,color:white;
     style H fill:steelblue,color:white;
-    style I fill:darkgoldenrod,color:white;```
+    style I fill:darkgoldenrod,color:white;
+```
 
 ### Ejemplo de pesos anidados (Tablas de drops)
 
@@ -58,7 +59,8 @@ flowchart TD;
     style D fill:darkgreen,color:white;
     style E fill:steelblue,color:white;
     style F fill:darkgoldenrod,color:white;
-    style M fill:rebeccapurple,color:white;```
+    style M fill:rebeccapurple,color:white;
+```
 
 ## Sistemas que usan pesos
 

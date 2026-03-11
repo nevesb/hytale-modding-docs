@@ -31,7 +31,8 @@ flowchart TD;
 
     style A fill:darkgreen,color:white;
     style D fill:darkred,color:white;
-    style K fill:rebeccapurple,color:white;```
+    style K fill:rebeccapurple,color:white;
+```
 
 ### Resolucao de Receitas com Grupos
 
@@ -44,7 +45,8 @@ flowchart LR;
 
     style C fill:darkgreen,color:white;
     style D fill:darkgreen,color:white;
-    style E fill:darkred,color:white;```
+    style E fill:darkred,color:white;
+```
 
 ## Localizacao dos Arquivos
 

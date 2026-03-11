@@ -46,7 +46,8 @@ flowchart TD;
     style A fill:rebeccapurple,color:white;
     style B fill:steelblue,color:white;
     style H fill:darkred,color:white;
-    style E fill:darkgreen,color:white;```
+    style E fill:darkgreen,color:white;
+```
 
 ## Ubicación de archivos
 

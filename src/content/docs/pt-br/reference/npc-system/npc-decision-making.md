@@ -110,7 +110,8 @@ flowchart TD;
     style A fill:darkgreen,color:white;
     style D fill:darkred,color:white;
     style M fill:rebeccapurple,color:white;
-    style E fill:steelblue,color:white;```
+    style E fill:steelblue,color:white;
+```
 
 ### Como a Pontuacao de Utilidade Funciona
 
@@ -136,7 +137,8 @@ flowchart LR;
     I --> J;
     J -->|"0.855 > 0.315"| K[Flee wins!];
 
-    style K fill:darkred,color:white;```
+    style K fill:darkred,color:white;
+```
 
 ## Exemplos
 

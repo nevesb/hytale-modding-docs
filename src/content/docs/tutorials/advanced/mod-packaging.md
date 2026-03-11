@@ -122,7 +122,8 @@ flowchart LR;
     C -->|"Breaking change<br>schema update"| D[2.0.0];
 
     style A fill:darkgreen,color:white;
-    style D fill:darkred,color:white;```
+    style D fill:darkred,color:white;
+```
 
 - **PATCH** (1.0.0 → 1.0.1): Bug fixes, typo corrections, balance tweaks
 - **MINOR** (1.0.0 → 1.1.0): New content (NPCs, items, blocks) without breaking existing saves
@@ -180,7 +181,8 @@ flowchart TD;
     F -->|"Yes"| H["Last Loaded Wins<br>Log Warning"];
 
     style G fill:darkgreen,color:white;
-    style H fill:darkgoldenrod,color:white;```
+    style H fill:darkgoldenrod,color:white;
+```
 
 Mods are loaded in the order listed in `mods.json`. If two mods define the same asset ID, the last one loaded takes priority.
 

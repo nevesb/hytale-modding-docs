@@ -56,7 +56,8 @@ flowchart TD;
 
     style A fill:darkgreen,color:white;
     style Q fill:rebeccapurple,color:white;
-    style Z fill:darkred,color:white;```
+    style Z fill:darkred,color:white;
+```
 
 ### Suppression Zones
 
@@ -69,7 +70,8 @@ flowchart LR;
     D -->|"Yes"| E[Spawn Blocked];
 
     style C fill:darkgreen,color:white;
-    style E fill:darkred,color:white;```
+    style E fill:darkred,color:white;
+```
 
 ## Schema
 

@@ -36,7 +36,8 @@ flowchart TD;
 
     style A fill:darkred,color:white;
     style K fill:rebeccapurple,color:white;
-    style L fill:steelblue,color:white;```
+    style L fill:steelblue,color:white;
+```
 
 ### Action Set Transitions
 
@@ -49,7 +50,8 @@ flowchart LR;
 
     style A fill:darkgreen,color:white;
     style B fill:darkred,color:white;
-    style C fill:steelblue,color:white;```
+    style C fill:steelblue,color:white;
+```
 
 ## File Location
 

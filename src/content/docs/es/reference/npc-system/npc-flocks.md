@@ -36,7 +36,8 @@ flowchart TD;
     style A fill:darkgreen,color:white;
     style G fill:steelblue,color:white;
     style H fill:steelblue,color:white;
-    style I fill:steelblue,color:white;```
+    style I fill:steelblue,color:white;
+```
 
 ## Ubicación de archivos
 

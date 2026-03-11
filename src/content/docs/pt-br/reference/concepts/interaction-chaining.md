@@ -18,7 +18,8 @@ flowchart TD;
     D -->|"BaseDamage: Fire 10"| E[Chain Complete];
     style A fill:darkgreen,color:white;
     style X fill:darkred,color:white;
-    style E fill:steelblue,color:white;```
+    style E fill:steelblue,color:white;
+```
 
 ### Cadeia de Acerto de Projetil
 
@@ -27,7 +28,8 @@ flowchart LR;
     A[Projectile Hits Entity] --> B["DamageEntity<br>Fire: 15"];
     B --> C["RemoveEntity<br>Projectile destroyed"];
     style A fill:darkgoldenrod,color:white;
-    style C fill:darkred,color:white;```
+    style C fill:darkred,color:white;
+```
 
 ### Cadeia Complexa de Arma
 
@@ -43,7 +45,8 @@ flowchart TD;
     F --> G;
     G --> H[Reduce Durability];
     style A fill:darkgreen,color:white;
-    style X fill:darkred,color:white;```
+    style X fill:darkred,color:white;
+```
 
 ## Estrutura da Cadeia
 

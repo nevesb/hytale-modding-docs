@@ -18,7 +18,8 @@ flowchart TD;
     D -->|"BaseDamage: Fire 10"| E[Chain Complete];
     style A fill:darkgreen,color:white;
     style X fill:darkred,color:white;
-    style E fill:steelblue,color:white;```
+    style E fill:steelblue,color:white;
+```
 
 ### Cadena de impacto de proyectil
 
@@ -27,7 +28,8 @@ flowchart LR;
     A[Projectile Hits Entity] --> B["DamageEntity<br>Fire: 15"];
     B --> C["RemoveEntity<br>Projectile destroyed"];
     style A fill:darkgoldenrod,color:white;
-    style C fill:darkred,color:white;```
+    style C fill:darkred,color:white;
+```
 
 ### Cadena de arma compleja
 
@@ -43,7 +45,8 @@ flowchart TD;
     F --> G;
     G --> H[Reduce Durability];
     style A fill:darkgreen,color:white;
-    style X fill:darkred,color:white;```
+    style X fill:darkred,color:white;
+```
 
 ## Estructura de la cadena
 
