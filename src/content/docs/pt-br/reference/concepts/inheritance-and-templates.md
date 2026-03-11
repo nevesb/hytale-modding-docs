@@ -21,11 +21,11 @@ flowchart TD;
     H --> J[Flee when attacked];
     H --> K[Sensing range: 10];
     H --> L[Sound reactions];
-    style A fill:#4a3d8f,color:#fff;
-    style E fill:#2d5a27,color:#fff;
-    style F fill:#2d5a27,color:#fff;
-    style G fill:#2d5a27,color:#fff;
-    style H fill:#2d6a8f,color:#fff
+    style A fill:rgb(74,61,143),color:white;
+    style E fill:rgb(45,90,39),color:white;
+    style F fill:rgb(45,90,39),color:white;
+    style G fill:rgb(45,90,39),color:white;
+    style H fill:rgb(45,106,143),color:white
 ```
 
 ### Ordem de Resolucao
@@ -36,8 +36,8 @@ flowchart LR;
     B -->|"2. Load Base"| C["Full Template<br>All fields defined"];
     C -->|"3. Apply Modify"| D["Override<br>Appearance, Stats,<br>Drops, Speed"];
     D -->|"4. Result"| E["Final NPC Definition<br>Template + Overrides"];
-    style A fill:#8b6500,color:#fff;
-    style E fill:#2d5a27,color:#fff
+    style A fill:rgb(139,101,0),color:white;
+    style E fill:rgb(45,90,39),color:white
 ```
 
 ## Mecanismos de Heranca
