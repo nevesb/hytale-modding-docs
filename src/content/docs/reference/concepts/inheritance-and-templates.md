@@ -21,11 +21,11 @@ flowchart TD;
     H --> J[Flee when attacked];
     H --> K[Sensing range: 10];
     H --> L[Sound reactions];
-    style A fill:rgb(74,61,143),color:white;
-    style E fill:rgb(45,90,39),color:white;
-    style F fill:rgb(45,90,39),color:white;
-    style G fill:rgb(45,90,39),color:white;
-    style H fill:rgb(45,106,143),color:white
+    style A fill:rebeccapurple,color:white;
+    style E fill:darkgreen,color:white;
+    style F fill:darkgreen,color:white;
+    style G fill:darkgreen,color:white;
+    style H fill:steelblue,color:white
 ```
 
 ### Resolution Order
@@ -36,8 +36,8 @@ flowchart LR;
     B -->|"2. Load Base"| C["Full Template<br>All fields defined"];
     C -->|"3. Apply Modify"| D["Override<br>Appearance, Stats,<br>Drops, Speed"];
     D -->|"4. Result"| E["Final NPC Definition<br>Template + Overrides"];
-    style A fill:rgb(139,101,0),color:white;
-    style E fill:rgb(45,90,39),color:white
+    style A fill:darkgoldenrod,color:white;
+    style E fill:darkgreen,color:white
 ```
 
 ## Inheritance Mechanisms
