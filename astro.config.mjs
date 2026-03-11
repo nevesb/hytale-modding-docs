@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
 	site: 'https://nevesb.github.io',
@@ -10,6 +11,39 @@ export default defineConfig({
 			title: 'Hytale Modding Manual',
 			defaultLocale: 'root',
 			head: [
+				{
+					tag: 'meta',
+					attrs: {
+						name: 'description',
+						content: 'Hytale modding documentation — JSON schemas, NPCs, items, crafting, tutorials. Server modding reference in English, Spanish, Portuguese.',
+					},
+				},
+				{
+					tag: 'meta',
+					attrs: {
+						name: 'robots',
+						content: 'index, follow',
+					},
+				},
+				{
+					tag: 'script',
+					attrs: { type: 'application/ld+json' },
+					content: JSON.stringify({
+						'@context': 'https://schema.org',
+						'@type': 'WebSite',
+						name: 'Hytale Modding Manual',
+						url: 'https://nevesb.github.io/hytale-modding-docs/',
+						description: 'Comprehensive Hytale modding documentation: JSON schemas, NPC system, items, crafting, world config, and step-by-step tutorials. Available in English, Spanish, and Portuguese.',
+						potentialAction: {
+							'@type': 'SearchAction',
+							target: {
+								'@type': 'EntryPoint',
+								urlTemplate: 'https://nevesb.github.io/hytale-modding-docs/?q={search_term_string}',
+							},
+							'query-input': 'required name=search_term_string',
+						},
+					}),
+				},
 				{
 					tag: 'script',
 					attrs: { type: 'module' },
@@ -141,5 +175,6 @@ export default defineConfig({
 				},
 			],
 		}),
+		sitemap(),
 	],
 });
