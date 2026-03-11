@@ -25,8 +25,7 @@ flowchart TD;
     style E fill:darkgreen,color:white;
     style F fill:darkgreen,color:white;
     style G fill:darkgreen,color:white;
-    style H fill:steelblue,color:white
-```
+    style H fill:steelblue,color:white;```
 
 ### Resolution Order
 
@@ -37,8 +36,7 @@ flowchart LR;
     C -->|"3. Apply Modify"| D["Override<br>Appearance, Stats,<br>Drops, Speed"];
     D -->|"4. Result"| E["Final NPC Definition<br>Template + Overrides"];
     style A fill:darkgoldenrod,color:white;
-    style E fill:darkgreen,color:white
-```
+    style E fill:darkgreen,color:white;```
 
 ## Inheritance Mechanisms
 

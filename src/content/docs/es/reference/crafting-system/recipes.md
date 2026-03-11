@@ -11,42 +11,40 @@ Las recetas de crafteo definen la transformación de objetos o recursos de entra
 
 ```mermaid
 flowchart TD;
-    A["Player Opens<br>Crafting Bench"] --> B[Show Available Recipes]
-    B --> C["Has Required<br>Materials?"]
-    C -->|"No"| D[Recipe Greyed Out]
-    C -->|"Yes"| E[Player Clicks Craft]
+    A["Player Opens<br>Crafting Bench"] --> B[Show Available Recipes];
+    B --> C["Has Required<br>Materials?"];
+    C -->|"No"| D[Recipe Greyed Out];
+    C -->|"Yes"| E[Player Clicks Craft];
 
-    E --> F["Bench Matches<br>Recipe Requirement?"]
-    F -->|"No"| D
-    F -->|"Yes"| G[Consume Inputs]
+    E --> F["Bench Matches<br>Recipe Requirement?"];
+    F -->|"No"| D;
+    F -->|"Yes"| G[Consume Inputs];
 
-    G --> H["ProcessingTime > 0?"]
-    H -->|"Yes"| I["Wait Timer<br>e.g. 5 seconds"]
-    H -->|"No"| J[Instant Craft]
+    G --> H["ProcessingTime > 0?"];
+    H -->|"Yes"| I["Wait Timer<br>e.g. 5 seconds"];
+    H -->|"No"| J[Instant Craft];
 
-    I --> K[Produce Output Items]
-    J --> K
+    I --> K[Produce Output Items];
+    J --> K;
 
-    K --> L["Add to Inventory<br>or Drop"]
+    K --> L["Add to Inventory<br>or Drop"];
 
-    style A fill:darkgreen,color:white
-    style D fill:darkred,color:white
-    style K fill:rebeccapurple,color:white
-```
+    style A fill:darkgreen,color:white;
+    style D fill:darkred,color:white;
+    style K fill:rebeccapurple,color:white;```
 
 ### Resolución de Recetas con Grupos
 
 ```mermaid
 flowchart LR;
-    A["Recipe Input:<br>Group 'AnyWood' x4"] --> B{Player Has?}
-    B -->|"Oak Wood x4"| C[Valid]
-    B -->|"Birch Wood x2<br>+ Pine Wood x2"| D["Valid<br>Mixed group items"]
-    B -->|"Stone x4"| E["Invalid<br>Not in group"]
+    A["Recipe Input:<br>Group 'AnyWood' x4"] --> B{Player Has?};
+    B -->|"Oak Wood x4"| C[Valid];
+    B -->|"Birch Wood x2<br>+ Pine Wood x2"| D["Valid<br>Mixed group items"];
+    B -->|"Stone x4"| E["Invalid<br>Not in group"];
 
-    style C fill:darkgreen,color:white
-    style D fill:darkgreen,color:white
-    style E fill:darkred,color:white
-```
+    style C fill:darkgreen,color:white;
+    style D fill:darkgreen,color:white;
+    style E fill:darkred,color:white;```
 
 ## Ubicación del Archivo
 

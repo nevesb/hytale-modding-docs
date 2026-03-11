@@ -117,13 +117,12 @@ Follow semantic versioning:
 
 ```mermaid
 flowchart LR;
-    A[1.0.0] -->|"Bug fix"| B[1.0.1]
-    B -->|"New feature<br>backward compatible"| C[1.1.0]
-    C -->|"Breaking change<br>schema update"| D[2.0.0]
+    A[1.0.0] -->|"Bug fix"| B[1.0.1];
+    B -->|"New feature<br>backward compatible"| C[1.1.0];
+    C -->|"Breaking change<br>schema update"| D[2.0.0];
 
-    style A fill:darkgreen,color:white
-    style D fill:darkred,color:white
-```
+    style A fill:darkgreen,color:white;
+    style D fill:darkred,color:white;```
 
 - **PATCH** (1.0.0 → 1.0.1): Bug fixes, typo corrections, balance tweaks
 - **MINOR** (1.0.0 → 1.1.0): New content (NPCs, items, blocks) without breaking existing saves
@@ -172,17 +171,16 @@ hytale-server/
 
 ```mermaid
 flowchart TD;
-    A[Server Starts] --> B[Read mods.json]
-    B --> C[Load Base Game Assets]
-    C --> D["Load Mod 1<br>Resolve Dependencies"]
-    D --> E["Load Mod 2<br>Resolve Dependencies"]
-    E --> F{Conflicts?}
-    F -->|"No"| G[All Mods Active]
-    F -->|"Yes"| H["Last Loaded Wins<br>Log Warning"]
+    A[Server Starts] --> B[Read mods.json];
+    B --> C[Load Base Game Assets];
+    C --> D["Load Mod 1<br>Resolve Dependencies"];
+    D --> E["Load Mod 2<br>Resolve Dependencies"];
+    E --> F{Conflicts?};
+    F -->|"No"| G[All Mods Active];
+    F -->|"Yes"| H["Last Loaded Wins<br>Log Warning"];
 
-    style G fill:darkgreen,color:white
-    style H fill:darkgoldenrod,color:white
-```
+    style G fill:darkgreen,color:white;
+    style H fill:darkgoldenrod,color:white;```
 
 Mods are loaded in the order listed in `mods.json`. If two mods define the same asset ID, the last one loaded takes priority.
 

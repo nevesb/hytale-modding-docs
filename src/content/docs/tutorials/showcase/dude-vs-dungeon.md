@@ -57,29 +57,28 @@ dude_vs_dungeon/
 
 ```mermaid
 flowchart TD;
-    A["Player Finds<br/>Dungeon Portal"] --> B[Enter Instance]
-    B --> C["Dungeon Instance<br/>Loads Prefab]
+    A["Player Finds<br/>Dungeon Portal"] --> B[Enter Instance];
+    B --> C["Dungeon Instance<br/>Loads Prefab];
 
-    C --> D["Marker Spawns<br/>Activate"]
-    D --> E[DungeonMinion x3]
-    D --> F[DungeonGuard x2]
-    D --> G[DungeonBoss x1]
+    C --> D["Marker Spawns<br/>Activate"];
+    D --> E[DungeonMinion x3];
+    D --> F[DungeonGuard x2];
+    D --> G[DungeonBoss x1];
 
-    E -->|"Kill"| H["Drop Table:<br/>Common Loot"]
-    F -->|"Kill"| I["Drop Table:<br/>Uncommon Loot"]
-    G -->|"Kill"| J["Drop Table:<br/>Boss Loot"]
+    E -->|"Kill"| H["Drop Table:<br/>Common Loot"];
+    F -->|"Kill"| I["Drop Table:<br/>Uncommon Loot"];
+    G -->|"Kill"| J["Drop Table:<br/>Boss Loot"];
 
-    H --> K["Materials for<br/>DungeonBlade Recipe"]
-    I --> K
-    J --> L["Unique DungeonArmor<br/>Guaranteed Drop"]
+    H --> K["Materials for<br/>DungeonBlade Recipe"];
+    I --> K;
+    J --> L["Unique DungeonArmor<br/>Guaranteed Drop"];
 
-    K --> M["Player Crafts<br/>DungeonBlade at Bench"]
+    K --> M["Player Crafts<br/>DungeonBlade at Bench"];
 
-    style A fill:darkgreen,color:white
-    style G fill:darkred,color:white
-    style L fill:rebeccapurple,color:white
-    style M fill:steelblue,color:white
-```
+    style A fill:darkgreen,color:white;
+    style G fill:darkred,color:white;
+    style L fill:rebeccapurple,color:white;
+    style M fill:steelblue,color:white;```
 
 ## Key Files Explained
 
@@ -150,25 +149,24 @@ The boss has multiple combat phases driven by health thresholds:
 
 ```mermaid
 flowchart TD;
-    A["Boss Spawns<br/>HP: 500/500"] --> B[Default ActionSet]
-    B --> C{Player in Range?}
-    C -->|"Yes, < 5 blocks"| D["SlashAttack<br/>High score"]
-    C -->|"No"| E[Chase Player]
+    A["Boss Spawns<br/>HP: 500/500"] --> B[Default ActionSet];
+    B --> C{Player in Range?};
+    C -->|"Yes, < 5 blocks"| D["SlashAttack<br/>High score"];
+    C -->|"No"| E[Chase Player];
 
-    D --> F{"HP < 30%?"}
-    F -->|"No"| C
-    F -->|"Yes"| G["Switch to<br/>Enraged ActionSet"]
+    D --> F{"HP < 30%?"};
+    F -->|"No"| C;
+    F -->|"Yes"| G["Switch to<br/>Enraged ActionSet"];
 
-    G --> H[Enrage Buff Active]
-    H --> I["Heavy attacks only<br/>Faster evaluation"]
-    I --> J{Player Dead?}
-    J -->|"No"| I
-    J -->|"Yes"| K[Return to Idle]
+    G --> H[Enrage Buff Active];
+    H --> I["Heavy attacks only<br/>Faster evaluation"];
+    I --> J{Player Dead?};
+    J -->|"No"| I;
+    J -->|"Yes"| K[Return to Idle];
 
-    style A fill:darkgreen,color:white
-    style G fill:darkred,color:white
-    style H fill:darkgoldenrod,color:white
-```
+    style A fill:darkgreen,color:white;
+    style G fill:darkred,color:white;
+    style H fill:darkgoldenrod,color:white;```
 
 ### 3. Boss Loot Table
 

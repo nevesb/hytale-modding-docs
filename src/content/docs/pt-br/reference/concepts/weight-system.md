@@ -18,49 +18,47 @@ Dados itens com pesos `[70, 25, 5]`, as probabilidades sao:
 
 ```mermaid
 flowchart TD;
-    A[Weight Pool] --> B["Item A<br>Weight: 70"]
-    A --> C["Item B<br>Weight: 25"]
-    A --> D["Item C<br>Weight: 5"]
+    A[Weight Pool] --> B["Item A<br>Weight: 70"];
+    A --> C["Item B<br>Weight: 25"];
+    A --> D["Item C<br>Weight: 5"];
 
-    B --> E[Total = 100]
-    C --> E
-    D --> E
+    B --> E[Total = 100];
+    C --> E;
+    D --> E;
 
-    E --> F["Roll Random<br>0-100"]
-    F -->|"0-70"| G["Item A Selected<br>70% chance"]
-    F -->|"71-95"| H["Item B Selected<br>25% chance"]
-    F -->|"96-100"| I["Item C Selected<br>5% chance"]
+    E --> F["Roll Random<br>0-100"];
+    F -->|"0-70"| G["Item A Selected<br>70% chance"];
+    F -->|"71-95"| H["Item B Selected<br>25% chance"];
+    F -->|"96-100"| I["Item C Selected<br>5% chance"];
 
-    style G fill:darkgreen,color:white
-    style H fill:steelblue,color:white
-    style I fill:darkgoldenrod,color:white
-```
+    style G fill:darkgreen,color:white;
+    style H fill:steelblue,color:white;
+    style I fill:darkgoldenrod,color:white;```
 
 ### Exemplo de Peso Aninhado (Tabelas de Drop)
 
 ```mermaid
 flowchart TD;
-    A[Monster Dies] --> B[Drop Table]
-    B --> C{Roll Weight Pool}
-    C -->|"Weight: 60"| D[Common Drops]
-    C -->|"Weight: 30"| E[Uncommon Drops]
-    C -->|"Weight: 10"| F[Rare Drops]
+    A[Monster Dies] --> B[Drop Table];
+    B --> C{Roll Weight Pool};
+    C -->|"Weight: 60"| D[Common Drops];
+    C -->|"Weight: 30"| E[Uncommon Drops];
+    C -->|"Weight: 10"| F[Rare Drops];
 
-    D --> G{Nested Roll}
-    G -->|"Weight: 50"| H[5x Stone]
-    G -->|"Weight: 50"| I[3x Wood]
+    D --> G{Nested Roll};
+    G -->|"Weight: 50"| H[5x Stone];
+    G -->|"Weight: 50"| I[3x Wood];
 
-    E --> J{Nested Roll}
-    J -->|"Weight: 70"| K[1x Iron Ingot]
-    J -->|"Weight: 30"| L[1x Gold Nugget]
+    E --> J{Nested Roll};
+    J -->|"Weight: 70"| K[1x Iron Ingot];
+    J -->|"Weight: 30"| L[1x Gold Nugget];
 
-    F --> M[1x Diamond]
+    F --> M[1x Diamond];
 
-    style D fill:darkgreen,color:white
-    style E fill:steelblue,color:white
-    style F fill:darkgoldenrod,color:white
-    style M fill:rebeccapurple,color:white
-```
+    style D fill:darkgreen,color:white;
+    style E fill:steelblue,color:white;
+    style F fill:darkgoldenrod,color:white;
+    style M fill:rebeccapurple,color:white;```
 
 ## Sistemas que Usam Pesos
 
