@@ -12,10 +12,10 @@ Hytale builds complex gameplay behaviors by chaining simple interactions togethe
 ```mermaid
 flowchart TD
     A[Player Uses Item] --> B{Condition Check}
-    B -->|Game Mode = Adventure| C[Apply Effect]
-    B -->|Wrong Game Mode| X[Chain Stops]
-    C -->|EffectId: Burning| D[Deal Damage]
-    D -->|BaseDamage: Fire 10| E[Chain Complete]
+    B -->|"Game Mode = Adventure"| C[Apply Effect]
+    B -->|"Wrong Game Mode"| X[Chain Stops]
+    C -->|"EffectId: Burning"| D[Deal Damage]
+    D -->|"BaseDamage: Fire 10"| E[Chain Complete]
 
     style A fill:#2d5a27,color:#fff
     style X fill:#8b2500,color:#fff
@@ -26,8 +26,8 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    A[Projectile Hits Entity] --> B[DamageEntity\nFire: 15]
-    B --> C[RemoveEntity\nProjectile destroyed]
+    A[Projectile Hits Entity] --> B["DamageEntity<br/>Fire: 15"]
+    B --> C["RemoveEntity<br/>Projectile destroyed"]
 
     style A fill:#8b6500,color:#fff
     style C fill:#8b2500,color:#fff
@@ -38,12 +38,12 @@ flowchart LR
 ```mermaid
 flowchart TD
     A[Player Swings Sword] --> B{Check Durability}
-    B -->|Has durability| C[Damage Target]
-    B -->|Broken| X[Play Break Sound]
+    B -->|"Has durability"| C[Damage Target]
+    B -->|"Broken"| X[Play Break Sound]
     C --> D[Apply Knockback]
     D --> E{Critical Hit?}
-    E -->|Yes| F[Apply Stun Effect]
-    E -->|No| G[Play Hit Sound]
+    E -->|"Yes"| F[Apply Stun Effect]
+    E -->|"No"| G[Play Hit Sound]
     F --> G
     G --> H[Reduce Durability]
 

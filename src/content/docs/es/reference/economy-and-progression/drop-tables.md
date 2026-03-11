@@ -14,17 +14,17 @@ flowchart TD
     A[NPC Dies / Block Breaks] --> B[Lookup Drop Table]
     B --> C{Container Type?}
 
-    C -->|Multiple| D[Evaluate ALL Children]
-    C -->|Choice| E[Pick ONE by Weight]
-    C -->|Single| F[Always Drop This Item]
+    C -->|"Multiple"| D[Evaluate ALL Children]
+    C -->|"Choice"| E[Pick ONE by Weight]
+    C -->|"Single"| F[Always Drop This Item]
 
-    D --> G[Child 1: Guaranteed\nSingle → 3x Bone]
-    D --> H[Child 2: Random Loot\nChoice → Weighted Pool]
+    D --> G["Child 1: Guaranteed<br/>Single → 3x Bone"]
+    D --> H["Child 2: Random Loot<br/>Choice → Weighted Pool"]
 
     H --> I{Roll Weights}
-    I -->|Weight: 60| J[Common:\n5x Stone]
-    I -->|Weight: 30| K[Uncommon:\n1x Iron]
-    I -->|Weight: 10| L[Rare:\n1x Diamond]
+    I -->|"Weight: 60"| J["Common:<br/>5x Stone"]
+    I -->|"Weight: 30"| K["Uncommon:<br/>1x Iron"]
+    I -->|"Weight: 10"| L["Rare:<br/>1x Diamond"]
 
     G --> M[Final Drops]
     J --> M
@@ -40,15 +40,15 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[Root: Multiple] --> B[Single\n1x XP Orb\nGuaranteed]
-    A --> C[Choice\nWeighted random]
-    A --> D[Choice\nWeighted random]
+    A[Root: Multiple] --> B["Single<br/>1x XP Orb<br/>Guaranteed"]
+    A --> C["Choice<br/>Weighted random"]
+    A --> D["Choice<br/>Weighted random"]
 
-    C -->|70%| E[Nothing]
-    C -->|30%| F[1x Feather]
+    C -->|"70%"| E[Nothing]
+    C -->|"30%"| F[1x Feather]
 
-    D -->|90%| G[Nothing]
-    D -->|10%| H[1x Rare Egg]
+    D -->|"90%"| G[Nothing]
+    D -->|"10%"| H[1x Rare Egg]
 
     style B fill:#2d5a27,color:#fff
     style F fill:#2d6a8f,color:#fff

@@ -11,23 +11,23 @@ Crafting recipes define the transformation of input items or resources into outp
 
 ```mermaid
 flowchart TD
-    A[Player Opens\nCrafting Bench] --> B[Show Available Recipes]
-    B --> C{Has Required\nMaterials?}
-    C -->|No| D[Recipe Greyed Out]
-    C -->|Yes| E[Player Clicks Craft]
+    A["Player Opens<br/>Crafting Bench"] --> B[Show Available Recipes]
+    B --> C["Has Required<br/>Materials?"]
+    C -->|"No"| D[Recipe Greyed Out]
+    C -->|"Yes"| E[Player Clicks Craft]
 
-    E --> F{Bench Matches\nRecipe Requirement?}
-    F -->|No| D
-    F -->|Yes| G[Consume Inputs]
+    E --> F["Bench Matches<br/>Recipe Requirement?"]
+    F -->|"No"| D
+    F -->|"Yes"| G[Consume Inputs]
 
-    G --> H{ProcessingTime > 0?}
-    H -->|Yes| I[Wait Timer\ne.g. 5 seconds]
-    H -->|No| J[Instant Craft]
+    G --> H["ProcessingTime > 0?"]
+    H -->|"Yes"| I["Wait Timer<br/>e.g. 5 seconds"]
+    H -->|"No"| J[Instant Craft]
 
     I --> K[Produce Output Items]
     J --> K
 
-    K --> L[Add to Inventory\nor Drop]
+    K --> L["Add to Inventory<br/>or Drop"]
 
     style A fill:#2d5a27,color:#fff
     style D fill:#8b2500,color:#fff
@@ -38,10 +38,10 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    A[Recipe Input:\nGroup 'AnyWood' x4] --> B{Player Has?}
-    B -->|Oak Wood x4| C[Valid]
-    B -->|Birch Wood x2\n+ Pine Wood x2| D[Valid\nMixed group items]
-    B -->|Stone x4| E[Invalid\nNot in group]
+    A["Recipe Input:<br/>Group 'AnyWood' x4"] --> B{Player Has?}
+    B -->|"Oak Wood x4"| C[Valid]
+    B -->|"Birch Wood x2<br/>+ Pine Wood x2"| D["Valid<br/>Mixed group items"]
+    B -->|"Stone x4"| E["Invalid<br/>Not in group"]
 
     style C fill:#2d5a27,color:#fff
     style D fill:#2d5a27,color:#fff

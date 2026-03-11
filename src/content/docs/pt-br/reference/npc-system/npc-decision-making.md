@@ -74,38 +74,38 @@ Uma `Curve` pode ser um atalho de string nomeada ou um objeto inline:
 ```mermaid
 flowchart TD
     A[NPC Idle] --> B{Scan for Threats}
-    B -->|No threat| C{Check Needs}
-    B -->|Threat detected| D[Evaluate Combat Actions]
+    B -->|"No threat"| C{Check Needs}
+    B -->|"Threat detected"| D[Evaluate Combat Actions]
 
-    C -->|Health low| E[Seek Healing]
-    C -->|Hungry| F[Seek Food]
-    C -->|All good| A
+    C -->|"Health low"| E[Seek Healing]
+    C -->|"Hungry"| F[Seek Food]
+    C -->|"All good"| A
 
     D --> G[Score Each Action]
-    G --> H[OwnStatPercent\nHealth check]
-    G --> I[TargetDistance\nRange check]
-    G --> J[TimeSinceLastUsed\nCooldown check]
-    G --> K[Randomiser\nNoise factor]
+    G --> H["OwnStatPercent<br/>Health check"]
+    G --> I["TargetDistance<br/>Range check"]
+    G --> J["TimeSinceLastUsed<br/>Cooldown check"]
+    G --> K["Randomiser<br/>Noise factor"]
 
     H --> L[Multiply Scores]
     I --> L
     J --> L
     K --> L
 
-    L --> M{Pick Highest\nUtility Score}
-    M -->|Melee wins| N[Move to Target → Attack]
-    M -->|Ranged wins| O[Keep Distance → Shoot]
-    M -->|Flee wins| P[Run Away]
-    M -->|Heal wins| E
+    L --> M["Pick Highest<br/>Utility Score"]
+    M -->|"Melee wins"| N[Move to Target → Attack]
+    M -->|"Ranged wins"| O[Keep Distance → Shoot]
+    M -->|"Flee wins"| P[Run Away]
+    M -->|"Heal wins"| E
 
     N --> Q{Target Dead?}
     O --> Q
-    Q -->|Yes| A
-    Q -->|No| D
+    Q -->|"Yes"| A
+    Q -->|"No"| D
 
     P --> R{Safe Distance?}
-    R -->|Yes| A
-    R -->|No| P
+    R -->|"Yes"| A
+    R -->|"No"| P
 
     style A fill:#2d5a27,color:#fff
     style D fill:#8b2500,color:#fff
@@ -119,23 +119,23 @@ Cada acao disponivel tem uma lista de `Conditions`. O NPC avalia cada condicao p
 
 ```mermaid
 flowchart LR
-    A[Action: Melee Attack] --> B[Condition 1\nTargetDistance\nScore: 0.9]
-    A --> C[Condition 2\nOwnHealth\nScore: 0.7]
-    A --> D[Condition 3\nTimeSinceUsed\nScore: 0.5]
+    A[Action: Melee Attack] --> B["Condition 1<br/>TargetDistance<br/>Score: 0.9"]
+    A --> C["Condition 2<br/>OwnHealth<br/>Score: 0.7"]
+    A --> D["Condition 3<br/>TimeSinceUsed<br/>Score: 0.5"]
 
-    B --> E[0.9 × 0.7 × 0.5\n= 0.315]
+    B --> E["0.9 × 0.7 × 0.5<br/>= 0.315"]
     C --> E
     D --> E
 
-    F[Action: Flee] --> G[Condition 1\nOwnHealth\nScore: 0.9]
-    F --> H[Condition 2\nRandomiser\nScore: 0.95]
+    F[Action: Flee] --> G["Condition 1<br/>OwnHealth<br/>Score: 0.9"]
+    F --> H["Condition 2<br/>Randomiser<br/>Score: 0.95"]
 
-    G --> I[0.9 × 0.95\n= 0.855]
+    G --> I["0.9 × 0.95<br/>= 0.855"]
     H --> I
 
     E --> J{Compare}
     I --> J
-    J -->|0.855 > 0.315| K[Flee wins!]
+    J -->|"0.855 > 0.315"| K[Flee wins!]
 
     style K fill:#8b2500,color:#fff
 ```

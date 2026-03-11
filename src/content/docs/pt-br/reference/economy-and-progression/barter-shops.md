@@ -11,28 +11,28 @@ As lojas de troca definem o inventário de NPCs mercadores: o que vendem, o que 
 
 ```mermaid
 flowchart TD
-    A[Player Interacts\nwith Merchant NPC] --> B[Load Barter Shop]
+    A["Player Interacts<br/>with Merchant NPC"] --> B[Load Barter Shop]
     B --> C[Display Trade Slots]
 
-    C --> D[Fixed Slots\nAlways same trades]
-    C --> E[Pool Slots\nRandomly selected]
+    C --> D["Fixed Slots<br/>Always same trades"]
+    C --> E["Pool Slots<br/>Randomly selected"]
 
-    E --> F{Shop Refresh\nTime Reached?}
-    F -->|Yes| G[Roll New Trades\nfrom Weighted Pool]
-    F -->|No| H[Keep Current Trades]
+    E --> F["Shop Refresh<br/>Time Reached?"]
+    F -->|"Yes"| G["Roll New Trades<br/>from Weighted Pool"]
+    F -->|"No"| H[Keep Current Trades]
 
     D --> I[Player Selects Trade]
     G --> I
     H --> I
 
-    I --> J{Has Payment\nItems?}
-    J -->|No| K[Trade Unavailable]
-    J -->|Yes| L{Stock > 0?}
-    L -->|No| M[Out of Stock]
-    L -->|Yes| N[Execute Trade]
+    I --> J["Has Payment<br/>Items?"]
+    J -->|"No"| K[Trade Unavailable]
+    J -->|"Yes"| L{Stock > 0?}
+    L -->|"No"| M[Out of Stock]
+    L -->|"Yes"| N[Execute Trade]
 
-    N --> O[Remove Payment\nfrom Player]
-    O --> P[Give Output\nto Player]
+    N --> O["Remove Payment<br/>from Player"]
+    O --> P["Give Output<br/>to Player"]
     P --> Q[Decrease Stock]
 
     style A fill:#2d5a27,color:#fff

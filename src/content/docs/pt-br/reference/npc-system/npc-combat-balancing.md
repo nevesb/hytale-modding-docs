@@ -12,23 +12,23 @@ Arquivos do Combat Action Evaluator (CAE) configuram o sistema de IA por utilida
 ```mermaid
 flowchart TD
     A[NPC Enters Combat] --> B[Load Action Sets]
-    B --> C[Active Action Set\ne.g. Default Combat]
+    B --> C["Active Action Set<br/>e.g. Default Combat"]
 
-    C --> D[Evaluator Tick\nevery N frames]
+    C --> D["Evaluator Tick<br/>every N frames"]
     D --> E[Score All Available Actions]
 
-    E --> F[Action: Melee Attack\nConditions → Score: 0.7]
-    E --> G[Action: Ranged Attack\nConditions → Score: 0.3]
-    E --> H[Action: Shield Block\nConditions → Score: 0.85]
-    E --> I[Action: Flee\nConditions → Score: 0.2]
+    E --> F["Action: Melee Attack<br/>Conditions → Score: 0.7"]
+    E --> G["Action: Ranged Attack<br/>Conditions → Score: 0.3"]
+    E --> H["Action: Shield Block<br/>Conditions → Score: 0.85"]
+    E --> I["Action: Flee<br/>Conditions → Score: 0.2"]
 
-    F --> J{Highest Score\nAbove Threshold?}
+    F --> J["Highest Score<br/>Above Threshold?"]
     G --> J
     H --> J
     I --> J
 
-    J -->|Shield Block: 0.85| K[Execute Shield Block]
-    J -->|All below threshold| L[Use Basic Attack\nfrom ActionSet]
+    J -->|"Shield Block: 0.85"| K[Execute Shield Block]
+    J -->|"All below threshold"| L["Use Basic Attack<br/>from ActionSet"]
 
     K --> M{Action Complete}
     L --> M
@@ -43,10 +43,10 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    A[Default Set\nMelee + Block] -->|HP < 30%| B[Enraged Set\nAggressive + No Block]
-    A -->|Target far away| C[Ranged Set\nProjectile + Retreat]
-    C -->|Target close| A
-    B -->|Healing received| A
+    A["Default Set<br/>Melee + Block"] -->|"HP < 30%"| B["Enraged Set<br/>Aggressive + No Block"]
+    A -->|"Target far away"| C["Ranged Set<br/>Projectile + Retreat"]
+    C -->|"Target close"| A
+    B -->|"Healing received"| A
 
     style A fill:#2d5a27,color:#fff
     style B fill:#8b2500,color:#fff

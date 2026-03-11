@@ -117,9 +117,9 @@ Follow semantic versioning:
 
 ```mermaid
 flowchart LR
-    A[1.0.0] -->|Bug fix| B[1.0.1]
-    B -->|New feature\nbackward compatible| C[1.1.0]
-    C -->|Breaking change\nschema update| D[2.0.0]
+    A[1.0.0] -->|"Bug fix"| B[1.0.1]
+    B -->|"New feature<br/>backward compatible"| C[1.1.0]
+    C -->|"Breaking change<br/>schema update"| D[2.0.0]
 
     style A fill:#2d5a27,color:#fff
     style D fill:#8b2500,color:#fff
@@ -174,11 +174,11 @@ hytale-server/
 flowchart TD
     A[Server Starts] --> B[Read mods.json]
     B --> C[Load Base Game Assets]
-    C --> D[Load Mod 1\nResolve Dependencies]
-    D --> E[Load Mod 2\nResolve Dependencies]
+    C --> D["Load Mod 1<br/>Resolve Dependencies"]
+    D --> E["Load Mod 2<br/>Resolve Dependencies"]
     E --> F{Conflicts?}
-    F -->|No| G[All Mods Active]
-    F -->|Yes| H[Last Loaded Wins\nLog Warning]
+    F -->|"No"| G[All Mods Active]
+    F -->|"Yes"| H["Last Loaded Wins<br/>Log Warning"]
 
     style G fill:#2d5a27,color:#fff
     style H fill:#8b6500,color:#fff

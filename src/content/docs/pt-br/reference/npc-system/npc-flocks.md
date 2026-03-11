@@ -13,25 +13,25 @@ Arquivos de bando definem o comportamento de spawn em grupo — quantos NPCs apa
 flowchart TD
     A[Spawn Event Triggers] --> B{Flock Type?}
 
-    B -->|Weighted| C[Roll Weighted Sizes]
-    B -->|Range / Size array| D[Pick Random\nin Range]
+    B -->|"Weighted"| C[Roll Weighted Sizes]
+    B -->|"Range / Size array"| D["Pick Random<br/>in Range"]
 
-    C --> E[MinSize = 3\nWeights: 60, 25, 15]
+    C --> E["MinSize = 3<br/>Weights: 60, 25, 15"]
     E --> F{Roll}
-    F -->|60%| G[Spawn 3 NPCs]
-    F -->|25%| H[Spawn 4 NPCs]
-    F -->|15%| I[Spawn 5 NPCs]
+    F -->|"60%"| G[Spawn 3 NPCs]
+    F -->|"25%"| H[Spawn 4 NPCs]
+    F -->|"15%"| I[Spawn 5 NPCs]
 
     D --> J[Size: 2, 3]
     J --> K[Spawn 2-3 NPCs]
 
-    G --> L{MaxGrowSize\nDefined?}
+    G --> L["MaxGrowSize<br/>Defined?"]
     H --> L
     I --> L
     K --> L
 
-    L -->|Yes| M[Group can grow\nup to MaxGrowSize\nover time]
-    L -->|No| N[Group stays\nat spawned size]
+    L -->|"Yes"| M["Group can grow<br/>up to MaxGrowSize<br/>over time"]
+    L -->|"No"| N["Group stays<br/>at spawned size"]
 
     style A fill:#2d5a27,color:#fff
     style G fill:#2d6a8f,color:#fff

@@ -11,37 +11,37 @@ An NPC Role file defines everything about a specific NPC: its visual appearance,
 
 ```mermaid
 flowchart TD
-    A[Template File\ne.g. Template_Beasts_Passive] --> B[Role File\ne.g. Chicken.json]
-    B -->|Reference + Modify| C[Resolved NPC Definition]
+    A["Template File<br/>e.g. Template_Beasts_Passive"] --> B["Role File<br/>e.g. Chicken.json"]
+    B -->|"Reference + Modify"| C[Resolved NPC Definition]
 
     C --> D[Spawn into World]
     D --> E[Idle State]
 
     E --> F{Detect Player?}
-    F -->|Passive NPC| G[Continue Idle\nor Wander]
-    F -->|Hostile NPC| H[Enter Combat]
-    F -->|Neutral NPC| I{Was Attacked?}
+    F -->|"Passive NPC"| G["Continue Idle<br/>or Wander"]
+    F -->|"Hostile NPC"| H[Enter Combat]
+    F -->|"Neutral NPC"| I{Was Attacked?}
 
-    I -->|No| G
-    I -->|Yes| H
+    I -->|"No"| G
+    I -->|"Yes"| H
 
-    H --> J[Evaluate Actions\nvia Decision Making]
+    H --> J["Evaluate Actions<br/>via Decision Making"]
     J --> K[Attack / Chase]
     J --> L[Flee / Retreat]
     J --> M[Use Ability]
 
     K --> N{Target Dead?}
-    N -->|Yes| E
-    N -->|No| J
+    N -->|"Yes"| E
+    N -->|"No"| J
 
     L --> O{Safe Distance?}
-    O -->|Yes| E
-    O -->|No| L
+    O -->|"Yes"| E
+    O -->|"No"| L
 
     G --> P{Take Damage?}
-    P -->|Yes, NPC is hostile| H
-    P -->|Yes, NPC flees| L
-    P -->|No| E
+    P -->|"Yes, NPC is hostile"| H
+    P -->|"Yes, NPC flees"| L
+    P -->|"No"| E
 
     style A fill:#4a3d8f,color:#fff
     style B fill:#2d6a8f,color:#fff

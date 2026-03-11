@@ -11,23 +11,23 @@ Receitas de fabricacao definem a transformacao de itens ou recursos de entrada e
 
 ```mermaid
 flowchart TD
-    A[Jogador Abre\nBancada de Fabricacao] --> B[Mostrar Receitas Disponiveis]
-    B --> C{Possui Materiais\nNecessarios?}
-    C -->|Nao| D[Receita Indisponivel]
-    C -->|Sim| E[Jogador Clica em Fabricar]
+    A["Jogador Abre<br/>Bancada de Fabricacao"] --> B[Mostrar Receitas Disponiveis]
+    B --> C["Possui Materiais<br/>Necessarios?"]
+    C -->|"Nao"| D[Receita Indisponivel]
+    C -->|"Sim"| E[Jogador Clica em Fabricar]
 
-    E --> F{Bancada Corresponde\nao Requisito da Receita?}
-    F -->|Nao| D
-    F -->|Sim| G[Consumir Entradas]
+    E --> F["Bancada Corresponde<br/>ao Requisito da Receita?"]
+    F -->|"Nao"| D
+    F -->|"Sim"| G[Consumir Entradas]
 
-    G --> H{ProcessingTime > 0?}
-    H -->|Sim| I[Aguardar Temporizador\nex: 5 segundos]
-    H -->|Nao| J[Fabricacao Instantanea]
+    G --> H["ProcessingTime > 0?"]
+    H -->|"Sim"| I["Aguardar Temporizador<br/>ex: 5 segundos"]
+    H -->|"Nao"| J[Fabricacao Instantanea]
 
     I --> K[Produzir Itens de Saida]
     J --> K
 
-    K --> L[Adicionar ao Inventario\nou Derrubar]
+    K --> L["Adicionar ao Inventario<br/>ou Derrubar"]
 
     style A fill:#2d5a27,color:#fff
     style D fill:#8b2500,color:#fff
@@ -38,10 +38,10 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    A[Entrada da Receita:\nGrupo 'AnyWood' x4] --> B{Jogador Possui?}
-    B -->|Madeira de Carvalho x4| C[Valido]
-    B -->|Madeira de Betula x2\n+ Madeira de Pinho x2| D[Valido\nItens mistos do grupo]
-    B -->|Pedra x4| E[Invalido\nNao esta no grupo]
+    A["Entrada da Receita:<br/>Grupo 'AnyWood' x4"] --> B{Jogador Possui?}
+    B -->|"Madeira de Carvalho x4"| C[Valido]
+    B -->|"Madeira de Betula x2<br/>+ Madeira de Pinho x2"| D["Valido<br/>Itens mistos do grupo"]
+    B -->|"Pedra x4"| E["Invalido<br/>Nao esta no grupo"]
 
     style C fill:#2d5a27,color:#fff
     style D fill:#2d5a27,color:#fff
