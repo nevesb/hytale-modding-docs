@@ -11,23 +11,20 @@ O sistema de configuracao do Hytale usa um modelo de heranca por templates. Em v
 
 ```mermaid
 flowchart TD;
-    A["Base Template<br>Template_Beasts_Passive"] --> B[Chicken Role]
-    A --> C[Rabbit Role]
-    A --> D[Sheep Role]
-
-    B -->|"Reference + Modify"| E["Chicken<br>HP: 15, Speed: 1.2<br>Drops: Feathers"]
-    C -->|"Reference + Modify"| F["Rabbit<br>HP: 10, Speed: 2.0<br>Drops: Rabbit Hide"]
-    D -->|"Reference + Modify"| G["Sheep<br>HP: 20, Speed: 1.0<br>Drops: Wool"]
-
-    H[Shared from Template] --> I[AI: Passive Wander]
-    H --> J[Flee when attacked]
-    H --> K[Sensing range: 10]
-    H --> L[Sound reactions]
-
-    style A fill:#4a3d8f,color:#fff
-    style E fill:#2d5a27,color:#fff
-    style F fill:#2d5a27,color:#fff
-    style G fill:#2d5a27,color:#fff
+    A["Base Template<br>Template_Beasts_Passive"] --> B[Chicken Role];
+    A --> C[Rabbit Role];
+    A --> D[Sheep Role];
+    B -->|"Reference + Modify"| E["Chicken<br>HP: 15, Speed: 1.2<br>Drops: Feathers"];
+    C -->|"Reference + Modify"| F["Rabbit<br>HP: 10, Speed: 2.0<br>Drops: Rabbit Hide"];
+    D -->|"Reference + Modify"| G["Sheep<br>HP: 20, Speed: 1.0<br>Drops: Wool"];
+    H[Shared from Template] --> I[AI: Passive Wander];
+    H --> J[Flee when attacked];
+    H --> K[Sensing range: 10];
+    H --> L[Sound reactions];
+    style A fill:#4a3d8f,color:#fff;
+    style E fill:#2d5a27,color:#fff;
+    style F fill:#2d5a27,color:#fff;
+    style G fill:#2d5a27,color:#fff;
     style H fill:#2d6a8f,color:#fff
 ```
 
@@ -35,12 +32,11 @@ flowchart TD;
 
 ```mermaid
 flowchart LR;
-    A["Role File<br>Chicken.json"] -->|"1. Read Reference"| B["Template File<br>Template_Beasts_Passive"]
-    B -->|"2. Load Base"| C["Full Template<br>All fields defined"]
-    C -->|"3. Apply Modify"| D["Override<br>Appearance, Stats,<br>Drops, Speed"]
-    D -->|"4. Result"| E["Final NPC Definition<br>Template + Overrides"]
-
-    style A fill:#8b6500,color:#fff
+    A["Role File<br>Chicken.json"] -->|"1. Read Reference"| B["Template File<br>Template_Beasts_Passive"];
+    B -->|"2. Load Base"| C["Full Template<br>All fields defined"];
+    C -->|"3. Apply Modify"| D["Override<br>Appearance, Stats,<br>Drops, Speed"];
+    D -->|"4. Result"| E["Final NPC Definition<br>Template + Overrides"];
+    style A fill:#8b6500,color:#fff;
     style E fill:#2d5a27,color:#fff
 ```
 

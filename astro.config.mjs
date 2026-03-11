@@ -2,6 +2,33 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>\n';
+
+/** Garante que os sitemaps tenham declaração XML e estejam bem formados para o Google. */
+function sitemapPatch() {
+	return {
+		name: 'sitemap-patch',
+		hooks: {
+			'astro:build:done': ({ dir }) => {
+				const dirPath = fileURLToPath(dir);
+				const files = readdirSync(dirPath).filter((f) => f.startsWith('sitemap') && f.endsWith('.xml'));
+				for (const file of files) {
+					const path = join(dirPath, file);
+					let content = readFileSync(path, 'utf-8').trim();
+					if (!content.startsWith('<?xml')) {
+						content = XML_DECLARATION + content;
+					}
+					writeFileSync(path, content + '\n', 'utf-8');
+				}
+			},
+		},
+	};
+}
 
 export default defineConfig({
 	site: 'https://nevesb.github.io',
@@ -176,5 +203,6 @@ export default defineConfig({
 			],
 		}),
 		sitemap(),
+		sitemapPatch(),
 	],
 });
