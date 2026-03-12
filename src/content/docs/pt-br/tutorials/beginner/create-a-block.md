@@ -401,14 +401,14 @@ Para testar:
 
 ```mermaid
 flowchart TD;
-    A[Create 3D Model<br>in Blockbench] --> B[Export .blockymodel];
-    B --> C[Save Texture PNG];
-    C --> D[Create Block Definition<br>Server/Item/Block/Blocks/];
-    D --> E[Register in BlockTypeList];
-    E --> F[Create Item Definition<br>Server/Item/Items/];
-    F --> G[Generate Icon<br>via Resource Editor];
-    G --> H[Add Translation<br>.lang files];
-    H --> I[Test In Game];
+    A[Criar Modelo 3D<br>no Blockbench] --> B[Exportar .blockymodel];
+    B --> C[Salvar Textura PNG];
+    C --> D[Criar Block Definition<br>Server/Item/Block/Blocks/];
+    D --> E[Registrar no BlockTypeList];
+    E --> F[Criar Item Definition<br>Server/Item/Items/];
+    F --> G[Gerar Icone<br>via Resource Editor];
+    G --> H[Adicionar Traducao<br>arquivos .lang];
+    H --> I[Testar no Jogo];
 
     style A fill:#2d5a27,color:#fff;
     style G fill:#4a3d8f,color:#fff;
