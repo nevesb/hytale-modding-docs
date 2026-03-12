@@ -1,86 +1,163 @@
 ---
-title: Crear un objeto personalizado (arma)
-description: Tutorial paso a paso para agregar un arma personalizada a Hytale, incluyendo el JSON de definición del objeto, una receta de fabricación y claves de traducción.
+title: Crear un Arma Personalizada
+description: Construye una Espada de Cristal en Blockbench, defínela como arma en el JSON de Hytale, añade una receta de crafteo y pruébala en el juego.
 ---
 
-## Objetivo
+## Lo Que Vas a Construir
 
-Agregar una daga personalizada llamada **Thornwood Dagger** al juego. Crearás el JSON de definición del objeto con valores de daño y una receta de fabricación, agregarás claves de traducción para el nombre y la descripción, y la probarás en el juego.
+Una **Espada de Cristal** — un arma cuerpo a cuerpo personalizada fabricada con bloques de cristal brillante. Hereda el sistema de combate con espada de Hytale (combos de golpes, guardia, ataque especial), tiene su propio modelo 3D voxel, textura de cristal pintada a mano, emisión de luz, receta de crafteo y traducciones multilingüe.
 
-## Requisitos previos
+![Espada de Cristal en el juego — hoja de cristal brillante sostenida por el jugador](/hytale-modding-docs/images/tutorials/create-an-item/sword-ingame.png)
 
-- Una carpeta de mod con un `manifest.json` válido (consulta [Configura tu entorno de desarrollo](/hytale-modding-docs/tutorials/beginner/setup-dev-environment))
-- Blockbench instalado para crear el modelo 3D (opcional — puedes referenciar un modelo del juego base para comenzar)
-- Familiaridad con JSON (consulta [Conceptos básicos de JSON](/hytale-modding-docs/getting-started/json-basics))
+## Requisitos Previos
+
+- Una carpeta de mod con un `manifest.json` válido (ver [Instalación y Configuración](/hytale-modding-docs/getting-started/installation/))
+- [Blockbench](https://www.blockbench.net/) con el plugin de Hytale para crear el modelo 3D
+- El tutorial [Crear un Bloque](/hytale-modding-docs/tutorials/beginner/create-a-block/) completado (la Espada de Cristal usa `Block_Crystal_Glow` como ingrediente de crafteo)
+- Familiaridad básica con JSON (ver [Fundamentos de JSON](/hytale-modding-docs/getting-started/json-basics/))
+
+## Repositorio Git
+
+El mod funcional completo está disponible como repositorio de GitHub:
+
+```text
+https://github.com/nevesb/hytale-mods-custom-weapon
+```
+
+Clónalo y copia el contenido en tu directorio de mods de Hytale. El repositorio contiene todos los archivos descritos en este tutorial:
+
+```
+hytale-mods-custom-weapon/
+├── manifest.json
+├── Crystal_Sword.bbmodel              (archivo fuente de Blockbench)
+├── Common/
+│   ├── Items/Weapons/Crystal/
+│   │   ├── Crystal_Sword.blockymodel  (modelo de tiempo de ejecución exportado)
+│   │   └── Crystal_Sword.png          (textura)
+│   └── Icons/ItemsGenerated/
+│       └── Crystal_Sword.png
+├── Server/
+│   ├── Item/Items/HytaleModdingManual/
+│   │   └── Crystal_Sword.json
+│   └── Languages/
+│       ├── en-US/server.lang
+│       ├── pt-BR/server.lang
+│       └── es/server.lang
+```
+
+Tu manifest:
+
+```json
+{
+  "Group": "HytaleModdingManual",
+  "Name": "CreateACustomWeapon",
+  "Version": "1.0.0",
+  "Description": "Implements the Create A Weapon tutorial with a custom crystal sword",
+  "Authors": [
+    {
+      "Name": "HytaleModdingManual"
+    }
+  ],
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "IncludesAssetPack": true,
+  "TargetServerVersion": "2026.02.19-1a311a592"
+}
+```
 
 ---
 
-## Paso 1: Crear el modelo del objeto en Blockbench
+## Paso 1: Modelar la Espada en Blockbench
 
-Hytale usa el formato `.blockymodel` para los modelos 3D de objetos. Si aún no tienes Blockbench configurado, omite este paso y referencia un modelo existente del juego base para hacer funcionar tu objeto primero, y luego reemplázalo después.
+Abre Blockbench y crea un nuevo proyecto con el formato **Hytale Character**. La espada se construye en cinco secciones, de abajo hacia arriba:
 
-Los modelos de dagas del juego base se encuentran en rutas como:
+| Sección | Descripción | Dimensiones |
+|---------|-------------|------------|
+| **Pomo** | Pequeño cristal en la base | 3x6x3 |
+| **Empuñadura** | Mango envuelto en cuero oscuro con anillos de metal | 6x18x6 (mango) + 7.5x1.5x7.5 (envueltos) |
+| **Guardia** | Base de cristal con centro de diamante y hojas laterales | 27x6x4.5 (base) + 6x6x9 (diamante) + 4.5x9x1.5 (lados) |
+| **Hoja** | Prisma de cristal principal con núcleo interior | 9x36x3 (principal) + 3x57x6 (núcleo) |
+| **Punta** | Punto facetado afilado | 6x4.5x3 + 3x4.5x1.5 |
 
+![Modelo de la Espada de Cristal en Blockbench mostrando la geometría voxel](/hytale-modding-docs/images/tutorials/create-an-item/sword-blockbench.png)
+
+**Consejos de modelado:**
+- Coloca el punto de pivote en el área del agarre de la empuñadura (alrededor de Y=15) — Hytale lo usa para el posicionamiento de la mano y el origen de la luz
+- Usa cubos separados para cada prisma de cristal para crear el aspecto facetado
+- Rota ligeramente los cristales de la guardia hacia afuera (15-25 grados) para un aspecto natural de racimo
+- La altura total debe ser ~72 vóxeles para coincidir con la escala oficial de armas de Hytale
+- Usa UV por cara (no box UV) para cubos grandes — el box UV está limitado a un espacio UV de 32x32
+- Configura los cubos de la hoja y punta de cristal en sombreado **fullbright** para el efecto de brillo
+
+**Texturizado:**
+- Usa un estilo pintado a mano con bloques de color direccionales, sin degradados suaves
+- Partes de cristal: franjas verticales de `#d9ffff` (arriba) a `#00bbee` (medio) a `#003050` (base), núcleo más claro que los bordes
+- La empuñadura usa tonos cálidos de cuero: `#2a2520` con reflejos de costura `#3a3228`
+- Los envoltorios usan gris metálico: `#484440` con brillo `#5a5550`
+- La resolución de la textura debe coincidir con el tamaño UV: **128x128** (densidad de píxeles 64 / blockSize 64 = relación 1:1)
+
+Exporta como **Hytale Blocky Model** y guarda en:
+
+```text
+Common/Items/Weapons/Crystal/Crystal_Sword.blockymodel
 ```
-Items/Weapons/Dagger/Bronze.blockymodel
-Items/Weapons/Dagger/Bronze_Texture.png
+
+Copia el PNG de la textura junto al blockymodel:
+
+```text
+Common/Items/Weapons/Crystal/Crystal_Sword.png
 ```
 
-Para tu objeto personalizado, crea y exporta:
-
-```
-YourMod/Assets/Common/Models/Items/Weapons/Dagger/Thornwood.blockymodel
-YourMod/Assets/Common/Models/Items/Weapons/Dagger/Thornwood_Texture.png
-```
-
-**Consejos para Blockbench:**
-- Mantén el modelo centrado en el origen — Hytale usa el punto de pivote para el posicionamiento en la mano
-- Exporta como **Hytale Blocky Model** usando el plugin de Hytale (consulta [Configura tu entorno de desarrollo](/hytale-modding-docs/tutorials/beginner/setup-dev-environment))
-- El archivo de textura debe ser un PNG y sus dimensiones deben ser potencia de dos (por ejemplo, 16x16, 32x32, 64x64)
+:::caution[Rutas de Assets de Common]
+Todas las rutas de `Common/` referenciadas en el JSON del ítem deben comenzar con un directorio raíz permitido: `Blocks/`, `Items/`, `Resources/`, `NPC/`, `VFX/` o `Consumable/`. Colocar modelos o texturas fuera de estas raíces (p. ej., `Models/`) causará un error de validación.
+:::
 
 ---
 
-## Paso 2: Crear el JSON de definición del objeto
+## Paso 2: Crear la Definición del Ítem
 
-Las definiciones de objetos tipo arma siguen el patrón establecido por los archivos en `Assets/Server/Item/Items/Weapon/`. El archivo de dagas de bronce (`Weapon_Daggers_Bronze.json`) muestra la estructura: una plantilla `Parent` maneja el comportamiento compartido mientras que el archivo hijo sobrescribe los valores de daño, rutas de modelo, calidad y claves de traducción.
+Las armas de Hytale usan el sistema de plantillas `Parent` para heredar animaciones de combate base, interacciones y efectos de sonido. Al establecer `"Parent": "Template_Weapon_Sword"`, nuestra Espada de Cristal obtiene automáticamente el conjunto completo de movimientos de espada: combos de golpes, guardia y la habilidad especial Vortexstrike.
 
-Crea:
+Crea el archivo en:
 
-```
-YourMod/Assets/Server/Item/Items/MyMod/Weapon_Daggers_Thornwood.json
+```text
+Server/Item/Items/HytaleModdingManual/Crystal_Sword.json
 ```
 
 ```json
 {
-  "Parent": "Template_Weapon_Daggers",
+  "Parent": "Template_Weapon_Sword",
   "TranslationProperties": {
-    "Name": "server.items.Weapon_Daggers_Thornwood.name",
-    "Description": "server.items.Weapon_Daggers_Thornwood.description"
+    "Name": "server.items.Crystal_Sword.name",
+    "Description": "server.items.Crystal_Sword.description"
   },
-  "Model": "Items/Weapons/Dagger/Thornwood.blockymodel",
-  "Texture": "Items/Weapons/Dagger/Thornwood_Texture.png",
-  "Icon": "Icons/MyMod/Weapon_Daggers_Thornwood.png",
-  "Quality": "Uncommon",
-  "ItemLevel": 20,
-  "MaxDurability": 80,
-  "DurabilityLossOnHit": 0.5,
+  "Model": "Items/Weapons/Crystal/Crystal_Sword.blockymodel",
+  "Texture": "Items/Weapons/Crystal/Crystal_Sword.png",
+  "Icon": "Icons/ItemsGenerated/Crystal_Sword.png",
+  "Quality": "Rare",
+  "ItemLevel": 30,
   "Tags": {
-    "Type": ["Weapon"],
-    "Family": ["Daggers"]
+    "Type": [
+      "Weapon"
+    ],
+    "Family": [
+      "Sword"
+    ]
+  },
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [0, 180, 45],
+    "Translation": [-23, -23]
   },
   "InteractionVars": {
     "Swing_Left_Damage": {
       "Interactions": [
         {
-          "Parent": "Weapon_Daggers_Primary_Swing_Left_Damage",
+          "Parent": "Weapon_Sword_Primary_Swing_Left_Damage",
           "DamageCalculator": {
             "BaseDamage": {
-              "Physical": 4
+              "Physical": 14
             }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
           }
         }
       ]
@@ -88,382 +165,267 @@ YourMod/Assets/Server/Item/Items/MyMod/Weapon_Daggers_Thornwood.json
     "Swing_Right_Damage": {
       "Interactions": [
         {
-          "Parent": "Weapon_Daggers_Primary_Swing_Right_Damage",
+          "Parent": "Weapon_Sword_Primary_Swing_Right_Damage",
           "DamageCalculator": {
             "BaseDamage": {
-              "Physical": 4
+              "Physical": 14
             }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
           }
         }
       ]
     },
-    "Stab_Left_Damage": {
+    "Swing_Down_Damage": {
       "Interactions": [
         {
-          "Parent": "Weapon_Daggers_Primary_Stab_Left_Damage",
+          "Parent": "Weapon_Sword_Primary_Swing_Down_Damage",
           "DamageCalculator": {
             "BaseDamage": {
-              "Physical": 9
+              "Physical": 24
             }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
           }
         }
       ]
     },
-    "Stab_Right_Damage": {
+    "Thrust_Damage": {
       "Interactions": [
         {
-          "Parent": "Weapon_Daggers_Primary_Stab_Right_Damage",
+          "Parent": "Weapon_Sword_Primary_Thrust_Damage",
           "DamageCalculator": {
             "BaseDamage": {
-              "Physical": 12
+              "Physical": 36
             }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
+          }
+        }
+      ]
+    },
+    "Vortexstrike_Spin_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Sword_Signature_Vortexstrike_Spin_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 26
+            }
+          }
+        }
+      ]
+    },
+    "Vortexstrike_Stab_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Sword_Signature_Vortexstrike_Stab_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 72
+            }
+          }
+        }
+      ]
+    },
+    "Guard_Wield": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Sword_Secondary_Guard_Wield",
+          "StaminaCost": {
+            "Value": 8,
+            "CostType": "Damage"
           }
         }
       ]
     }
-  }
-}
-```
-
-### Campos clave explicados
-
-| Campo | Propósito |
-|-------|-----------|
-| `Parent` | Hereda todas las animaciones de ataque, interacciones y estadísticas base de la plantilla |
-| `TranslationProperties` | Claves resueltas desde tu archivo `.lang` para el nombre del objeto y el tooltip |
-| `Model` | Ruta al archivo `.blockymodel` |
-| `Texture` | Ruta al PNG de textura del modelo |
-| `Icon` | PNG del ícono del espacio de inventario |
-| `Quality` | Nivel de rareza — controla el color del borde y la partícula de drop. Valores válidos: `Junk`, `Common`, `Uncommon`, `Rare`, `Epic`, `Legendary` |
-| `ItemLevel` | Determina el nivel de progresión; afecta la ponderación en tablas de botín |
-| `MaxDurability` | Cuántos golpes antes de que el objeto se rompa |
-| `DurabilityLossOnHit` | Durabilidad restada por golpe (soporta decimales) |
-| `InteractionVars` | Sobrescribe valores de daño de ataques específicos de la plantilla padre |
-
-### Calculador de daño
-
-Cada entrada de `InteractionVars` sobrescribe una fase de ataque. `BaseDamage` recibe una clave de tipo de daño:
-
-| Tipo de daño | Descripción |
-|-------------|-------------|
-| `Physical` | Daño cuerpo a cuerpo estándar |
-| `Fire` | Daño elemental de fuego |
-| `Poison` | Aplica un efecto de daño con el tiempo |
-| `Ice` | Daño de hielo |
-
-Puedes combinar tipos en un solo golpe:
-
-```json
-"BaseDamage": {
-  "Physical": 4,
-  "Poison": 2
-}
-```
-
----
-
-## Paso 3: Agregar una receta de fabricación
-
-Las recetas pueden definirse en línea dentro del JSON del objeto (como se ve en `Food_Bread.json`) o en un archivo de receta separado. La forma en línea es más simple para objetos únicos. Agrega un bloque `Recipe` a tu definición de objeto:
-
-```json
-{
-  "Parent": "Template_Weapon_Daggers",
-  "TranslationProperties": {
-    "Name": "server.items.Weapon_Daggers_Thornwood.name",
-    "Description": "server.items.Weapon_Daggers_Thornwood.description"
-  },
-  "Model": "Items/Weapons/Dagger/Thornwood.blockymodel",
-  "Texture": "Items/Weapons/Dagger/Thornwood_Texture.png",
-  "Icon": "Icons/MyMod/Weapon_Daggers_Thornwood.png",
-  "Quality": "Uncommon",
-  "ItemLevel": 20,
-  "MaxDurability": 80,
-  "DurabilityLossOnHit": 0.5,
-  "Tags": {
-    "Type": ["Weapon"],
-    "Family": ["Daggers"]
   },
   "Recipe": {
+    "TimeSeconds": 5.0,
+    "KnowledgeRequired": false,
     "Input": [
       {
-        "ResourceTypeId": "Wood_Trunk",
-        "Quantity": 3
+        "ItemId": "Block_Crystal_Glow",
+        "Quantity": 4
       },
       {
-        "ItemId": "Ingredient_Fibre",
+        "ItemId": "Ingredient_Bar_Iron",
         "Quantity": 2
-      },
-      {
-        "ItemId": "Ingredient_Bar_Copper",
-        "Quantity": 1
-      }
-    ],
-    "Output": [
-      {
-        "ItemId": "Weapon_Daggers_Thornwood"
       }
     ],
     "BenchRequirement": [
       {
         "Type": "Crafting",
-        "Categories": ["Weapon_Daggers"],
+        "Categories": [
+          "Weapon_Sword"
+        ],
         "Id": "Weapon_Bench"
       }
-    ],
-    "TimeSeconds": 4
+    ]
   },
-  "InteractionVars": {
-    "Swing_Left_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Weapon_Daggers_Primary_Swing_Left_Damage",
-          "DamageCalculator": {
-            "BaseDamage": {
-              "Physical": 4
-            }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
-          }
-        }
-      ]
-    },
-    "Swing_Right_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Weapon_Daggers_Primary_Swing_Right_Damage",
-          "DamageCalculator": {
-            "BaseDamage": {
-              "Physical": 4
-            }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
-          }
-        }
-      ]
-    },
-    "Stab_Left_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Weapon_Daggers_Primary_Stab_Left_Damage",
-          "DamageCalculator": {
-            "BaseDamage": {
-              "Physical": 9
-            }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
-          }
-        }
-      ]
-    },
-    "Stab_Right_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Weapon_Daggers_Primary_Stab_Right_Damage",
-          "DamageCalculator": {
-            "BaseDamage": {
-              "Physical": 12
-            }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
-          }
-        }
-      ]
-    }
-  }
+  "Light": {
+    "Radius": 2,
+    "Color": "#468"
+  },
+  "MaxDurability": 450,
+  "DurabilityLossOnHit": 0.18
 }
 ```
 
-### Campos de receta
+### Campos Clave del Ítem
 
-| Campo | Propósito |
-|-------|-----------|
-| `Input` | Lista de ingredientes requeridos. Usa `ItemId` para un objeto específico, o `ResourceTypeId` para una categoría de recurso (por ejemplo, cualquier tronco de madera cuenta como `Wood_Trunk`) |
-| `Output` | Lo que el jugador recibe. Omitir `Quantity` usa el valor predeterminado de 1 |
-| `BenchRequirement` | Qué estación de fabricación se necesita. `Id` es el identificador del banco; `Categories` filtra en qué pestaña del banco aparece |
-| `TimeSeconds` | Cuánto tiempo tarda la fabricación |
-| `KnowledgeRequired` | Establece `true` si la receta debe aprenderse de un pergamino antes de aparecer |
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `Parent` | string | Hereda de una plantilla. `Template_Weapon_Sword` otorga el combate completo con espada: combos de golpes, guardia y firma Vortexstrike. |
+| `TranslationProperties` | object | Claves de traducción de `Name` y `Description` para la interfaz de usuario. |
+| `Model` | string | Ruta al `.blockymodel` (relativa a `Common/`). Debe comenzar con una raíz permitida: `Items/`, `Blocks/`, etc. |
+| `Texture` | string | Ruta al PNG de la textura (relativa a `Common/`). Debe comenzar con una raíz permitida. |
+| `Icon` | string | Ruta al PNG del icono de inventario (relativa a `Common/`). |
+| `Quality` | string | Nivel de rareza. Controla el color del nombre: `Common`, `Uncommon`, `Rare`, `Epic`, `Legendary`. |
+| `ItemLevel` | number | Nivel de progresión para la ponderación de la tabla de botín. |
+| `Tags` | object | Grupos de etiquetas categorizadas. `Type` para la categoría del ítem, `Family` para la familia del arma. |
+| `IconProperties` | object | Controla la representación del icono 3D: `Scale`, `Rotation` [X,Y,Z], `Translation` [X,Y]. |
+| `InteractionVars` | object | Sobreescribe los valores de daño para cada ataque en la cadena de combo heredada. |
+| `Recipe` | object | Receta de crafteo con ítems de `Input`, `BenchRequirement` y `TimeSeconds`. |
+| `Light` | object | Luz emitida. `Radius` (entero) y `Color` (código hexadecimal abreviado). |
+| `MaxDurability` | number | Total de golpes antes de que el arma se rompa. |
+| `DurabilityLossOnHit` | number | Fracción de durabilidad perdida por golpe. |
 
----
+### Daño mediante InteractionVars
 
-## Paso 4: Agregar claves de traducción
+A diferencia de un campo `Damage` simple, las armas de Hytale definen el daño **por ataque** en la cadena de combo usando `InteractionVars`. Cada nombre de variable (p. ej., `Swing_Left_Damage`) se corresponde con un fotograma de animación específico, y se sobreescribe el `DamageCalculator.BaseDamage` para establecer cuánto daño inflige ese golpe:
 
-Crea o agrega a tu archivo de idioma del mod:
+| Ataque | Animación | Daño de la Espada de Cristal |
+|--------|-----------|------------------------------|
+| `Swing_Left_Damage` | Golpe horizontal izquierdo | 14 Físico |
+| `Swing_Right_Damage` | Golpe horizontal derecho | 14 Físico |
+| `Swing_Down_Damage` | Golpe descendente desde arriba | 24 Físico |
+| `Thrust_Damage` | Estocada hacia adelante (remate del combo) | 36 Físico |
+| `Vortexstrike_Spin_Damage` | Ataque especial giratorio | 26 Físico |
+| `Vortexstrike_Stab_Damage` | Remate especial con estocada | 72 Físico |
 
-```
-YourMod/Assets/Languages/en-US.lang
-```
+### Emisión de Luz
 
-```
-server.items.Weapon_Daggers_Thornwood.name=Thornwood Dagger
-server.items.Weapon_Daggers_Thornwood.description=A light blade carved from thornwood. Fast and precise.
-```
+Los ítems pueden emitir luz usando el campo `Light` con `Radius` (entero, en bloques) y `Color` (código hexadecimal abreviado). La Espada de Cristal usa `"Color": "#468"` — un tenue resplandor cian a la mitad de la intensidad del Bloque de Cristal Brillante (`#88ccff`).
 
-El formato de clave de traducción usado en todo el juego base: `server.items.<ItemId>.name` y `server.items.<ItemId>.description`. Sigue este patrón exactamente — el motor distingue entre mayúsculas y minúsculas.
-
----
-
-## Paso 5: Probar en el juego
-
-1. Copia la carpeta de tu mod en el directorio de mods del servidor.
-2. Inicia el servidor y revisa la consola en busca de errores que referencien tu archivo de objeto.
-3. Usa el generador de objetos del modo desarrollador para darte `Weapon_Daggers_Thornwood`.
-4. Confirma que el modelo, la textura, el ícono y el nombre se muestren correctamente.
-5. Ataca un muñeco de entrenamiento o una criatura para verificar que los números de daño coincidan con tus valores de `BaseDamage`.
-6. Revisa la lista de recetas del banco de armas para encontrar tu objeto.
-
-**Errores comunes y soluciones:**
-
-| Error | Causa | Solución |
-|-------|-------|----------|
-| `Unknown parent: Template_Weapon_Daggers` | Plantilla no cargada | Asegúrate de que los assets del juego base estén presentes |
-| El modelo aparece como cubo predeterminado | Ruta de `.blockymodel` incorrecta | Verifica la ruta en `Model` |
-| La receta no aparece en el banco | `BenchRequirement.Id` incorrecto | Usa `Weapon_Bench` exactamente |
-| El nombre muestra la clave cruda | Entrada `.lang` faltante | Agrega la clave a `en-US.lang` |
+:::caution[El Radio Debe Ser un Entero]
+El campo `Radius` solo acepta números enteros. Usar un decimal como `1.5` causará una `NumberFormatException` y el mod no se cargará.
+:::
 
 ---
 
-## Archivos completos
+## Paso 3: Generar el Icono
 
-### `YourMod/Assets/Server/Item/Items/MyMod/Weapon_Daggers_Thornwood.json`
-```json
-{
-  "Parent": "Template_Weapon_Daggers",
-  "TranslationProperties": {
-    "Name": "server.items.Weapon_Daggers_Thornwood.name",
-    "Description": "server.items.Weapon_Daggers_Thornwood.description"
-  },
-  "Model": "Items/Weapons/Dagger/Thornwood.blockymodel",
-  "Texture": "Items/Weapons/Dagger/Thornwood_Texture.png",
-  "Icon": "Icons/MyMod/Weapon_Daggers_Thornwood.png",
-  "Quality": "Uncommon",
-  "ItemLevel": 20,
-  "MaxDurability": 80,
-  "DurabilityLossOnHit": 0.5,
-  "Tags": {
-    "Type": ["Weapon"],
-    "Family": ["Daggers"]
-  },
-  "Recipe": {
-    "Input": [
-      {
-        "ResourceTypeId": "Wood_Trunk",
-        "Quantity": 3
-      },
-      {
-        "ItemId": "Ingredient_Fibre",
-        "Quantity": 2
-      },
-      {
-        "ItemId": "Ingredient_Bar_Copper",
-        "Quantity": 1
-      }
-    ],
-    "Output": [
-      {
-        "ItemId": "Weapon_Daggers_Thornwood"
-      }
-    ],
-    "BenchRequirement": [
-      {
-        "Type": "Crafting",
-        "Categories": ["Weapon_Daggers"],
-        "Id": "Weapon_Bench"
-      }
-    ],
-    "TimeSeconds": 4
-  },
-  "InteractionVars": {
-    "Swing_Left_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Weapon_Daggers_Primary_Swing_Left_Damage",
-          "DamageCalculator": {
-            "BaseDamage": { "Physical": 4 }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
-          }
-        }
-      ]
-    },
-    "Swing_Right_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Weapon_Daggers_Primary_Swing_Right_Damage",
-          "DamageCalculator": {
-            "BaseDamage": { "Physical": 4 }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
-          }
-        }
-      ]
-    },
-    "Stab_Left_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Weapon_Daggers_Primary_Stab_Left_Damage",
-          "DamageCalculator": {
-            "BaseDamage": { "Physical": 9 }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
-          }
-        }
-      ]
-    },
-    "Stab_Right_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Weapon_Daggers_Primary_Stab_Right_Damage",
-          "DamageCalculator": {
-            "BaseDamage": { "Physical": 12 }
-          },
-          "DamageEffects": {
-            "WorldSoundEventId": "SFX_Daggers_T2_Slash_Impact",
-            "LocalSoundEventId": "SFX_Daggers_T2_Slash_Impact"
-          }
-        }
-      ]
-    }
-  }
-}
+Usa el **Editor de Recursos** en Modo Creativo para generar el icono de inventario, igual que en el tutorial del bloque:
+
+1. Abre Hytale en Modo Creativo
+2. Abre el Editor de Recursos (botón "Editor" en la parte superior derecha)
+3. Navega a **Item** > `HytaleModdingManual` > `Crystal_Sword`
+4. Haz clic en el icono de lápiz junto al campo **Icon**
+5. Ajusta `IconProperties` para obtener la mejor vista isométrica
+6. El icono generado se guarda en `Icons/ItemsGenerated/Crystal_Sword.png`
+
+---
+
+## Paso 4: Añadir Traducciones
+
+Crea archivos de idioma para cada idioma:
+
+### Inglés (`Server/Languages/en-US/server.lang`)
+
+```text
+items.Crystal_Sword.name = Crystal Sword
+items.Crystal_Sword.description = A blade forged from enchanted crystal. Radiates a soft blue glow.
 ```
 
-### `YourMod/Assets/Languages/en-US.lang`
+### Portugués (`Server/Languages/pt-BR/server.lang`)
+
+```text
+items.Crystal_Sword.name = Espada de Cristal
+items.Crystal_Sword.description = Uma lâmina forjada de cristal encantado. Irradia um brilho azul suave.
 ```
-server.items.Weapon_Daggers_Thornwood.name=Thornwood Dagger
-server.items.Weapon_Daggers_Thornwood.description=A light blade carved from thornwood. Fast and precise.
+
+### Español (`Server/Languages/es/server.lang`)
+
+```text
+items.Crystal_Sword.name = Espada de Cristal
+items.Crystal_Sword.description = Una espada forjada de cristal encantado. Irradia un brillo azul suave.
+```
+
+El formato de la clave es `items.<ItemId>.<property>`. Si falta una clave para un idioma, Hytale recurre a `en-US`.
+
+---
+
+## Paso 5: Empaquetar y Probar
+
+Tu carpeta de mod final:
+
+```text
+CreateACustomWeapon/
+├── manifest.json
+├── Common/
+│   ├── Items/Weapons/Crystal/
+│   │   ├── Crystal_Sword.blockymodel
+│   │   └── Crystal_Sword.png
+│   └── Icons/ItemsGenerated/
+│       └── Crystal_Sword.png
+├── Server/
+│   ├── Item/Items/HytaleModdingManual/
+│   │   └── Crystal_Sword.json
+│   └── Languages/
+│       ├── en-US/server.lang
+│       ├── pt-BR/server.lang
+│       └── es/server.lang
+```
+
+Para probar:
+
+1. Copia la carpeta del mod en tu directorio de mods de Hytale (`%APPDATA%/Hytale/UserData/Mods/`)
+2. Inicia el juego o recarga el entorno de mods
+3. Genera `Crystal_Sword` desde el inventario
+4. Confirma que:
+   - El modelo de la espada de cristal se renderiza correctamente al sostenerla
+   - La hoja y la punta de cristal brillan con sombreado fullbright
+   - La espada emite una suave luz azul alrededor del jugador
+   - Las animaciones de golpe de espada se reproducen al hacer clic izquierdo (combo de 4 golpes)
+   - La guardia se activa al hacer clic derecho
+   - La habilidad especial Vortexstrike funciona cuando la energía está llena
+   - El nombre y la descripción traducidos aparecen en el tooltip
+   - La receta de crafteo funciona en un Banco de Armas (4x Bloque de Cristal Brillante + 2x Lingote de Hierro)
+   - La durabilidad disminuye al golpear (máximo 450)
+
+---
+
+## Flujo de Creación de Armas
+
+```mermaid
+flowchart TD;
+    A[Crear Modelo 3D<br>en Blockbench] --> B[Exportar .blockymodel<br>a la carpeta Items/];
+    B --> C[Crear Definición del Ítem<br>con Plantilla Parent];
+    C --> D[Definir InteractionVars<br>daño por ataque];
+    D --> E[Añadir Receta<br>y Luz];
+    E --> F[Generar Icono<br>via Editor de Recursos];
+    F --> G[Añadir Traducciones<br>archivos .lang];
+    G --> H[Probar en el Juego];
+
+    style A fill:#2d5a27,color:#fff;
+    style F fill:#4a3d8f,color:#fff;
+    style H fill:#2d6a8f,color:#fff;
 ```
 
 ---
 
-## Siguientes pasos
+## Errores Comunes
 
-- [Crear un bloque personalizado](/hytale-modding-docs/tutorials/beginner/create-a-block) — agrega un bloque colocable que se obtiene de NPCs
-- [Crear un NPC personalizado](/hytale-modding-docs/tutorials/beginner/create-an-npc) — crea una criatura que suelte tu nueva arma
-- [Conceptos básicos de JSON](/hytale-modding-docs/getting-started/json-basics) — referencia sobre herencia de plantillas y encadenamiento de interacciones
+| Problema | Causa | Solución |
+|---------|-------|-----|
+| `Unexpected character: 5b, '['` | `Tags` definido como array `[]` en lugar de objeto `{}` | Usa `{"Type": ["Weapon"], "Family": ["Sword"]}` |
+| `Common Asset must be within the root` | La ruta de Model/Texture no comienza con `Items/`, `Blocks/`, etc. | Mueve los archivos bajo una raíz permitida como `Items/Weapons/` |
+| `Common Asset doesn't exist` | Archivo de icono faltante en `Common/Icons/` | Genera el icono con el Editor de Recursos o coloca un PNG manualmente |
+| `NumberFormatException` en Light | `Radius` es un decimal como `1.5` | Usa un entero: `1`, `2`, `3`, etc. |
+| La textura se ve incorrecta en el juego | La resolución de la textura no coincide con el tamaño UV | Para el formato Hytale Character: la textura debe ser tamaño UV x (pixelDensity / blockSize). Con valores predeterminados: textura = tamaño UV |
+
+---
+
+## Páginas Relacionadas
+
+- [Crear un Bloque Personalizado](/hytale-modding-docs/tutorials/beginner/create-a-block/) — Construye el bloque de cristal usado como ingrediente
+- [Crear un NPC Personalizado](/hytale-modding-docs/tutorials/beginner/create-an-npc/) — Crea criaturas que suelten tu arma
+- [Referencia de Definiciones de Ítems](/hytale-modding-docs/reference/item-system/item-definitions/) — Esquema completo del ítem
+- [Recetas de Crafteo](/hytale-modding-docs/reference/crafting-system/recipes/) — Referencia del sistema de recetas
+- [Claves de Localización](/hytale-modding-docs/reference/concepts/localization-keys/) — Sistema de traducción
+- [Empaquetado de Mods](/hytale-modding-docs/tutorials/advanced/mod-packaging/) — Guía de distribución
