@@ -1,373 +1,490 @@
 ---
 title: Create a Custom NPC
-description: Step-by-step tutorial for adding a custom critter NPC to Hytale, including role definition, drop table, and spawn rules.
+description: Build a hostile Slime Minion NPC with a 3D model, animations, AI behavior, drop table, and translations.
+sidebar:
+  order: 4
 ---
 
 ## Goal
 
-Add a passive critter called the **Mossbug** to the game world. You will create an NPC role JSON that references a model, write a drop table so it yields ingredients when killed, and set up spawn rules so it appears in forest environments.
+Create a **Slime Minion** — a hostile NPC that chases and attacks players on sight. You will set up a 3D model with animations, define its AI behavior through template inheritance, configure a weighted drop table, and add multilingual translations. By the end, you will have a fully working NPC mod you can spawn in Creative Mode.
+
+## What You'll Learn
+
+- How NPCs are structured across three JSON layers (Server Model, NPC Role, Drop Table)
+- How to set up a model with 9 animation sets
+- How template inheritance (`Template_Predator`) provides AI behavior
+- How weighted drop tables control loot
+- How to add translations for EN, ES, and PT-BR
 
 ## Prerequisites
 
-- A mod folder with a valid `manifest.json` (see [Setup Your Dev Environment](/hytale-modding-docs/tutorials/beginner/setup-dev-environment))
-- Familiarity with JSON template inheritance (see [JSON Basics](/hytale-modding-docs/getting-started/json-basics))
+- A mod folder with a valid `manifest.json` (see [Setup Your Dev Environment](/hytale-modding-docs/tutorials/beginner/setup-dev-environment/))
+- Blockbench with the Hytale plugin installed
+- Familiarity with JSON template inheritance (see [Inheritance and Templates](/hytale-modding-docs/reference/concepts/inheritance-and-templates/))
 
 ---
 
-## NPC Types Overview
+## NPC Architecture Overview
 
-Hytale organises NPCs into types defined by the template they inherit from. Understanding the available templates helps you choose the right base for your NPC.
+Unlike blocks and items which each use a single JSON file, NPCs require **three separate definitions** that work together:
 
-| Template | Folder | Behaviour |
-|----------|--------|-----------|
-| `Template_Beasts_Passive_Critter` | `Creature/Critter/` | Small passive animal — flees when threatened, wanders, can be attracted by food |
-| `Template_Animal_Neutral` | `Creature/Mammal/` | Larger neutral beast — attacks when provoked |
-| `Template_Predator` | `Creature/` | Actively hunts players within view range |
-| `Template_Livestock` | `Creature/Livestock/` | Farmable animal — can be kept in coops or pens |
-| `Template_Birds_Passive` | `Avian/` | Flying passive bird |
-| `Template_Intelligent` | `Intelligent/` | Human-like NPC with dialogue and quest capacity |
-| `Template_Spirit` | `Elemental/` | Elemental or magical creature |
+```mermaid
+flowchart TD;
+    A[Server Model<br>Model + Animations + HitBox] --> D[NPC in Game];
+    B[NPC Role<br>AI Behavior + Stats] --> D;
+    C[Drop Table<br>Loot on Death] --> D;
 
-For a small passive critter like the Mossbug, `Template_Beasts_Passive_Critter` is the correct base. It provides wandering, fleeing, and optional curiosity behaviours — matching how vanilla Squirrels and Frogs work.
-
----
-
-## Step 1: Create or Reference a Model
-
-Your NPC's `Appearance` field names the model set the engine uses for rendering. Vanilla appearance names like `Squirrel`, `Frog_Green`, and `Mouse` map to pre-built rig and animation sets.
-
-For a completely new creature shape, you need a custom appearance asset (a full model, rig, and animation set in Blockbench). For this tutorial, we reference a vanilla appearance to get the NPC working immediately, which you can replace later with a custom model.
-
-We will use `"Appearance": "Gecko"` as a stand-in. All available vanilla appearance names can be found by checking the `Appearance` field in files under `Assets/Server/NPC/Roles/`.
-
----
-
-## Step 2: Create the NPC Role JSON
-
-NPC roles live in `Assets/Server/NPC/Roles/`. Organise your mod's NPCs in a subfolder.
-
-Create:
-
-```
-YourMod/Assets/Server/NPC/Roles/MyMod/Mossbug.json
+    style A fill:#2d6a8f,color:#fff;
+    style B fill:#2d5a27,color:#fff;
+    style C fill:#8f6a2d,color:#fff;
+    style D fill:#5a2d8f,color:#fff;
 ```
 
-The `Type: "Variant"` pattern — used by every vanilla critter including Squirrel and Frog — inherits all AI logic from the template and overrides only the fields that differ:
+| Layer | File Location | Purpose |
+|-------|--------------|---------|
+| **Server Model** | `Server/Models/` | Links the `.blockymodel` file, texture, animations, hitbox, and camera settings |
+| **NPC Role** | `Server/NPC/Roles/` | Defines AI behavior via template inheritance, health, knockback, and translation keys |
+| **Drop Table** | `Server/Drops/` | Controls what loot drops when the NPC dies, using weighted random selection |
+
+The **Server Model** `Appearance` name connects all three — the NPC Role references it, and the engine uses it to find the correct model, texture, and animations.
+
+---
+
+## Step 1: Create the Model and Texture in Blockbench
+
+Open Blockbench and create a new **Hytale Character** project:
+
+- **Block Size**: 64
+- **Pixel Density**: 64
+- **UV Size**: 128×128 (texture must match: 128×128 pixels)
+
+Build the slime body using cubes organized in groups. For the Slime Minion, the structure is:
+
+| Group | Purpose |
+|-------|---------|
+| `Body` | Main slime body (large cube) |
+| `Head` | Top portion (used by camera tracking) |
+| `Eyes` | Face details |
+| `Arm_Left` / `Arm_Right` | Small appendages for attack animations |
+| `Leg_Left` / `Leg_Right` | Base stubs for walk animations |
+
+Paint the texture in the **Paint** tab — green tones with darker spots work well for a slime creature.
+
+### Export the Model
+
+1. **File > Export > Export Hytale Blocky Model** → save as `Model_Minion.blockymodel`
+2. Save the texture separately as `Texture.png` (128×128)
+
+### Create Animations
+
+NPCs need animation files for each movement state. Create these 9 animations in Blockbench's **Animate** tab:
+
+| Animation | File | Loop | Purpose |
+|-----------|------|------|---------|
+| Idle | `Idle.blockyanim` | Yes | Standing still — subtle bounce |
+| Walk | `Walk.blockyanim` | Yes | Moving forward |
+| Walk_Backward | `Walk_Backward.blockyanim` | Yes | Moving backward |
+| Run | `Run.blockyanim` | Yes | Chasing the player |
+| Attack | `Attack.blockyanim` | Yes | Melee strike |
+| Death | `Death.blockyanim` | **No** | Plays once on death |
+| Crouch | `Crouch.blockyanim` | Yes | Crouching idle |
+| Crouch_Walk | `Crouch_Walk.blockyanim` | Yes | Crouching forward |
+| Crouch_Walk_Backward | `Crouch_Walk_Backward.blockyanim` | Yes | Crouching backward |
+
+Export each animation with **File > Export > Export Hytale Block Animation**.
+
+:::tip[Death Animation]
+Set `"Loop": false` for the Death animation in the Server Model — all other animations loop by default.
+:::
+
+---
+
+## Step 2: Set Up the Mod File Structure
+
+Place your files in the mod folder following this exact structure:
+
+```text
+CreateACustomNPC/
+├── manifest.json
+├── Common/
+│   ├── Icons/
+│   │   └── ModelsGenerated/
+│   │       └── BossSlime_Minion.png
+│   └── NPC/
+│       └── Beast/
+│           └── BossSlime/
+│               ├── Model/
+│               │   ├── Model_Minion.blockymodel
+│               │   └── Texture.png
+│               └── Animations/
+│                   └── Default/
+│                       ├── Idle.blockyanim
+│                       ├── Walk.blockyanim
+│                       ├── Walk_Backward.blockyanim
+│                       ├── Run.blockyanim
+│                       ├── Attack.blockyanim
+│                       ├── Death.blockyanim
+│                       ├── Crouch.blockyanim
+│                       ├── Crouch_Walk.blockyanim
+│                       └── Crouch_Walk_Backward.blockyanim
+├── Server/
+│   ├── Models/
+│   │   └── Beast/
+│   │       └── BossSlime_Minion.json
+│   ├── NPC/
+│   │   └── Roles/
+│   │       └── Boss_Slime_Minion.json
+│   ├── Drops/
+│   │   └── Drop_BossSlime.json
+│   └── Languages/
+│       ├── en-US/
+│       │   └── server.lang
+│       ├── es/
+│       │   └── server.lang
+│       └── pt-BR/
+│           └── server.lang
+```
+
+All paths in `Common/` must start with an allowed root: `NPC/`, `Icons/`, `Items/`, `Blocks/`, etc. The model and animations go under `NPC/`, and the spawn icon goes under `Icons/`.
+
+---
+
+## Step 3: Create the manifest.json
+
+```json
+{
+  "Group": "HytaleModdingManual",
+  "Name": "CreateACustomNPC",
+  "Version": "1.0.0",
+  "Description": "Implements the Create A NPC tutorial with a custom slime minion",
+  "Authors": [
+    {
+      "Name": "HytaleModdingManual"
+    }
+  ],
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "IncludesAssetPack": true,
+  "TargetServerVersion": "2026.02.19-1a311a592"
+}
+```
+
+---
+
+## Step 4: Define the Server Model
+
+The Server Model is the bridge between the 3D assets in `Common/` and the game engine. It tells Hytale where to find the model, texture, and every animation.
+
+Create `Server/Models/Beast/BossSlime_Minion.json`:
+
+```json
+{
+  "Model": "NPC/Beast/BossSlime/Model/Model_Minion.blockymodel",
+  "Texture": "NPC/Beast/BossSlime/Model/Texture.png",
+  "EyeHeight": 1.5,
+  "CrouchOffset": -0.15,
+  "HitBox": {
+    "Max": { "X": 0.8, "Y": 2.0, "Z": 0.8 },
+    "Min": { "X": -0.8, "Y": 0, "Z": -0.8 }
+  },
+  "Camera": {
+    "Pitch": {
+      "AngleRange": { "Max": 15, "Min": -15 },
+      "TargetNodes": ["Head"]
+    },
+    "Yaw": {
+      "AngleRange": { "Max": 15, "Min": -15 },
+      "TargetNodes": ["Head"]
+    }
+  },
+  "AnimationSets": {
+    "Walk": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Walk.blockyanim" }
+      ]
+    },
+    "Attack": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Attack.blockyanim" }
+      ]
+    },
+    "Idle": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Idle.blockyanim" }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/BossSlime/Animations/Default/Death.blockyanim",
+          "Loop": false
+        }
+      ]
+    },
+    "Walk_Backward": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Walk_Backward.blockyanim" }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Run.blockyanim" }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Crouch.blockyanim" }
+      ]
+    },
+    "Crouch_Walk": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Crouch_Walk.blockyanim" }
+      ]
+    },
+    "Crouch_Walk_Backward": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Crouch_Walk_Backward.blockyanim" }
+      ]
+    }
+  },
+  "Icon": "Icons/ModelsGenerated/BossSlime_Minion.png",
+  "IconProperties": {
+    "Scale": 0.25,
+    "Rotation": [0, -45, 0],
+    "Translation": [0, -61]
+  }
+}
+```
+
+### Server Model Fields
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `Model` | String | Path to `.blockymodel` file (relative to `Common/`) |
+| `Texture` | String | Path to texture `.png` (relative to `Common/`) |
+| `EyeHeight` | Number | Vertical position of the NPC's eyes in blocks — affects camera and line of sight |
+| `CrouchOffset` | Number | How far the model drops when crouching |
+| `HitBox` | Object | Bounding box for damage detection. `Min`/`Max` define the corners in blocks |
+| `Camera` | Object | How the NPC's head tracks targets. `TargetNodes` must match group names in the model |
+| `AnimationSets` | Object | Maps game states to animation files. Each set can have multiple weighted animations |
+| `Icon` | String | Spawn menu icon path (relative to `Common/`) |
+| `IconProperties` | Object | Scale, rotation, and translation for the icon render |
+
+:::caution[Animation Set Names Are Fixed]
+The engine expects specific animation set names: `Idle`, `Walk`, `Walk_Backward`, `Run`, `Attack`, `Death`, `Crouch`, `Crouch_Walk`, `Crouch_Walk_Backward`. Using different names will cause the NPC to freeze in its idle pose during that action.
+:::
+
+---
+
+## Step 5: Define the NPC Role
+
+The NPC Role defines behavior and stats. Instead of writing AI from scratch, Hytale uses **template inheritance** — you pick a behavior template and override only what differs.
+
+Create `Server/NPC/Roles/Boss_Slime_Minion.json`:
 
 ```json
 {
   "Type": "Variant",
-  "Reference": "Template_Beasts_Passive_Critter",
+  "Reference": "Template_Predator",
   "Modify": {
-    "Appearance": "Gecko",
-    "DropList": "Drop_Mossbug",
-    "MaxHealth": 12,
+    "Appearance": "BossSlime_Minion",
+    "MaxHealth": 75,
+    "KnockbackScale": 0.5,
     "IsMemory": true,
-    "MemoriesCategory": "Critter",
-    "MemoriesNameOverride": "Mossbug",
+    "MemoriesCategory": "Boss",
     "NameTranslationKey": {
       "Compute": "NameTranslationKey"
     }
   },
   "Parameters": {
     "NameTranslationKey": {
-      "Value": "server.npcRoles.Mossbug.name",
+      "Value": "server.npcRoles.Boss_Slime_Minion.name",
       "Description": "Translation key for NPC name display"
     }
   }
 }
 ```
 
-### Modify fields explained
+### How Template Inheritance Works
 
-| Field | Purpose |
-|-------|---------|
-| `Appearance` | The model and animation set to render. Must match a known appearance name |
-| `DropList` | ID of the drop table file (without `.json`). Resolved from `Assets/Server/Drops/` |
-| `MaxHealth` | Hit points. Vanilla critters use 10–20. Squirrel and Frog both use 15 |
-| `IsMemory` | Whether the player can unlock this creature in their Memories bestiary |
-| `MemoriesCategory` | Bestiary category tab: `Critter`, `Beast`, `Livestock`, `Other` |
-| `MemoriesNameOverride` | The display name used in the Memories screen |
-| `NameTranslationKey` | Translation key for the name shown above the NPC's head |
+The `"Type": "Variant"` + `"Reference": "Template_Predator"` pattern means:
 
-### Parameters
+1. **Start with** all fields from `Template_Predator` (hostile AI, chase logic, attack patterns, view range)
+2. **Override** only the fields listed in `"Modify"` (appearance, health, knockback, etc.)
+3. **Everything else** (decision making, combat logic, movement speeds) comes from the template
 
-The `Parameters` block defines values that the template accesses via `{ "Compute": "FieldName" }`. Setting `NameTranslationKey` here feeds into the template's `"NameTranslationKey": { "Compute": "NameTranslationKey" }` expression.
+### Available NPC Templates
 
-### Optional overrides
+| Template | Behavior | Use For |
+|----------|----------|---------|
+| `Template_Predator` | Hostile — chases and attacks players on sight | Enemies, bosses, hostile creatures |
+| `Template_Prey` | Passive — flees when threatened | Rabbits, deer, small animals |
+| `Template_Neutral` | Neutral — attacks only when provoked | Bears, wolves |
+| `Template_Domestic` | Tame — follows owner, can be penned | Farm animals, pets |
+| `Template_Beasts_Passive_Critter` | Passive critter — wanders, flees | Squirrels, frogs, bugs |
 
-The `Template_Beasts_Passive_Critter` template exposes additional parameters you can set under `Modify`:
+### NPC Role Fields
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `Appearance` | String | Must match the Server Model filename (without `.json`). This is how the engine links the Role to the Model |
+| `MaxHealth` | Number | Hit points. Vanilla enemies range from 30 (Skeleton) to 500+ (bosses) |
+| `KnockbackScale` | Number | Resistance to knockback. `1.0` = normal, `0.5` = half knockback, `0` = immovable |
+| `IsMemory` | Boolean | Whether the NPC appears in the player's Memories bestiary |
+| `MemoriesCategory` | String | Bestiary tab: `Critter`, `Beast`, `Boss`, `Other` |
+| `NameTranslationKey` | Compute | Translation key for the name shown above the NPC's head |
+
+### The Compute Pattern
 
 ```json
-"Modify": {
-  "Appearance": "Gecko",
-  "DropList": "Drop_Mossbug",
-  "MaxHealth": 12,
-  "MaxSpeed": 7,
-  "WanderRadius": 8,
-  "ViewRange": 12,
-  "HearingRange": 12,
-  "AttractiveItems": ["Food_Bread", "Ingredient_Fibre"]
+"NameTranslationKey": {
+  "Compute": "NameTranslationKey"
 }
 ```
 
-`AttractiveItems` causes the critter to investigate and pick up dropped items from the named list — useful for taming or baiting mechanics.
+This tells the engine: "get the value of `NameTranslationKey` from the `Parameters` block." The `Parameters` section then provides the actual value:
+
+```json
+"Parameters": {
+  "NameTranslationKey": {
+    "Value": "server.npcRoles.Boss_Slime_Minion.name",
+    "Description": "Translation key for NPC name display"
+  }
+}
+```
+
+This indirection exists because templates use `Compute` to read values that each variant defines differently. Every slime variant provides its own `NameTranslationKey` value, but the template's logic for using it stays the same.
 
 ---
 
-## Step 3: Create a Drop Table
+## Step 6: Create the Drop Table
 
-Drop tables live in `Assets/Server/Drops/`. Vanilla NPC drops are organised under `Drops/NPCs/<Category>/`. Create:
+The drop table controls what loot falls when the NPC dies. Hytale uses a **weighted random selection** system.
 
-```
-YourMod/Assets/Server/Drops/NPCs/Critter/Drop_Mossbug.json
-```
-
-The `Container` structure uses a weight-based selection system. `Type: "Multiple"` runs all child containers in order. `Type: "Choice"` picks one child at random, weighted by the `Weight` field.
+Create `Server/Drops/Drop_BossSlime.json`:
 
 ```json
 {
   "Container": {
-    "Type": "Multiple",
+    "Type": "Choice",
     "Containers": [
       {
-        "Type": "Choice",
-        "Weight": 100,
-        "Containers": [
-          {
-            "Type": "Single",
-            "Item": {
-              "ItemId": "Ingredient_Fibre",
-              "QuantityMin": 1,
-              "QuantityMax": 2
-            }
-          }
-        ]
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ore_Crystal_Slime",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        },
+        "Weight": 100
       },
       {
-        "Type": "Choice",
-        "Weight": 30,
-        "Containers": [
-          {
-            "Type": "Single",
-            "Item": {
-              "ItemId": "Ingredient_Crystal",
-              "QuantityMin": 1,
-              "QuantityMax": 1
-            }
-          }
-        ]
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Consumable_Potion_Health_Large"
+        },
+        "Weight": 60
+      },
+      {
+        "Type": "Empty",
+        "Weight": 40
       }
     ]
   }
 }
 ```
 
-This table always drops 1–2 Fibre (weight 100 out of 100 in that group) and has a 30% chance of also dropping 1 Crystal. Compare to `Drop_Bear_Grizzly.json` which uses two separate `Choice` groups each with `Weight: 100` to guarantee both a hide and meat drop.
+### How Weighted Selection Works
 
-### Drop container types
+The root `"Type": "Choice"` picks **one** child container at random, proportional to weight:
 
-| Type | Behaviour |
-|------|-----------|
-| `Multiple` | Evaluates all child containers |
-| `Choice` | Picks one child proportional to `Weight` |
-| `Single` | Yields the specified `Item` with a random quantity between `QuantityMin` and `QuantityMax` |
+| Drop | Weight | Probability |
+|------|--------|-------------|
+| Crystal Slime Ore (1) | 100 | 100/200 = **50%** |
+| Health Potion (Large) | 60 | 60/200 = **30%** |
+| Nothing | 40 | 40/200 = **20%** |
 
-If you want a critter to drop nothing (like vanilla Squirrel and Frog), simply create an empty object:
+Total weight = 100 + 60 + 40 = 200. Each weight is divided by the total to get the probability.
 
-```json
-{}
-```
+### Drop Container Types
 
----
+| Type | Behavior |
+|------|----------|
+| `Choice` | Picks **one** child at random (weighted) |
+| `Multiple` | Evaluates **all** children (use for guaranteed + bonus drops) |
+| `Single` | Yields the specified `Item` with quantity between `QuantityMin` and `QuantityMax` |
+| `Empty` | Drops nothing — use as a "no drop" option in `Choice` containers |
 
-## Step 4: Create Spawn Rules
-
-Spawn rules tell the world generator where and when to place your NPC. Spawn files live in `Assets/Server/NPC/Spawn/World/<Zone>/`.
-
-Create:
-
-```
-YourMod/Assets/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_MyMod_Critter.json
-```
-
-```json
-{
-  "Environments": [
-    "Env_Zone1_Forests",
-    "Env_Zone1_Autumn"
-  ],
-  "NPCs": [
-    {
-      "Weight": 3,
-      "SpawnBlockSet": "Soil",
-      "Id": "Mossbug",
-      "Flock": "One_Or_Two"
-    }
-  ],
-  "DayTimeRange": [
-    6,
-    18
-  ]
-}
-```
-
-### Spawn fields explained
-
-| Field | Purpose |
-|-------|---------|
-| `Environments` | Which environment biomes this file applies to. Matches environment IDs used by world generation |
-| `NPCs` | List of NPCs that can spawn in these environments |
-| `Weight` | Relative likelihood of this NPC being chosen versus others in the same file. Higher = more common. Squirrel uses `Weight: 6` in Zone 1 forests |
-| `SpawnBlockSet` | Surface type the NPC spawns on: `Soil` (ground), `Birds` (air, for flying NPCs), `Water` (aquatic) |
-| `Id` | The NPC role ID — matches the filename of your role JSON without `.json` |
-| `Flock` | Group size at spawn. Available values: `One_Or_Two`, `Group_Small`, `Group_Large` |
-| `DayTimeRange` | Hour range `[start, end]` during which this file's spawns are active. `[6, 18]` = daytime only |
-
-For a nocturnal critter, use `"DayTimeRange": [20, 6]` (wraps midnight).
-
-### Available environments (Zone 1 examples)
-
-| Environment ID | Description |
-|----------------|-------------|
-| `Env_Zone1_Forests` | Standard temperate forest |
-| `Env_Zone1_Autumn` | Autumn coloured forest |
-| `Env_Zone1_Azure` | Azure (blue-tinted) forest variant |
-| `Env_Zone1_Mountains_Critter` | Mountain terrain |
+:::tip[Multiple Guaranteed Drops]
+To always drop one item AND have a chance at a second, use `Multiple` at the root with two `Choice` children — one guaranteed, one with an `Empty` option. See [Drop Tables Reference](/hytale-modding-docs/reference/economy-and-progression/drop-tables/) for advanced patterns.
+:::
 
 ---
 
-## Step 5: Add Translation Keys
+## Step 7: Add Translations
 
-Add NPC name text to your mod's language file:
+Create a `server.lang` file for each language under `Server/Languages/`:
 
-```
-YourMod/Assets/Languages/en-US.lang
+**`Server/Languages/en-US/server.lang`**
+```properties
+npcRoles.Boss_Slime_Minion.name = Slime Minion
 ```
 
+**`Server/Languages/es/server.lang`**
+```properties
+npcRoles.Boss_Slime_Minion.name = Slime Esbirro
 ```
-server.npcRoles.Mossbug.name=Mossbug
+
+**`Server/Languages/pt-BR/server.lang`**
+```properties
+npcRoles.Boss_Slime_Minion.name = Slime Lacaio
 ```
+
+The translation key in the `.lang` file must match the `Parameters.NameTranslationKey.Value` in the NPC Role — but **without** the `server.` prefix. The engine adds the prefix automatically when resolving server-side language files.
 
 ---
 
-## Step 6: Test In-Game
+## Step 8: Package and Test
 
-1. Place your mod folder in the server mods directory.
-2. Start the server. Watch the console for errors about unknown role IDs, missing appearances, or invalid drop table references.
-3. Use the developer NPC spawner to force-spawn `Mossbug` at your location.
-4. Confirm the model renders, the NPC wanders, and it flees when you approach.
-5. Kill the Mossbug and verify the drop table yields Fibre (and occasionally Crystal).
-6. Travel to a Zone 1 Forest biome and confirm Mossbugs appear naturally during the day.
+1. Copy the `CreateACustomNPC/` folder to `%APPDATA%/Hytale/UserData/Mods/`
 
-**Common errors and fixes:**
+2. Launch Hytale and enter **Creative Mode**
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `Unknown reference: Template_Beasts_Passive_Critter` | Template not found | Ensure vanilla assets are loaded before your mod |
-| `Unknown appearance: Gecko` | Appearance name typo | Check `Assets/Server/NPC/Roles/` for valid appearance names |
-| `Unknown drop list: Drop_Mossbug` | Drop file path wrong | Confirm file is at `Drops/NPCs/Critter/Drop_Mossbug.json` |
-| NPC not spawning naturally | Wrong environment ID | Cross-reference environment names with vanilla spawn files |
+3. Check the log at `%APPDATA%/Hytale/UserData/Logs/` for your mod loading:
+   ```text
+   [Hytale] Loading assets from: ...\Mods\CreateACustomNPC\Server
+   [AssetRegistryLoader] Loading assets from ...\Mods\CreateACustomNPC\Server
+   ```
+
+4. Open the NPC spawn menu and search for **Slime Minion**
+
+5. Spawn the NPC and verify:
+   - The model renders correctly with the slime texture
+   - The NPC is hostile and chases you on sight
+   - Attack, walk, run, and death animations play correctly
+   - The name "Slime Minion" appears above its head
+   - Killing it drops one of: Crystal Slime Ore (50%), Health Potion (30%), or nothing (20%)
 
 ---
 
-## Complete Files
+## Common Pitfalls
 
-### `YourMod/Assets/Server/NPC/Roles/MyMod/Mossbug.json`
-```json
-{
-  "Type": "Variant",
-  "Reference": "Template_Beasts_Passive_Critter",
-  "Modify": {
-    "Appearance": "Gecko",
-    "DropList": "Drop_Mossbug",
-    "MaxHealth": 12,
-    "IsMemory": true,
-    "MemoriesCategory": "Critter",
-    "MemoriesNameOverride": "Mossbug",
-    "NameTranslationKey": {
-      "Compute": "NameTranslationKey"
-    }
-  },
-  "Parameters": {
-    "NameTranslationKey": {
-      "Value": "server.npcRoles.Mossbug.name",
-      "Description": "Translation key for NPC name display"
-    }
-  }
-}
-```
-
-### `YourMod/Assets/Server/Drops/NPCs/Critter/Drop_Mossbug.json`
-```json
-{
-  "Container": {
-    "Type": "Multiple",
-    "Containers": [
-      {
-        "Type": "Choice",
-        "Weight": 100,
-        "Containers": [
-          {
-            "Type": "Single",
-            "Item": {
-              "ItemId": "Ingredient_Fibre",
-              "QuantityMin": 1,
-              "QuantityMax": 2
-            }
-          }
-        ]
-      },
-      {
-        "Type": "Choice",
-        "Weight": 30,
-        "Containers": [
-          {
-            "Type": "Single",
-            "Item": {
-              "ItemId": "Ingredient_Crystal",
-              "QuantityMin": 1,
-              "QuantityMax": 1
-            }
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### `YourMod/Assets/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_MyMod_Critter.json`
-```json
-{
-  "Environments": [
-    "Env_Zone1_Forests",
-    "Env_Zone1_Autumn"
-  ],
-  "NPCs": [
-    {
-      "Weight": 3,
-      "SpawnBlockSet": "Soil",
-      "Id": "Mossbug",
-      "Flock": "One_Or_Two"
-    }
-  ],
-  "DayTimeRange": [
-    6,
-    18
-  ]
-}
-```
-
-### `YourMod/Assets/Languages/en-US.lang`
-```
-server.npcRoles.Mossbug.name=Mossbug
-```
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| `Common Asset 'path' must be within the root` | Model/texture path doesn't start with `NPC/`, `Icons/`, etc. | Move files under an allowed root directory in `Common/` |
+| `Common Asset 'path' doesn't exist` | Path in JSON doesn't match the actual file location | Double-check every path in the Server Model — they're relative to `Common/` |
+| NPC spawns but is invisible | Server Model `Model` path is wrong or `.blockymodel` is corrupted | Re-export from Blockbench, verify the path |
+| NPC stands still, won't attack | Wrong template or missing animations | Verify `Reference` is `Template_Predator` and all 9 animation sets exist |
+| NPC slides without animation | Animation set name doesn't match expected name | Use exact names: `Walk`, `Run`, `Idle`, `Attack`, `Death`, etc. |
+| Name doesn't show above NPC | Translation key mismatch | Ensure `.lang` key matches `Parameters.NameTranslationKey.Value` minus the `server.` prefix |
+| Death animation loops | Missing `"Loop": false` on Death animation | Add `"Loop": false` to the Death entry in `AnimationSets` |
+| Drop table not working | `DropList` field missing from NPC Role | Add `"DropList": "Drop_BossSlime"` to the `Modify` block (omitted here since `Template_Predator` handles it) |
 
 ---
 
 ## Next Steps
 
-- [Create a Custom Item](/hytale-modding-docs/tutorials/beginner/create-an-item) — add a weapon that your NPC could potentially drop
-- [Create a Custom Block](/hytale-modding-docs/tutorials/beginner/create-a-block) — create a block drop for your NPC's loot table
-- [JSON Basics](/hytale-modding-docs/getting-started/json-basics) — reference for weight-based selection and computed values
+- [Create a Custom Block](/hytale-modding-docs/tutorials/beginner/create-a-block/) — Build a glowing crystal block to use as an NPC drop
+- [Create a Custom Weapon](/hytale-modding-docs/tutorials/beginner/create-an-item/) — Create a sword to fight your new NPC
+- [NPC Roles Reference](/hytale-modding-docs/reference/npc-system/npc-roles/) — Complete schema reference for NPC role definitions
+- [Drop Tables Reference](/hytale-modding-docs/reference/economy-and-progression/drop-tables/) — Advanced drop table patterns with nested containers
