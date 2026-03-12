@@ -1,126 +1,153 @@
 ---
 title: Create a Custom Block
-description: Step-by-step tutorial for adding a new placeable block to Hytale using real block definition JSON.
+description: Build a custom block in Blockbench, wire it into Hytale JSON, and test it in game.
 ---
 
 ## Goal
 
-Build a glowing crystal block that players can craft, place, and collect. You will create a texture, define the block in JSON, register it in a BlockTypeList, and create an item definition so it can appear in the player's inventory.
+In this tutorial you will build a real custom block workflow:
+
+1. model the block in Blockbench
+2. export the runtime `.blockymodel`
+3. save the texture and icon
+4. register the block and item in JSON
+5. package the mod and test it in game
+
+The worked example used here is a glowing crystal block called `Block_Crystal_Glow`.
+
+Worked example repository:
+
+- `https://github.com/nevesb/hytale-mods-custom-block`
+
+Key files from that repository:
+
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/source-assets/blockbench/Crystal_Glow.bbmodel`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Server/Languages/en-US/server.lang`
 
 ## Prerequisites
 
-- A mod folder set up with a valid `manifest.json` (see [Setup Your Dev Environment](/hytale-modding-docs/tutorials/beginner/setup-dev-environment))
-- A PNG image editor (Aseprite, Photoshop, GIMP, or similar) capable of exporting 16x16 or 32x32 PNGs
-- Basic familiarity with JSON (see [JSON Basics](/hytale-modding-docs/getting-started/json-basics))
+- A mod folder with a valid `manifest.json`
+- Blockbench for authoring the source model
+- A Hytale build compatible with your `TargetServerVersion`
+- Basic familiarity with JSON
 
----
-
-## Step 1: Create the Texture
-
-Block textures in Hytale are standard PNG files. The engine supports both **16x16** and **32x32** pixel textures. All vanilla textures live under `Assets/Common/BlockTextures/` — your mod textures follow the same convention but inside your mod's folder.
-
-Create a 16x16 PNG and save it to:
-
-```
-YourMod/Assets/Common/BlockTextures/MyMod/Crystal_Glow.png
-```
-
-**Texture guidelines:**
-- Keep the pixel art style consistent with vanilla blocks (solid colours, no anti-aliasing)
-- 16x16 is the standard resolution; 32x32 works for high-detail blocks
-- The filename becomes part of your texture reference path
-
-If you want different textures on the top, bottom, and sides, create three files:
-
-```
-YourMod/Assets/Common/BlockTextures/MyMod/Crystal_Glow_Top.png
-YourMod/Assets/Common/BlockTextures/MyMod/Crystal_Glow_Side.png
-YourMod/Assets/Common/BlockTextures/MyMod/Crystal_Glow_Bottom.png
-```
-
----
-
-## Step 2: Create the Block Definition JSON
-
-Every block needs a JSON definition file. The engine looks for block files in:
-
-```
-Assets/Server/Item/Block/Blocks/
-```
-
-Create your block file at:
-
-```
-YourMod/Assets/Server/Item/Block/Blocks/MyMod/Block_Crystal_Glow.json
-```
-
-The simplest block definition — matching the pattern from `Assets/Server/Item/Block/Blocks/_Debug/Debug_Test_Block.json` — uses a single `"All"` texture key to apply the same texture to every face:
+For an asset-only tutorial mod, your manifest should look like this:
 
 ```json
 {
-  "Textures": [
+  "Group": "HytaleModdingManual",
+  "Name": "CreateACustomBlock",
+  "Version": "1.0.0",
+  "Description": "Implements the Create A Block tutorial with a custom crystal block",
+  "Authors": [
     {
-      "All": "MyMod/Crystal_Glow.png"
+      "Name": "HytaleModdingManual"
     }
   ],
-  "Material": "Solid",
-  "Light": {
-    "Color": "#88ccff"
-  }
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "IncludesAssetPack": true,
+  "TargetServerVersion": "2026.02.19-1a311a592"
 }
 ```
 
-### Texture keys
+## Step 1: Build the Block in Blockbench
 
-| Key | Which faces it applies to |
-|-----|--------------------------|
-| `All` | Every face |
-| `Top` | Top face only |
-| `Bottom` | Bottom face only |
-| `Side` | All four side faces |
-| `North` / `South` / `East` / `West` | Individual side faces |
+Instead of using a plain cube with a single texture, start from a real Blockbench model.
 
-For a block with a distinct top texture:
+For the crystal example, the authoring file is:
+
+```text
+source-assets/blockbench/Crystal_Glow.bbmodel
+```
+
+This source model contains:
+
+- the custom crystal silhouette
+- the final UV layout
+- the painted texture atlas used by the exported block
+
+When your model is ready, export it to:
+
+```text
+Assets/Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel
+```
+
+## Step 2: Save the Texture and Icon
+
+The block texture used by the exported model goes here:
+
+```text
+Assets/Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png
+```
+
+The inventory icon goes here:
+
+```text
+Assets/Common/Icons/ItemsGenerated/Block_Crystal_Glow.png
+```
+
+In the worked crystal example:
+
+- the block uses a custom painted texture atlas
+- the item icon is generated from the final block art
+
+## Step 3: Create the Standalone Block Definition
+
+Create the block definition at:
+
+```text
+Assets/Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
+```
+
+For the custom-model workflow, the block should point to the exported `.blockymodel` and texture:
 
 ```json
 {
-  "Textures": [
+  "Material": "Solid",
+  "DrawType": "Model",
+  "Opacity": "Transparent",
+  "VariantRotation": "NESW",
+  "CustomModel": "Blocks/HytaleModdingManual/Crystal_Glow.blockymodel",
+  "CustomModelTexture": [
     {
-      "Top": "MyMod/Crystal_Glow_Top.png",
-      "Side": "MyMod/Crystal_Glow_Side.png",
-      "Bottom": "MyMod/Crystal_Glow_Bottom.png"
+      "Texture": "BlockTextures/HytaleModdingManual/Crystal_Glow.png",
+      "Weight": 1
     }
   ],
-  "Material": "Solid",
+  "HitboxType": "Full",
+  "Gathering": {
+    "Breaking": {
+      "GatherType": "Rocks",
+      "ItemId": "Block_Crystal_Glow"
+    }
+  },
   "Light": {
-    "Color": "#88ccff"
-  }
+    "Color": "#88ccff",
+    "Level": 14
+  },
+  "BlockSoundSetId": "Crystal",
+  "ParticleColor": "#88ccff"
 }
 ```
 
-### Material values
+Notes:
 
-| Value | Behaviour |
-|-------|-----------|
-| `Solid` | Fully opaque, standard collision |
-| `Transparent` | See-through (glass) |
-| `Liquid` | Fluid physics |
-| `Empty` | No collision (used for item world models) |
+- `DrawType: "Model"` tells Hytale to use the exported custom model instead of a default cube
+- `CustomModel` points to the `.blockymodel`
+- `CustomModelTexture` points to the texture used by that model
+- `Gathering.Breaking.ItemId` makes the block drop itself when broken
 
-### Light
+## Step 4: Register the Block in a BlockTypeList
 
-The optional `Light` object makes the block emit light. `Color` is a hex colour string — the RGB values control the tint and brightness of the emitted light. Omit `Light` entirely for a non-glowing block.
+Create the list file at:
 
----
-
-## Step 3: Register in a BlockTypeList
-
-The engine discovers blocks through **BlockTypeList** files in `Assets/Server/BlockTypeList/`. Each list is a JSON object containing a `"Blocks"` array of block IDs. The block ID is the filename of your block JSON without the `.json` extension.
-
-Create a new list file for your mod:
-
-```
-YourMod/Assets/Server/BlockTypeList/MyMod_Blocks.json
+```text
+Assets/Server/BlockTypeList/HytaleModdingManual_Blocks.json
 ```
 
 ```json
@@ -131,18 +158,16 @@ YourMod/Assets/Server/BlockTypeList/MyMod_Blocks.json
 }
 ```
 
-Add more entries to this same list as your mod grows. You do not need to modify any vanilla BlockTypeList files — the engine merges all list files from all mods automatically.
+Hytale merges block lists from mods automatically. You do not need to modify any vanilla file.
 
----
+## Step 5: Create the Item Definition
 
-## Step 4: Create the Item Definition
-
-A block in the world and an item in the player's inventory are two separate concepts. You need an **item definition** that tells the engine how the block looks in hand, what quality it is, and (optionally) how it is crafted.
+The item definition makes the block appear in inventory and tells the game how to place it.
 
 Create:
 
-```
-YourMod/Assets/Server/Item/Items/MyMod/Block_Crystal_Glow.json
+```text
+Assets/Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
 ```
 
 ```json
@@ -151,155 +176,149 @@ YourMod/Assets/Server/Item/Items/MyMod/Block_Crystal_Glow.json
     "Name": "server.items.Block_Crystal_Glow.name",
     "Description": "server.items.Block_Crystal_Glow.description"
   },
+  "Interactions": {
+    "Primary": "Block_Primary",
+    "Secondary": "Block_Secondary"
+  },
   "Quality": "Uncommon",
-  "Icon": "Icons/MyMod/Block_Crystal_Glow.png",
+  "Icon": "Icons/ItemsGenerated/Block_Crystal_Glow.png",
+  "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Block",
-    "Opacity": "Opaque"
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "VariantRotation": "NESW",
+    "CustomModel": "Blocks/HytaleModdingManual/Crystal_Glow.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/HytaleModdingManual/Crystal_Glow.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks",
+        "ItemId": "Block_Crystal_Glow"
+      }
+    },
+    "Light": {
+      "Color": "#88ccff",
+      "Level": 14
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#88ccff"
   },
   "MaxStack": 64,
-  "Recipe": {
-    "Input": [
-      {
-        "ItemId": "Ingredient_Crystal",
-        "Quantity": 4
-      }
-    ],
-    "Output": [
-      {
-        "ItemId": "Block_Crystal_Glow",
-        "Quantity": 4
-      }
-    ],
-    "BenchRequirement": [
-      {
-        "Type": "Crafting",
-        "Id": "Craftingbench",
-        "Categories": [
-          "Blocks"
-        ]
-      }
-    ],
-    "TimeSeconds": 3
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [22.5, 45, 22.5],
+    "Translation": [0, -13.5]
   }
 }
 ```
 
-**Translation keys** are resolved from your mod's language file. Create:
+This is the key difference from a simple “textured cube” tutorial: the item and the standalone block both point to the same custom exported model and texture.
 
-```
-YourMod/Assets/Languages/en-US.lang
-```
+## Step 6: Add Localisation
 
-```
-server.items.Block_Crystal_Glow.name=Glowing Crystal Block
-server.items.Block_Crystal_Glow.description=A crystal block that radiates soft blue light.
-```
+Create a language file for each locale you want to support:
 
-**Icon:** The `Icon` path points to a PNG inside your mod's assets. At minimum, export a 64x64 PNG of your block for the inventory slot icon.
-
----
-
-## Step 5: Test In-Game
-
-1. Place your mod folder inside the server's mod directory.
-2. Start the server. Watch the console for JSON validation errors — they always include the filename and field name.
-3. Use the in-game item spawner (developer mode) to give yourself `Block_Crystal_Glow`.
-4. Place it in the world and confirm the texture and light emission appear correctly.
-
-**Common errors and fixes:**
-
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `Unknown block id` | Block not in any BlockTypeList | Add it to `MyMod_Blocks.json` |
-| `Texture not found` | Wrong path in `"All"` / `"Top"` etc. | Check the path relative to `BlockTextures/` |
-| `Missing field: Material` | Block JSON incomplete | Add `"Material": "Solid"` |
-| Item not showing in crafting | Wrong bench `Id` | Match the exact bench ID from vanilla data |
-
----
-
-## Complete Files
-
-### `YourMod/Assets/Common/BlockTextures/MyMod/Crystal_Glow.png`
-*(your 16x16 PNG texture — not shown)*
-
-### `YourMod/Assets/Server/Item/Block/Blocks/MyMod/Block_Crystal_Glow.json`
-```json
-{
-  "Textures": [
-    {
-      "All": "MyMod/Crystal_Glow.png"
-    }
-  ],
-  "Material": "Solid",
-  "Light": {
-    "Color": "#88ccff"
-  }
-}
+```text
+Assets/Server/Languages/en-US/server.lang
+Assets/Server/Languages/pt-BR/server.lang
+Assets/Server/Languages/es/server.lang
 ```
 
-### `YourMod/Assets/Server/BlockTypeList/MyMod_Blocks.json`
-```json
-{
-  "Blocks": [
-    "Block_Crystal_Glow"
-  ]
-}
+Example:
+
+```text
+items.Block_Crystal_Glow.name = Glowing Crystal Block
+items.Block_Crystal_Glow.description = A crystal block that radiates soft blue light.
 ```
 
-### `YourMod/Assets/Server/Item/Items/MyMod/Block_Crystal_Glow.json`
+And in the item JSON, keep the translation keys as:
+
 ```json
 {
   "TranslationProperties": {
     "Name": "server.items.Block_Crystal_Glow.name",
     "Description": "server.items.Block_Crystal_Glow.description"
-  },
-  "Quality": "Uncommon",
-  "Icon": "Icons/MyMod/Block_Crystal_Glow.png",
-  "BlockType": {
-    "Material": "Solid",
-    "DrawType": "Block",
-    "Opacity": "Opaque"
-  },
-  "MaxStack": 64,
-  "Recipe": {
-    "Input": [
-      {
-        "ItemId": "Ingredient_Crystal",
-        "Quantity": 4
-      }
-    ],
-    "Output": [
-      {
-        "ItemId": "Block_Crystal_Glow",
-        "Quantity": 4
-      }
-    ],
-    "BenchRequirement": [
-      {
-        "Type": "Crafting",
-        "Id": "Craftingbench",
-        "Categories": [
-          "Blocks"
-        ]
-      }
-    ],
-    "TimeSeconds": 3
   }
 }
 ```
 
-### `YourMod/Assets/Languages/en-US.lang`
-```
-server.items.Block_Crystal_Glow.name=Glowing Crystal Block
-server.items.Block_Crystal_Glow.description=A crystal block that radiates soft blue light.
+## Step 7: Package the Mod
+
+For runtime, the mod folder should be flat:
+
+```text
+CreateACustomBlock/
+  Common/
+  Server/
+  manifest.json
 ```
 
----
+In this worked project, the packaged output lives at:
+
+```text
+dist/CreateACustomBlock
+```
+
+That folder is the version you copy into the Hytale mods directory.
+
+## Step 8: Test In Game
+
+1. Copy `dist/CreateACustomBlock` into your Hytale mods folder.
+2. Start the game or reload the mod environment.
+3. Spawn `Block_Crystal_Glow`.
+4. Place the block in the world.
+5. Confirm:
+   - the custom crystal model appears
+   - the block emits light
+   - the crystal sound set is used
+   - the block drops itself when broken
+
+### Final Result
+
+Add a real in-game screenshot to:
+
+```text
+../tutorials/hytale-guide-create-a-block/qa/screenshots/create-a-block/final-result.png
+```
+
+Recommended caption:
+
+> Custom crystal block placed in game with its exported Blockbench model, texture, and light emission.
+
+## Common Problems
+
+| Problem | Cause | Fix |
+|---|---|---|
+| The block appears as a cube | `DrawType` or `CustomModel` is wrong, or the `.blockymodel` failed to parse | Re-export the model and verify `DrawType: "Model"` |
+| The mod fails to load with a parent error | The block JSON has an accidental `Parent` field | Remove the invalid inheritance entry |
+| The icon is missing | The `Icon` path is wrong | Use a valid path under `Icons/Items` or `Icons/ItemsGenerated` |
+| The block texture is wrong | UVs or texture path are incorrect | Recheck Blockbench UVs and `CustomModelTexture` |
+| The name shows as a key instead of text | Localisation path or key format is wrong | Verify `Server/Languages/<locale>/server.lang` and the `server.items.*` JSON keys |
+
+## Complete File Set
+
+```text
+manifest.json
+Assets/Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel
+Assets/Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png
+Assets/Common/Icons/ItemsGenerated/Block_Crystal_Glow.png
+Assets/Server/BlockTypeList/HytaleModdingManual_Blocks.json
+Assets/Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
+Assets/Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
+Assets/Server/Languages/en-US/server.lang
+source-assets/blockbench/Crystal_Glow.bbmodel
+```
 
 ## Next Steps
 
-- [Create a Custom Item](/hytale-modding-docs/tutorials/beginner/create-an-item) — add a weapon or tool that players can craft
-- [Create a Custom NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc) — spawn a creature that drops your new block
-- [JSON Basics](/hytale-modding-docs/getting-started/json-basics) — deeper explanation of templates, computed values, and weight-based selection
+- [Create a Custom Item](/hytale-modding-docs/tutorials/beginner/create-an-item)
+- [Create a Custom NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc)
+- [JSON Basics](/hytale-modding-docs/getting-started/json-basics)
