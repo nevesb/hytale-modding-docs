@@ -74,6 +74,21 @@ Key patterns found across asset JSON files:
 - **Interaction chaining**: Sequential action definitions in item interactions
 - **Translation keys**: `hytale.item.name.xxx` format referencing `.lang` files
 
+## Mermaid Diagrams
+
+Mermaid is loaded via CDN in `astro.config.mjs`. Shiki/Expressive Code processes ```mermaid blocks before the client-side script converts them to rendered diagrams.
+
+**Critical syntax rules:**
+- Line breaks in node labels MUST use `<br>` (NOT `\n`)
+- Every mermaid statement line MUST end with `;`
+- The `flowchart` declaration MUST also end with `;`
+
+```mermaid
+flowchart TD;
+    A[Player Finds<br>Dungeon Portal] --> B[Enter Instance];
+    style A fill:#2d5a27,color:#fff;
+```
+
 ## Content Conventions
 
 - Reference pages: Overview → File Location → Schema Table → JSON Example → Related Pages
@@ -81,3 +96,4 @@ Key patterns found across asset JSON files:
 - Schema tables use: Field | Type | Required | Default | Description
 - JSON examples use real sanitized data from Assets/
 - Internal links use `/hytale-modding-docs/` prefix
+- Tutorial images go in `public/images/tutorials/<tutorial-name>/`
