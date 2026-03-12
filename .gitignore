@@ -22,3 +22,6 @@ __pycache__/
 .omc/
 
 TODO.md
+
+# Nested guide-project repos
+guide-projects/**/.git/

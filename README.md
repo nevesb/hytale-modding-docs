@@ -47,6 +47,10 @@ Machine-readable [JSON Schema 2020-12](https://json-schema.org/) files in `schem
 
 `public/llm-index.json` provides a machine-readable index of all pages and schemas, designed for AI tools to consume the documentation programmatically.
 
+### Guide Project Scaffolds
+
+`../tutorials/` contains one dedicated Git repository scaffold per English tutorial or showcase guide. Each scaffold points back to the canonical source page, includes a minimal `manifest.json`, and carries QA files that separate generated support media from real in-game proof.
+
 ---
 
 ## Languages
