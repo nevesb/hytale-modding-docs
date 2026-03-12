@@ -376,7 +376,11 @@ To test:
 
 1. Copy the mod folder into your Hytale mods directory (`%APPDATA%/Hytale/UserData/Mods/`)
 2. Start the game or reload the mod environment
-3. Spawn `Crystal_Sword` from the inventory
+3. Grant yourself operator permissions and spawn the sword using chat commands:
+   ```text
+   /op self
+   /spawnitem Crystal_Sword
+   ```
 4. Confirm:
    - The crystal sword model renders correctly when held
    - The crystal blade and tip glow with fullbright shading

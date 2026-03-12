@@ -458,9 +458,13 @@ La clave de traducción en el archivo `.lang` debe coincidir con el `Parameters.
    [AssetRegistryLoader] Loading assets from ...\Mods\CreateACustomNPC\Server
    ```
 
-4. Abre el menú de aparición de NPCs y busca **Slime**
+4. Otórgate permisos de operador y genera el Slime usando comandos de chat:
+   ```text
+   /op self
+   /npc spawn Slime
+   ```
 
-5. Invoca el NPC y verifica:
+5. Verifica:
 
 ![Slime invocado en el juego de noche, brillando en verde con la Espada de Cristal equipada](/hytale-modding-docs/images/tutorials/create-an-npc/slime-ingame.png)
 

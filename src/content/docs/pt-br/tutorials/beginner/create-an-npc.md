@@ -458,9 +458,13 @@ A chave de tradução no arquivo `.lang` deve corresponder ao `Parameters.NameTr
    [AssetRegistryLoader] Loading assets from ...\Mods\CreateACustomNPC\Server
    ```
 
-4. Abra o menu de spawn de NPCs e procure por **Slime**
+4. Conceda permissões de operador e gere o Slime usando comandos de chat:
+   ```text
+   /op self
+   /npc spawn Slime
+   ```
 
-5. Invoque o NPC e verifique:
+5. Verifique:
 
 ![Slime invocado no jogo à noite, brilhando verde com a Espada de Cristal equipada](/hytale-modding-docs/images/tutorials/create-an-npc/slime-ingame.png)
 

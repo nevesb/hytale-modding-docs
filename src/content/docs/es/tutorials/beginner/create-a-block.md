@@ -386,7 +386,11 @@ Para probar:
 
 1. Copia la carpeta del mod en tu directorio de mods de Hytale
 2. Inicia el juego o recarga el entorno de mods
-3. Genera `Block_Crystal_Glow` desde el inventario
+3. Otórgate permisos de operador y genera el bloque usando comandos de chat:
+   ```text
+   /op self
+   /spawnitem Block_Crystal_Glow
+   ```
 4. Coloca el bloque en el mundo
 5. Confirma:
    - El modelo personalizado del cristal aparece (no un cubo por defecto)

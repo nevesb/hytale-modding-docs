@@ -376,7 +376,11 @@ Para testar:
 
 1. Copie a pasta do mod para o diretório de mods do Hytale (`%APPDATA%/Hytale/UserData/Mods/`)
 2. Inicie o jogo ou recarregue o ambiente de mods
-3. Invoque `Crystal_Sword` a partir do inventário
+3. Conceda permissões de operador e gere a espada usando comandos de chat:
+   ```text
+   /op self
+   /spawnitem Crystal_Sword
+   ```
 4. Confirme:
    - O modelo da espada de cristal renderiza corretamente quando empunhado
    - A lâmina e a ponta do cristal brilham com sombreamento fullbright

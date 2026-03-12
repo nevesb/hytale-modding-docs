@@ -376,7 +376,11 @@ Para probar:
 
 1. Copia la carpeta del mod en tu directorio de mods de Hytale (`%APPDATA%/Hytale/UserData/Mods/`)
 2. Inicia el juego o recarga el entorno de mods
-3. Genera `Crystal_Sword` desde el inventario
+3. Otórgate permisos de operador y genera la espada usando comandos de chat:
+   ```text
+   /op self
+   /spawnitem Crystal_Sword
+   ```
 4. Confirma que:
    - El modelo de la espada de cristal se renderiza correctamente al sostenerla
    - La hoja y la punta de cristal brillan con sombreado fullbright

@@ -386,7 +386,11 @@ To test:
 
 1. Copy the mod folder into your Hytale mods directory
 2. Start the game or reload the mod environment
-3. Spawn `Block_Crystal_Glow` from the inventory
+3. Grant yourself operator permissions and spawn the block using chat commands:
+   ```text
+   /op self
+   /spawnitem Block_Crystal_Glow
+   ```
 4. Place the block in the world
 5. Confirm:
    - The custom crystal model appears (not a default cube)
@@ -400,19 +404,19 @@ To test:
 ## Block Creation Flow
 
 ```mermaid
-flowchart TD
-    A[Create 3D Model\nin Blockbench] --> B[Export .blockymodel]
-    B --> C[Save Texture PNG]
-    C --> D[Create Block Definition\nServer/Item/Block/Blocks/]
-    D --> E[Register in BlockTypeList]
-    E --> F[Create Item Definition\nServer/Item/Items/]
-    F --> G[Generate Icon\nvia Resource Editor]
-    G --> H[Add Translation\n.lang files]
-    H --> I[Test In Game]
+flowchart TD;
+    A[Create 3D Model<br>in Blockbench] --> B[Export .blockymodel];
+    B --> C[Save Texture PNG];
+    C --> D[Create Block Definition<br>Server/Item/Block/Blocks/];
+    D --> E[Register in BlockTypeList];
+    E --> F[Create Item Definition<br>Server/Item/Items/];
+    F --> G[Generate Icon<br>via Resource Editor];
+    G --> H[Add Translation<br>.lang files];
+    H --> I[Test In Game];
 
-    style A fill:#2d5a27,color:#fff
-    style G fill:#4a3d8f,color:#fff
-    style I fill:#2d6a8f,color:#fff
+    style A fill:#2d5a27,color:#fff;
+    style G fill:#4a3d8f,color:#fff;
+    style I fill:#2d6a8f,color:#fff;
 ```
 
 ---
