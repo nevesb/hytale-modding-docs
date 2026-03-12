@@ -22,6 +22,9 @@ __pycache__/
 .omc/
 
 TODO.md
+.mcp.json
+.tmp-skills/
+qa/
 
 # Nested guide-project repos
 guide-projects/**/.git/
