@@ -21,12 +21,11 @@ Repositório do exemplo:
 
 Arquivos principais desse repositório:
 
-- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/source-assets/blockbench/Crystal_Glow.bbmodel`
-- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel`
-- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png`
-- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json`
-- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json`
-- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Assets/Server/Languages/en-US/server.lang`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json`
+- `https://github.com/nevesb/hytale-mods-custom-block/blob/master/Server/Languages/en-US/server.lang`
 
 ## Pré-requisitos
 
@@ -57,24 +56,12 @@ Para um mod de tutorial apenas com assets, o `manifest.json` deve se parecer com
 
 ## Passo 1: Construir o bloco no Blockbench
 
-Em vez de usar um cubo simples com uma textura aplicada, comece a partir de um modelo real do Blockbench.
+Em vez de usar um cubo simples com uma textura aplicada, comece a partir de um modelo real do Blockbench e exporte o asset de runtime.
 
-Para o exemplo do cristal, o arquivo de autoria é:
-
-```text
-source-assets/blockbench/Crystal_Glow.bbmodel
-```
-
-Esse modelo-fonte contém:
-
-- a silhueta personalizada do cristal
-- o layout UV final
-- o atlas de textura pintado usado pelo bloco exportado
-
-Quando o modelo estiver pronto, exporte para:
+No exemplo do cristal, o repositório público mantém apenas os arquivos prontos para runtime. Modele localmente no Blockbench e exporte para:
 
 ```text
-Assets/Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel
+Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel
 ```
 
 ## Passo 2: Salvar a textura e o ícone
@@ -82,13 +69,13 @@ Assets/Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel
 A textura usada pelo modelo exportado vai em:
 
 ```text
-Assets/Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png
+Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png
 ```
 
 O ícone do inventário vai em:
 
 ```text
-Assets/Common/Icons/ItemsGenerated/Block_Crystal_Glow.png
+Common/Icons/ItemsGenerated/Block_Crystal_Glow.png
 ```
 
 Neste exemplo:
@@ -101,7 +88,7 @@ Neste exemplo:
 Crie a definição do bloco em:
 
 ```text
-Assets/Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
+Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
 ```
 
 Para o fluxo com modelo customizado, o bloco precisa apontar para o `.blockymodel` exportado e para a textura:
@@ -147,7 +134,7 @@ Observações:
 Crie o arquivo de lista em:
 
 ```text
-Assets/Server/BlockTypeList/HytaleModdingManual_Blocks.json
+Server/BlockTypeList/HytaleModdingManual_Blocks.json
 ```
 
 ```json
@@ -167,7 +154,7 @@ A definição do item faz o bloco aparecer no inventário e diz ao jogo como ele
 Crie:
 
 ```text
-Assets/Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
+Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
 ```
 
 ```json
@@ -227,9 +214,9 @@ Essa é a principal diferença em relação a um tutorial simples de “cubo tex
 Crie um arquivo de idioma para cada locale que você quiser suportar:
 
 ```text
-Assets/Server/Languages/en-US/server.lang
-Assets/Server/Languages/pt-BR/server.lang
-Assets/Server/Languages/es/server.lang
+Server/Languages/en-US/server.lang
+Server/Languages/pt-BR/server.lang
+Server/Languages/es/server.lang
 ```
 
 Exemplo:
@@ -261,17 +248,11 @@ CreateACustomBlock/
   manifest.json
 ```
 
-Neste projeto prático, a saída empacotada fica em:
-
-```text
-dist/CreateACustomBlock
-```
-
-Essa é a pasta que você copia para o diretório de mods do Hytale.
+O repositório do exemplo já está em layout de runtime. Copie o conteúdo da pasta do mod para o diretório de mods do Hytale.
 
 ## Passo 8: Testar no jogo
 
-1. Copie `dist/CreateACustomBlock` para a pasta de mods do Hytale.
+1. Copie a pasta runtime do mod para o diretório de mods do Hytale.
 2. Inicie o jogo ou recarregue o ambiente de mods.
 3. Gere o item `Block_Crystal_Glow`.
 4. Coloque o bloco no mundo.
@@ -283,11 +264,7 @@ Essa é a pasta que você copia para o diretório de mods do Hytale.
 
 ### Resultado final
 
-Adicione uma screenshot real em jogo em:
-
-```text
-../tutorials/hytale-guide-create-a-block/qa/screenshots/create-a-block/final-result.png
-```
+Adicione uma screenshot real em jogo ao conjunto de evidências do tutorial.
 
 Legenda sugerida:
 
@@ -307,14 +284,13 @@ Legenda sugerida:
 
 ```text
 manifest.json
-Assets/Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel
-Assets/Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png
-Assets/Common/Icons/ItemsGenerated/Block_Crystal_Glow.png
-Assets/Server/BlockTypeList/HytaleModdingManual_Blocks.json
-Assets/Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
-Assets/Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
-Assets/Server/Languages/en-US/server.lang
-source-assets/blockbench/Crystal_Glow.bbmodel
+Common/Blocks/HytaleModdingManual/Crystal_Glow.blockymodel
+Common/BlockTextures/HytaleModdingManual/Crystal_Glow.png
+Common/Icons/ItemsGenerated/Block_Crystal_Glow.png
+Server/BlockTypeList/HytaleModdingManual_Blocks.json
+Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
+Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
+Server/Languages/en-US/server.lang
 ```
 
 ## Próximos passos
