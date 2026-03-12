@@ -1,13 +1,13 @@
 ---
 title: Create a Custom NPC
-description: Build a hostile Slime Minion NPC with a 3D model, animations, AI behavior, drop table, and translations.
+description: Build a hostile Slime NPC with a 3D model, animations, AI behavior, drop table, and translations.
 sidebar:
   order: 4
 ---
 
 ## Goal
 
-Create a **Slime Minion** — a hostile NPC that chases and attacks players on sight. You will set up a 3D model with animations, define its AI behavior through template inheritance, configure a weighted drop table, and add multilingual translations. By the end, you will have a fully working NPC mod you can spawn in Creative Mode.
+Create a **Slime** — a hostile NPC that chases and attacks players on sight. You will set up a 3D model with animations, define its AI behavior through template inheritance, configure a weighted drop table, and add multilingual translations. By the end, you will have a fully working NPC mod you can spawn in Creative Mode.
 
 ## What You'll Learn
 
@@ -59,7 +59,7 @@ Open Blockbench and create a new **Hytale Character** project:
 - **Pixel Density**: 64
 - **UV Size**: 128×128 (texture must match: 128×128 pixels)
 
-Build the slime body using cubes organized in groups. For the Slime Minion, the structure is:
+Build the slime body using cubes organized in groups. For the Slime, the structure is:
 
 | Group | Purpose |
 |-------|---------|
@@ -71,9 +71,11 @@ Build the slime body using cubes organized in groups. For the Slime Minion, the 
 
 Paint the texture in the **Paint** tab — green tones with darker spots work well for a slime creature.
 
+![Slime model in Blockbench — cube-based body with eyes and mouth](/hytale-modding-docs/images/tutorials/create-an-npc/slime-blockbench.png)
+
 ### Export the Model
 
-1. **File > Export > Export Hytale Blocky Model** → save as `Model_Minion.blockymodel`
+1. **File > Export > Export Hytale Blocky Model** → save as `Model_Slime.blockymodel`
 2. Save the texture separately as `Texture.png` (128×128)
 
 ### Create Animations
@@ -110,12 +112,12 @@ CreateACustomNPC/
 ├── Common/
 │   ├── Icons/
 │   │   └── ModelsGenerated/
-│   │       └── BossSlime_Minion.png
+│   │       └── Slime.png
 │   └── NPC/
 │       └── Beast/
-│           └── BossSlime/
+│           └── Slime/
 │               ├── Model/
-│               │   ├── Model_Minion.blockymodel
+│               │   ├── Model_Slime.blockymodel
 │               │   └── Texture.png
 │               └── Animations/
 │                   └── Default/
@@ -131,12 +133,12 @@ CreateACustomNPC/
 ├── Server/
 │   ├── Models/
 │   │   └── Beast/
-│   │       └── BossSlime_Minion.json
+│   │       └── Slime.json
 │   ├── NPC/
 │   │   └── Roles/
-│   │       └── Boss_Slime_Minion.json
+│   │       └── Slime.json
 │   ├── Drops/
-│   │   └── Drop_BossSlime.json
+│   │   └── Drop_Slime.json
 │   └── Languages/
 │       ├── en-US/
 │       │   └── server.lang
@@ -157,7 +159,7 @@ All paths in `Common/` must start with an allowed root: `NPC/`, `Icons/`, `Items
   "Group": "HytaleModdingManual",
   "Name": "CreateACustomNPC",
   "Version": "1.0.0",
-  "Description": "Implements the Create A NPC tutorial with a custom slime minion",
+  "Description": "Implements the Create A NPC tutorial with a custom slime",
   "Authors": [
     {
       "Name": "HytaleModdingManual"
@@ -176,12 +178,12 @@ All paths in `Common/` must start with an allowed root: `NPC/`, `Icons/`, `Items
 
 The Server Model is the bridge between the 3D assets in `Common/` and the game engine. It tells Hytale where to find the model, texture, and every animation.
 
-Create `Server/Models/Beast/BossSlime_Minion.json`:
+Create `Server/Models/Beast/Slime.json`:
 
 ```json
 {
-  "Model": "NPC/Beast/BossSlime/Model/Model_Minion.blockymodel",
-  "Texture": "NPC/Beast/BossSlime/Model/Texture.png",
+  "Model": "NPC/Beast/Slime/Model/Model_Slime.blockymodel",
+  "Texture": "NPC/Beast/Slime/Model/Texture.png",
   "EyeHeight": 1.5,
   "CrouchOffset": -0.15,
   "HitBox": {
@@ -201,54 +203,54 @@ Create `Server/Models/Beast/BossSlime_Minion.json`:
   "AnimationSets": {
     "Walk": {
       "Animations": [
-        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Walk.blockyanim" }
+        { "Animation": "NPC/Beast/Slime/Animations/Default/Walk.blockyanim" }
       ]
     },
     "Attack": {
       "Animations": [
-        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Attack.blockyanim" }
+        { "Animation": "NPC/Beast/Slime/Animations/Default/Attack.blockyanim" }
       ]
     },
     "Idle": {
       "Animations": [
-        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Idle.blockyanim" }
+        { "Animation": "NPC/Beast/Slime/Animations/Default/Idle.blockyanim" }
       ]
     },
     "Death": {
       "Animations": [
         {
-          "Animation": "NPC/Beast/BossSlime/Animations/Default/Death.blockyanim",
+          "Animation": "NPC/Beast/Slime/Animations/Default/Death.blockyanim",
           "Loop": false
         }
       ]
     },
     "Walk_Backward": {
       "Animations": [
-        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Walk_Backward.blockyanim" }
+        { "Animation": "NPC/Beast/Slime/Animations/Default/Walk_Backward.blockyanim" }
       ]
     },
     "Run": {
       "Animations": [
-        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Run.blockyanim" }
+        { "Animation": "NPC/Beast/Slime/Animations/Default/Run.blockyanim" }
       ]
     },
     "Crouch": {
       "Animations": [
-        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Crouch.blockyanim" }
+        { "Animation": "NPC/Beast/Slime/Animations/Default/Crouch.blockyanim" }
       ]
     },
     "Crouch_Walk": {
       "Animations": [
-        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Crouch_Walk.blockyanim" }
+        { "Animation": "NPC/Beast/Slime/Animations/Default/Crouch_Walk.blockyanim" }
       ]
     },
     "Crouch_Walk_Backward": {
       "Animations": [
-        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Crouch_Walk_Backward.blockyanim" }
+        { "Animation": "NPC/Beast/Slime/Animations/Default/Crouch_Walk_Backward.blockyanim" }
       ]
     }
   },
-  "Icon": "Icons/ModelsGenerated/BossSlime_Minion.png",
+  "Icon": "Icons/ModelsGenerated/Slime.png",
   "IconProperties": {
     "Scale": 0.25,
     "Rotation": [0, -45, 0],
@@ -281,25 +283,25 @@ The engine expects specific animation set names: `Idle`, `Walk`, `Walk_Backward`
 
 The NPC Role defines behavior and stats. Instead of writing AI from scratch, Hytale uses **template inheritance** — you pick a behavior template and override only what differs.
 
-Create `Server/NPC/Roles/Boss_Slime_Minion.json`:
+Create `Server/NPC/Roles/Slime.json`:
 
 ```json
 {
   "Type": "Variant",
   "Reference": "Template_Predator",
   "Modify": {
-    "Appearance": "BossSlime_Minion",
+    "Appearance": "Slime",
     "MaxHealth": 75,
     "KnockbackScale": 0.5,
     "IsMemory": true,
-    "MemoriesCategory": "Boss",
+    "MemoriesCategory": "Beast",
     "NameTranslationKey": {
       "Compute": "NameTranslationKey"
     }
   },
   "Parameters": {
     "NameTranslationKey": {
-      "Value": "server.npcRoles.Boss_Slime_Minion.name",
+      "Value": "server.npcRoles.Slime.name",
       "Description": "Translation key for NPC name display"
     }
   }
@@ -318,7 +320,7 @@ The `"Type": "Variant"` + `"Reference": "Template_Predator"` pattern means:
 
 | Template | Behavior | Use For |
 |----------|----------|---------|
-| `Template_Predator` | Hostile — chases and attacks players on sight | Enemies, bosses, hostile creatures |
+| `Template_Predator` | Hostile — chases and attacks players on sight | Enemies, hostile creatures |
 | `Template_Prey` | Passive — flees when threatened | Rabbits, deer, small animals |
 | `Template_Neutral` | Neutral — attacks only when provoked | Bears, wolves |
 | `Template_Domestic` | Tame — follows owner, can be penned | Farm animals, pets |
@@ -348,13 +350,13 @@ This tells the engine: "get the value of `NameTranslationKey` from the `Paramete
 ```json
 "Parameters": {
   "NameTranslationKey": {
-    "Value": "server.npcRoles.Boss_Slime_Minion.name",
+    "Value": "server.npcRoles.Slime.name",
     "Description": "Translation key for NPC name display"
   }
 }
 ```
 
-This indirection exists because templates use `Compute` to read values that each variant defines differently. Every slime variant provides its own `NameTranslationKey` value, but the template's logic for using it stays the same.
+This indirection exists because templates use `Compute` to read values that each variant defines differently. Every variant provides its own `NameTranslationKey` value, but the template's logic for using it stays the same.
 
 ---
 
@@ -362,7 +364,7 @@ This indirection exists because templates use `Compute` to read values that each
 
 The drop table controls what loot falls when the NPC dies. Hytale uses a **weighted random selection** system.
 
-Create `Server/Drops/Drop_BossSlime.json`:
+Create `Server/Drops/Drop_Slime.json`:
 
 ```json
 {
@@ -427,17 +429,17 @@ Create a `server.lang` file for each language under `Server/Languages/`:
 
 **`Server/Languages/en-US/server.lang`**
 ```properties
-npcRoles.Boss_Slime_Minion.name = Slime Minion
+npcRoles.Slime.name = Slime
 ```
 
 **`Server/Languages/es/server.lang`**
 ```properties
-npcRoles.Boss_Slime_Minion.name = Slime Esbirro
+npcRoles.Slime.name = Slime
 ```
 
 **`Server/Languages/pt-BR/server.lang`**
 ```properties
-npcRoles.Boss_Slime_Minion.name = Slime Lacaio
+npcRoles.Slime.name = Slime
 ```
 
 The translation key in the `.lang` file must match the `Parameters.NameTranslationKey.Value` in the NPC Role — but **without** the `server.` prefix. The engine adds the prefix automatically when resolving server-side language files.
@@ -456,13 +458,16 @@ The translation key in the `.lang` file must match the `Parameters.NameTranslati
    [AssetRegistryLoader] Loading assets from ...\Mods\CreateACustomNPC\Server
    ```
 
-4. Open the NPC spawn menu and search for **Slime Minion**
+4. Open the NPC spawn menu and search for **Slime**
 
 5. Spawn the NPC and verify:
+
+![Slime spawned in-game at night, glowing green with the Crystal Sword equipped](/hytale-modding-docs/images/tutorials/create-an-npc/slime-ingame.png)
+
    - The model renders correctly with the slime texture
    - The NPC is hostile and chases you on sight
    - Attack, walk, run, and death animations play correctly
-   - The name "Slime Minion" appears above its head
+   - The name "Slime" appears above its head
    - Killing it drops one of: Crystal Slime Ore (50%), Health Potion (30%), or nothing (20%)
 
 ---
@@ -478,7 +483,7 @@ The translation key in the `.lang` file must match the `Parameters.NameTranslati
 | NPC slides without animation | Animation set name doesn't match expected name | Use exact names: `Walk`, `Run`, `Idle`, `Attack`, `Death`, etc. |
 | Name doesn't show above NPC | Translation key mismatch | Ensure `.lang` key matches `Parameters.NameTranslationKey.Value` minus the `server.` prefix |
 | Death animation loops | Missing `"Loop": false` on Death animation | Add `"Loop": false` to the Death entry in `AnimationSets` |
-| Drop table not working | `DropList` field missing from NPC Role | Add `"DropList": "Drop_BossSlime"` to the `Modify` block (omitted here since `Template_Predator` handles it) |
+| Drop table not working | `DropList` field missing from NPC Role | Add `"DropList": "Drop_Slime"` to the `Modify` block (omitted here since `Template_Predator` handles it) |
 
 ---
 
