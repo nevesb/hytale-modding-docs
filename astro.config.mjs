@@ -84,7 +84,10 @@ export default defineConfig({
 							pres.forEach((pre) => {
 								found = true;
 								const code = pre.querySelector('code');
-								const text = code ? code.textContent : pre.textContent;
+								const lines = code ? code.querySelectorAll('.ec-line') : [];
+								const text = lines.length
+									? Array.from(lines).map(l => l.textContent).join('\\n')
+									: (code ? code.textContent : pre.textContent);
 								const div = document.createElement('div');
 								div.className = 'mermaid';
 								div.textContent = text;
