@@ -1,6 +1,8 @@
 ---
 title: Create a Projectile Weapon
 description: Step-by-step tutorial for creating a projectile weapon with projectile definitions, projectile configs, and interaction chains.
+sidebar:
+  order: 5
 ---
 
 ## Goal

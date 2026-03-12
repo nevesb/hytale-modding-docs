@@ -1,6 +1,8 @@
 ---
 title: Create a Custom Crafting Bench
 description: Step-by-step tutorial for adding a custom crafting bench with recipe categories, tier upgrades, and item recipes that use it.
+sidebar:
+  order: 4
 ---
 
 ## Goal

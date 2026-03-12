@@ -1,6 +1,8 @@
 ---
 title: Tabelas de Loot Personalizadas
 description: Tutorial passo a passo para criar tabelas de loot e drops com entradas ponderadas, contêineres aninhados e drops condicionais.
+sidebar:
+  order: 2
 ---
 
 ## Objetivo

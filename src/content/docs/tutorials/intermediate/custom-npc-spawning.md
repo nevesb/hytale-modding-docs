@@ -1,6 +1,8 @@
 ---
 title: Custom NPC Spawn Rules
 description: Step-by-step tutorial for creating custom NPC spawn rules with environments, time ranges, moon phases, and biome conditions.
+sidebar:
+  order: 6
 ---
 
 ## Goal

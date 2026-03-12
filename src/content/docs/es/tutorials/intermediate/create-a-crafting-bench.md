@@ -1,6 +1,8 @@
 ---
 title: Crear un Banco de Crafteo Personalizado
 description: Tutorial paso a paso para agregar un banco de crafteo personalizado con categorías de recetas, mejoras por niveles y recetas de objetos que lo utilicen.
+sidebar:
+  order: 4
 ---
 
 ## Objetivo

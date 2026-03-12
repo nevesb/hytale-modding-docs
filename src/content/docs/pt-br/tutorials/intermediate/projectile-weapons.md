@@ -1,6 +1,8 @@
 ---
 title: Criar uma Arma de Projétil
 description: Tutorial passo a passo para criar uma arma de projétil com definições de projéteis, configurações de projéteis e cadeias de interação.
+sidebar:
+  order: 5
 ---
 
 ## Objetivo

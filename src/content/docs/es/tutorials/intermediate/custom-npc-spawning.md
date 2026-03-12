@@ -1,6 +1,8 @@
 ---
 title: Reglas de Aparición de NPCs Personalizadas
 description: Tutorial paso a paso para crear reglas de aparición de NPCs personalizadas con entornos, rangos de tiempo, fases lunares y condiciones de bioma.
+sidebar:
+  order: 6
 ---
 
 ## Objetivo

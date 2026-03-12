@@ -1,6 +1,8 @@
 ---
 title: Árboles y Brotes Personalizados
 description: Tutorial paso a paso para crear árboles personalizados con mecánicas de crecimiento de brotes, progresión de prefabs multi-etapa e integración con la agricultura.
+sidebar:
+  order: 1
 ---
 
 ## Objetivo

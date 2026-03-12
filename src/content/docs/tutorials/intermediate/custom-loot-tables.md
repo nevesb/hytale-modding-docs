@@ -1,6 +1,8 @@
 ---
 title: Custom Loot Tables
 description: Step-by-step tutorial for creating loot and drop tables with weighted entries, nested containers, and conditional drops.
+sidebar:
+  order: 2
 ---
 
 ## Goal

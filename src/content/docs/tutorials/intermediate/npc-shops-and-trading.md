@@ -1,6 +1,8 @@
 ---
 title: NPC Shops and Trading
 description: Step-by-step tutorial for setting up NPC barter shops with fixed and pool-based trading slots, stock limits, and refresh intervals.
+sidebar:
+  order: 3
 ---
 
 ## Goal

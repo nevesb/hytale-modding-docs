@@ -1,6 +1,8 @@
 ---
 title: Lojas de NPCs e Comércio
 description: Tutorial passo a passo para configurar lojas de troca de NPCs com slots de comércio fixos e baseados em pool, limites de estoque e intervalos de reabastecimento.
+sidebar:
+  order: 3
 ---
 
 ## Objetivo

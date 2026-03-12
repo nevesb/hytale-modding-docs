@@ -1,6 +1,8 @@
 ---
 title: Criar uma Bancada de Trabalho Personalizada
 description: Tutorial passo a passo para adicionar uma bancada de trabalho personalizada com categorias de receitas, melhorias por nível e receitas de itens que a utilizam.
+sidebar:
+  order: 4
 ---
 
 ## Objetivo

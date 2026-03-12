@@ -1,6 +1,8 @@
 ---
 title: Tablas de Botín Personalizadas
 description: Tutorial paso a paso para crear tablas de botín y drops con entradas ponderadas, contenedores anidados y drops condicionales.
+sidebar:
+  order: 2
 ---
 
 ## Objetivo

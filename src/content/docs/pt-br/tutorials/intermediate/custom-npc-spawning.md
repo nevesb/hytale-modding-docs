@@ -1,6 +1,8 @@
 ---
 title: Regras de Spawn de NPCs Personalizadas
 description: Tutorial passo a passo para criar regras de spawn de NPCs personalizadas com ambientes, faixas de horário, fases da lua e condições de bioma.
+sidebar:
+  order: 6
 ---
 
 ## Objetivo

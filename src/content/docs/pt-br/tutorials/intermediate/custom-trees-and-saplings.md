@@ -1,6 +1,8 @@
 ---
 title: Árvores e Mudas Personalizadas
 description: Tutorial passo a passo para criar árvores personalizadas com mecânicas de crescimento de mudas, progressão de prefabs em múltiplos estágios e integração com agricultura.
+sidebar:
+  order: 1
 ---
 
 ## Objetivo

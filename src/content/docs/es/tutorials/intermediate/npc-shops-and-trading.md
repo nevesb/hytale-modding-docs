@@ -1,6 +1,8 @@
 ---
 title: Tiendas de NPCs y Comercio
 description: Tutorial paso a paso para configurar tiendas de trueque de NPCs con espacios de comercio fijos y basados en pool, límites de stock e intervalos de reabastecimiento.
+sidebar:
+  order: 3
 ---
 
 ## Objetivo
