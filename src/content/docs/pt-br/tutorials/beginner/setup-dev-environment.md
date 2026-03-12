@@ -1,49 +1,54 @@
 ---
 title: Configure seu Ambiente de Desenvolvimento
-description: Instale as ferramentas necessárias e crie uma estrutura mínima de mod funcional para começar a criar mods no Hytale.
+description: Instale as ferramentas necessárias, crie sua primeira pasta de mod com um manifest.json válido e verifique se ele carrega no Hytale.
+sidebar:
+  order: 1
 ---
 
 ## Objetivo
 
-Instalar as ferramentas necessárias, criar uma pasta de mod com um `manifest.json` válido e carregar um mod de teste mínimo no jogo. Ao final, você terá uma base funcional para construir todos os tutoriais seguintes.
+Instale as ferramentas necessárias, crie uma pasta de mod com um `manifest.json` válido e confirme que o Hytale o reconhece na inicialização. Ao final, você terá uma base funcional para todos os tutoriais que se seguem.
 
 ## Pré-requisitos
 
-- Hytale instalado (o cliente do jogo ou um build de servidor local)
-- Acesso de administrador ou permissão de escrita no diretório de mods do jogo
-- Conexão com a internet para baixar ferramentas
+- Hytale instalado (cliente do jogo com acesso ao Modo Criativo)
+- Permissão de escrita no diretório de mods em `%APPDATA%/Hytale/UserData/Mods/`
 
 ---
 
 ## Passo 1: Instalar as Ferramentas Necessárias
 
-Você precisa de três ferramentas para trabalhar com mods do Hytale de forma eficiente.
+### Hytale
 
-### Hytale (cliente do jogo ou servidor)
+O jogo é necessário para carregar e testar mods. Os mods são carregados a partir de:
 
-O jogo é necessário para carregar e testar mods. Os mods são carregados a partir de uma pasta `mods/` no diretório de dados do jogo — o caminho exato aparece nas configurações do launcher.
+```text
+%APPDATA%/Hytale/UserData/Mods/
+```
+
+No Windows, esse caminho corresponde a `C:\Users\<você>\AppData\Roaming\Hytale\UserData\Mods\`. Cada subpasta com um `manifest.json` válido é carregada como um mod na inicialização.
 
 ### Visual Studio Code
 
-O VS Code é o editor recomendado para arquivos JSON do Hytale. Ele oferece destaque de sintaxe, detecção de erros e validação de schema JSON.
+O VS Code é o editor recomendado para arquivos JSON do Hytale. Ele oferece realce de sintaxe, detecção de erros e formatação automática.
 
 Baixe em: **https://code.visualstudio.com/**
 
-Após instalar, adicione as seguintes extensões pelo painel de Extensões do VS Code (`Ctrl+Shift+X`):
+Após instalar, adicione estas extensões no painel de Extensões (`Ctrl+Shift+X`):
 
 | Extensão | Finalidade |
 |----------|------------|
-| **JSON** (integrado) | Destaque de sintaxe e correspondência de colchetes |
-| **Error Lens** | Exibição inline de erros de validação JSON |
-| **Prettier** | Formata automaticamente o JSON ao salvar para manter a estrutura consistente |
+| **JSON** (integrado) | Realce de sintaxe e correspondência de colchetes |
+| **Error Lens** | Exibe erros de validação JSON diretamente no código |
+| **Prettier** | Formata JSON automaticamente ao salvar |
 
 ### Blockbench
 
-O Blockbench é a ferramenta de modelagem 3D usada para criar arquivos `.blockymodel` para itens, NPCs e decorações. O plugin do Hytale adiciona suporte de exportação para o formato nativo do Hytale.
+O Blockbench é a ferramenta de modelagem 3D usada para criar arquivos `.blockymodel` para blocos, itens e NPCs.
 
 Baixe em: **https://www.blockbench.net/**
 
-Após instalar o Blockbench:
+Após instalar:
 
 1. Abra o Blockbench
 2. Vá em **File > Plugins**
@@ -51,93 +56,106 @@ Após instalar o Blockbench:
 4. Instale o plugin **Hytale Exporter**
 5. Reinicie o Blockbench
 
-O plugin adiciona a opção de exportação **Hytale Blocky Model** em **File > Export**.
+O plugin adiciona as opções de formato **Hytale Character** e **Hytale Blocky Model** ao criar novos projetos.
 
 ---
 
-## Passo 2: Criar a Estrutura de Pastas do Mod
+## Passo 2: Entender a Estrutura do Mod
 
-Todo mod do Hytale é uma pasta com um `manifest.json` na raiz. O nome da pasta se torna o identificador interno do seu mod — use apenas letras, números e underscores.
+Todo mod do Hytale é uma pasta com um `manifest.json` na raiz. A pasta possui dois subdiretórios principais:
 
-Crie a seguinte estrutura de pastas:
-
-```
-MyMod/
-  manifest.json
-  Assets/
-    Common/
-      BlockTextures/
-        MyMod/
-      Models/
-        Items/
-        NPCs/
-    Server/
-      Item/
-        Block/
-          Blocks/
-            MyMod/
-        Items/
-          MyMod/
-        Recipes/
-          MyMod/
-      NPC/
-        Roles/
-          MyMod/
-        Spawn/
-          World/
-      Drops/
-        NPCs/
-          MyMod/
-      BlockTypeList/
-    Languages/
+```text
+MyFirstMod/
+├── manifest.json
+├── Common/                    (assets do lado do cliente)
+│   ├── Blocks/                (modelos de blocos)
+│   ├── BlockTextures/         (texturas de blocos)
+│   ├── Items/                 (modelos + texturas de itens/armas)
+│   ├── Icons/                 (ícones do inventário)
+│   │   └── ItemsGenerated/
+│   └── NPC/                   (modelos de NPCs)
+└── Server/                    (definições do lado do servidor)
+    ├── Item/
+    │   ├── Block/
+    │   │   └── Blocks/        (definições de tipos de blocos)
+    │   └── Items/             (definições de itens)
+    ├── BlockTypeList/         (registra blocos)
+    ├── NPC/
+    │   └── Roles/             (comportamento de NPCs)
+    └── Languages/             (traduções)
+        ├── en-US/server.lang
+        ├── pt-BR/server.lang
+        └── es/server.lang
 ```
 
-Você não precisa de todas as pastas imediatamente — crie-as conforme for adicionando conteúdo. O mínimo necessário é o `manifest.json` e a pasta `Assets/`.
+**Regras importantes:**
+- `Common/` contém os assets que o cliente renderiza: modelos (`.blockymodel`), texturas (`.png`) e ícones
+- `Server/` contém as definições JSON processadas pelo servidor: itens, blocos, NPCs, receitas e idiomas
+- Os caminhos de assets no JSON são **relativos a `Common/`** e devem começar com uma raiz permitida: `Blocks/`, `BlockTextures/`, `Items/`, `Icons/`, `NPC/`, `Resources/`, `VFX/` ou `Consumable/`
+- Os arquivos de idioma ficam em `Server/Languages/<locale>/server.lang`
+- A pasta de namespace do seu mod (ex.: `HytaleModdingManual/`) fica dentro de cada diretório de asset para evitar colisões de nomes
+
+:::caution[Sem wrapper Assets/]
+Ao contrário do layout interno de arquivos do jogo vanilla, as pastas de mod **não** possuem um wrapper `Assets/`. Coloque `Common/` e `Server/` diretamente dentro da raiz do mod, ao lado do `manifest.json`.
+:::
 
 ---
 
 ## Passo 3: Criar o manifest.json
 
-O arquivo `manifest.json` identifica seu mod para o jogo. O engine o lê na inicialização para registrar o mod e seus caminhos de assets.
+O `manifest.json` identifica seu mod para o engine. Crie uma pasta e seu manifest:
 
-Crie `MyMod/manifest.json`:
+```text
+MyFirstMod/manifest.json
+```
 
 ```json
 {
-  "Group": "MyMod",
-  "Name": "My First Hytale Mod"
+  "Group": "MyStudio",
+  "Name": "MyFirstMod",
+  "Version": "1.0.0",
+  "Description": "A minimal Hytale mod to validate the development setup",
+  "Authors": [
+    {
+      "Name": "MyStudio"
+    }
+  ],
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "IncludesAssetPack": true,
+  "TargetServerVersion": "2026.02.19-1a311a592"
 }
 ```
 
-| Campo | Finalidade |
-|-------|------------|
-| `Group` | Namespace interno do seu mod. Usado para evitar conflitos de nomes com outros mods. Use o mesmo nome da sua pasta |
-| `Name` | Nome de exibição mostrado na lista de mods |
+### Campos do Manifest
 
-Compare com o `manifest.json` vanilla em `Assets/manifest.json`:
+| Campo | Obrigatório | Descrição |
+|-------|-------------|-----------|
+| `Group` | Sim | Namespace do autor ou organização. Use um identificador único como o nome do seu estúdio. |
+| `Name` | Sim | Identificador do mod. Apenas caracteres ASCII, sem espaços. Usado em mensagens de log e referências de dependência. |
+| `Version` | Não | Versão do seu mod no formato semver. |
+| `Description` | Não | Descrição curta exibida nos diagnósticos. |
+| `Authors` | Não | Lista de objetos `{"Name": "..."}`. |
+| `Dependencies` | Não | Mods obrigatórios: `{"ModGroup:ModName": ">=1.0.0"}`. |
+| `OptionalDependencies` | Não | Mods suportados mas não obrigatórios. |
+| `IncludesAssetPack` | Não | Defina como `true` quando o mod incluir assets personalizados (modelos, texturas, definições JSON). |
+| `TargetServerVersion` | Não | Build exata do servidor Hytale que o mod tem como alvo. |
 
-```json
-{
-  "Group": "Hytale",
-  "Name": "Hytale"
-}
-```
-
-O valor de `Group` deve ser único — evite usar `Hytale` ou nomes genéricos como `Mod` que podem conflitar com outros mods.
+:::note[Group e Name]
+`Group` e `Name` juntos formam o ID único do mod (`Group:Name`). Se o carregamento falhar, a mensagem de erro referencia esse ID — ex.: `Mod MyStudio:MyFirstMod failed to load`.
+:::
 
 ---
 
-## Passo 4: Configurar o VS Code para Edição de JSON
+## Passo 4: Configurar o VS Code
 
-Abra a pasta do seu mod no VS Code:
+Abra sua pasta de mod no VS Code:
 
+```text
+File > Open Folder > selecione MyFirstMod/
 ```
-File > Open Folder > selecione MyMod/
-```
 
-### Configurar formatação automática ao salvar
-
-Crie `.vscode/settings.json` dentro da pasta do seu mod:
+Crie `.vscode/settings.json` dentro da pasta do mod para formatação automática:
 
 ```json
 {
@@ -152,208 +170,101 @@ Crie `.vscode/settings.json` dentro da pasta do seu mod:
 }
 ```
 
-Isso garante que seu JSON esteja sempre formatado corretamente — vírgulas extras e erros de sintaxe são detectados antes de você tentar carregar o mod.
-
-### Ativar dicas de validação JSON
-
-O servidor de linguagem JSON integrado do VS Code sinaliza erros de sintaxe inline. Ao abrir um arquivo `.json`:
-
-- Sublinhados vermelhos indicam erros de sintaxe (vírgulas faltando, colchetes sem par)
-- Sublinhados amarelos do Error Lens indicam avisos
-
-**Dica:** O JSON do Hytale usa um superconjunto do JSON padrão em alguns lugares — nomes de campos e valores de string diferenciam maiúsculas e minúsculas. O engine vai rejeitar `"material": "solid"` mas aceitar `"Material": "Solid"`.
+Isso detecta erros de sintaxe antes de você tentar carregar o mod. O JSON do Hytale é **sensível a maiúsculas e minúsculas** — o engine rejeita `"material": "solid"` mas aceita `"Material": "Solid"`.
 
 ---
 
-## Passo 5: Configurar o Blockbench para o Hytale
+## Passo 5: Carregar e Verificar
 
-Após instalar o plugin Hytale Exporter:
+1. Copie sua pasta `MyFirstMod/` para o diretório de mods:
+
+   ```text
+   %APPDATA%/Hytale/UserData/Mods/MyFirstMod/
+   ```
+
+2. Inicie o Hytale e entre no Modo Criativo
+
+3. Verifique o log do cliente em `%APPDATA%/Hytale/UserData/Logs/` para o seu mod:
+
+   ```text
+   [Hytale] Loading assets from: ...\Mods\MyFirstMod\Server
+   [AssetRegistryLoader] Loading assets from ...\Mods\MyFirstMod\Server
+   ```
+
+Se você vir essas linhas sem um erro `SEVERE`, seu mod foi carregado com sucesso. Um mod vazio com apenas um manifest é válido — o Hytale o carregará e continuará.
+
+### Lendo Erros de Inicialização
+
+Os erros aparecem no log com o nível `SEVERE` e sempre incluem o caminho do arquivo e o campo que falhou:
+
+| Padrão no Log | Significado |
+|---------------|-------------|
+| `Loading assets from: ...\MyFirstMod\Server` | Mod encontrado e sendo carregado |
+| `Loaded N entries for 'en-US'` | Arquivos de idioma carregados com sucesso |
+| `Failed to decode asset: X` | Erro de parse JSON ou de schema no asset X |
+| `Common Asset 'path' must be within the root` | O caminho do asset não começa com uma raiz permitida |
+| `Common Asset 'path' doesn't exist` | Arquivo referenciado está ausente em `Common/` |
+| `Unused key(s) in 'X': field` | Campo não reconhecido (aviso, não fatal) |
+| `Mod Group:Name failed to load` | Erro fatal — verifique as linhas `SEVERE` anteriores para detalhes |
+| `missing or invalid manifest.json` | O manifest está malformado ou faltam campos obrigatórios |
+
+:::tip[Localização dos Logs]
+Logs do cliente: `%APPDATA%/Hytale/UserData/Logs/`
+Logs do editor: `%APPDATA%/Hytale/EditorUserData/Logs/`
+
+O log mais recente tem a data de hoje no nome do arquivo (ex.: `2026-03-12_02-42-09_client.log`).
+:::
+
+---
+
+## Passo 6: Configurar o Blockbench
+
+Ao criar modelos para o Hytale:
 
 1. Abra o Blockbench
-2. Crie um novo modelo: **File > New > Hytale Blocky Model**
-3. Construa seu modelo usando cubos e grupos de bones
-4. Defina a textura no painel **Textures** no lado direito
+2. **File > New** e selecione o formato Hytale:
+   - **Hytale Character** para itens e NPCs (blockSize 64, pixel density 64)
+   - **Hytale Blocky Model** para blocos (blockSize 16)
+3. Construa seu modelo usando cubos e grupos
+4. Pinte a textura na aba Paint
 5. Exporte com **File > Export > Export Hytale Blocky Model**
 
-### Convenções de modelo
+### Convenções Importantes
 
 | Convenção | Detalhe |
 |-----------|---------|
-| Escala | 1 unidade do Blockbench = 1/16 de um bloco do Hytale |
-| Ponto de pivô | Centralize o modelo em `[0, 0, 0]` para posicionamento correto na mão |
-| Tamanho da textura | Apenas potências de dois: 16x16, 32x32, 64x64, 128x128 |
-| Nomes dos bones | Siga os padrões de nomes vanilla (`Root`, `Body`, `Head`) para compatibilidade com animações |
-| Formato do arquivo | Exporte como `.blockymodel`; texturas são exportadas separadamente como `.png` |
+| Resolução da textura | Deve corresponder ao tamanho do UV para o formato. Formato Character: textura = tamanho do UV (ex.: UV 128x128 = textura 128x128) |
+| Ponto de pivô | Posicione na empunhadura/cabo para armas — afeta o posicionamento na mão e a origem da luz |
+| UV por face | Use para cubos maiores que 32 voxels (box UV é limitado ao espaço de UV 32x32) |
+| Modos de sombreamento | `standard` (padrão), `fullbright` (brilho emissivo), `flat` (sem iluminação), `reflective` |
+| Formato de arquivo | `.blockymodel` para o modelo, `.png` para a textura (salva separadamente) |
 
 ---
 
-## Passo 6: Criar um Mod de Teste Mínimo
+## Fluxo do Ambiente de Desenvolvimento
 
-Com a estrutura de pastas e o manifest prontos, adicione um único bloco para verificar se todo o pipeline funciona de ponta a ponta.
+```mermaid
+flowchart TD;
+    A[Instalar Hytale<br>VS Code e Blockbench] --> B[Criar Pasta do Mod<br>com manifest.json];
+    B --> C[Configurar VS Code<br>formatação automática e linting];
+    C --> D[Copiar para a Pasta de Mods<br>UserData/Mods/];
+    D --> E[Iniciar Hytale<br>Modo Criativo];
+    E --> F{Verificar Logs};
+    F -->|Sem erros| G[Pronto para Criar!];
+    F -->|Erro SEVERE| H[Corrigir e Tentar Novamente];
+    H --> D;
 
-Crie `MyMod/Assets/Server/Item/Block/Blocks/MyMod/Block_Test.json`:
-
-```json
-{
-  "Textures": [
-    {
-      "All": "Blocks/_Debug/Texture.png"
-    }
-  ],
-  "Material": "Solid"
-}
-```
-
-Isso referencia a textura de debug vanilla, então você não precisa criar nenhuma arte ainda.
-
-Crie `MyMod/Assets/Server/BlockTypeList/MyMod_Blocks.json`:
-
-```json
-{
-  "Blocks": [
-    "Block_Test"
-  ]
-}
-```
-
-Crie `MyMod/Assets/Server/Item/Items/MyMod/Block_Test.json`:
-
-```json
-{
-  "TranslationProperties": {
-    "Name": "server.items.Block_Test.name"
-  },
-  "Quality": "Common",
-  "Icon": "Icons/Items/Block_Rock_Grey.png",
-  "BlockType": {
-    "Material": "Solid",
-    "DrawType": "Block",
-    "Opacity": "Opaque"
-  },
-  "MaxStack": 64
-}
-```
-
-Crie `MyMod/Assets/Languages/en-US.lang`:
-
-```
-server.items.Block_Test.name=Test Block
-```
-
-Sua estrutura mínima final do mod:
-
-```
-MyMod/
-  manifest.json
-  Assets/
-    Server/
-      Item/
-        Block/
-          Blocks/
-            MyMod/
-              Block_Test.json
-        Items/
-          MyMod/
-            Block_Test.json
-      BlockTypeList/
-        MyMod_Blocks.json
-    Languages/
-      en-US.lang
-```
-
----
-
-## Passo 7: Carregar e Testar o Mod
-
-1. Copie a pasta `MyMod/` para o diretório `mods/` do jogo. O caminho varia conforme a instalação — verifique o launcher ou a configuração do servidor para o local exato.
-2. Inicie o jogo ou servidor.
-3. Observe o log de inicialização para linhas referenciando os arquivos do seu mod. Erros sempre incluem o caminho do arquivo e o nome do campo problemático.
-4. Após carregar, use o console de desenvolvedor ou o spawner de itens do jogo para dar a si mesmo o `Block_Test`.
-5. Posicione o bloco e confirme se ele renderiza com a textura de debug.
-
-### Lendo erros de inicialização
-
-| Padrão no log | Significado |
-|---------------|-------------|
-| `Loaded mod: MyMod` | Manifest encontrado e lido com sucesso |
-| `Unknown block id: Block_Test` | Bloco não registrado em nenhuma BlockTypeList |
-| `Texture not found: Blocks/_Debug/Texture.png` | Erro de digitação no caminho ou assets vanilla não carregando |
-| `JSON parse error in Block_Test.json` | Erro de sintaxe — abra no VS Code para encontrar o sublinhado vermelho |
-
----
-
-## Arquivos Completos
-
-### `MyMod/manifest.json`
-```json
-{
-  "Group": "MyMod",
-  "Name": "My First Hytale Mod"
-}
-```
-
-### `MyMod/.vscode/settings.json`
-```json
-{
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "files.associations": {
-    "*.lang": "properties"
-  }
-}
-```
-
-### `MyMod/Assets/Server/Item/Block/Blocks/MyMod/Block_Test.json`
-```json
-{
-  "Textures": [
-    {
-      "All": "Blocks/_Debug/Texture.png"
-    }
-  ],
-  "Material": "Solid"
-}
-```
-
-### `MyMod/Assets/Server/BlockTypeList/MyMod_Blocks.json`
-```json
-{
-  "Blocks": [
-    "Block_Test"
-  ]
-}
-```
-
-### `MyMod/Assets/Server/Item/Items/MyMod/Block_Test.json`
-```json
-{
-  "TranslationProperties": {
-    "Name": "server.items.Block_Test.name"
-  },
-  "Quality": "Common",
-  "Icon": "Icons/Items/Block_Rock_Grey.png",
-  "BlockType": {
-    "Material": "Solid",
-    "DrawType": "Block",
-    "Opacity": "Opaque"
-  },
-  "MaxStack": 64
-}
-```
-
-### `MyMod/Assets/Languages/en-US.lang`
-```
-server.items.Block_Test.name=Test Block
+    style A fill:#2d5a27,color:#fff;
+    style G fill:#2d6a8f,color:#fff;
+    style H fill:#8f2d2d,color:#fff;
 ```
 
 ---
 
 ## Próximos Passos
 
-- [Criar um Bloco Personalizado](/hytale-modding-docs/tutorials/beginner/create-a-block) — construa um bloco brilhante completo com textura, receita e definição de item
-- [Criar um Item Personalizado](/hytale-modding-docs/tutorials/beginner/create-an-item) — adicione uma arma fabricável com stats de dano
-- [Criar um NPC Personalizado](/hytale-modding-docs/tutorials/beginner/create-an-npc) — crie uma criatura passiva com tabela de drops
-- [Fundamentos de JSON](/hytale-modding-docs/getting-started/json-basics) — referência aprofundada para herança de templates e validação
+Seu ambiente de desenvolvimento está pronto. Continue com os tutoriais para iniciantes:
+
+- [Criar um Bloco Personalizado](/hytale-modding-docs/tutorials/beginner/create-a-block/) — Construa um bloco de cristal brilhante com textura, modelo, receita e traduções
+- [Criar uma Arma Personalizada](/hytale-modding-docs/tutorials/beginner/create-an-item/) — Crie uma espada de cristal com atributos de combate, emissão de luz e criação
+- [Criar um NPC Personalizado](/hytale-modding-docs/tutorials/beginner/create-an-npc/) — Instancie uma criatura com comportamento de IA e tabelas de drops
