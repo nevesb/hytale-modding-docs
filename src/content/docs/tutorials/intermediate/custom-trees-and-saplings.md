@@ -59,7 +59,7 @@ Each prefab (`.prefab.json`) is a blueprint containing the exact block positions
 
 ## Step 1: Create the Trunk Block
 
-The trunk is what players chop to get wood. We inherit from `Wood_Oak_Trunk` and override only the textures and particle color.
+The trunk is what players chop to get wood. We inherit from `Wood_Azure_Trunk` (the Azure tree variant) and override only the textures and particle color.
 
 Create `Server/Item/Items/Wood/Crystal/Wood_Crystal_Trunk.json`:
 
@@ -69,7 +69,7 @@ Create `Server/Item/Items/Wood/Crystal/Wood_Crystal_Trunk.json`:
     "Name": "server.items.Wood_Crystal_Trunk.name",
     "Description": "server.items.Wood_Crystal_Trunk.description"
   },
-  "Parent": "Wood_Oak_Trunk",
+  "Parent": "Wood_Azure_Trunk",
   "Icon": "Icons/ItemsGenerated/Wood_Crystal_Trunk.png",
   "BlockType": {
     "Textures": [
@@ -100,7 +100,7 @@ Create `Server/Item/Items/Wood/Crystal/Wood_Crystal_Trunk.json`:
 
 | Field | Type | Purpose |
 |-------|------|---------|
-| `Parent` | String | Inherits all block properties from `Wood_Oak_Trunk` (hardness, tool requirements, physics) |
+| `Parent` | String | Inherits all block properties from `Wood_Azure_Trunk` (hardness, tool requirements, physics) |
 | `BlockType.Textures` | Array | Texture configuration. `Sides` for the bark, `UpDown` for the cross-section when viewed from top/bottom |
 | `BlockType.Textures[].Weight` | Number | For multiple texture variants — `1` means this is the only option |
 | `BlockType.Gathering.Breaking` | Object | What drops when the block is broken. `GatherType: "Woods"` means axes break it faster |
@@ -112,14 +112,14 @@ The texture paths are relative to `Common/`. You need two PNG files:
 - `Common/BlockTextures/Wood_Trunk_Crystal_Side.png` — bark texture (side faces)
 - `Common/BlockTextures/Wood_Trunk_Crystal_Top.png` — ring texture (top/bottom faces)
 
-For testing, copy the Azure textures (`Wood_Trunk_Azure_Side.png` and `Wood_Trunk_Azure_Top.png`) and adjust the hue.
+Since we inherit from Azure, you can start by copying the Azure textures (`Wood_Trunk_Azure_Side.png` and `Wood_Trunk_Azure_Top.png`) and adjusting the hue to a crystal blue/purple.
 :::
 
 ---
 
 ## Step 2: Create the Leaves Block
 
-Leaves use a shared 3D model (`Ball.blockymodel`) with a custom texture for color. They inherit all decay and physics behavior from the Oak template.
+Leaves use a shared 3D model (`Ball.blockymodel`) with a custom texture for color. They inherit all decay and physics behavior from the Azure leaves template.
 
 Create `Server/Item/Items/Plant/Leaves/Plant_Leaves_Crystal.json`:
 
@@ -129,7 +129,7 @@ Create `Server/Item/Items/Plant/Leaves/Plant_Leaves_Crystal.json`:
     "Name": "server.items.Plant_Leaves_Crystal.name"
   },
   "Icon": "Icons/ItemsGenerated/Plant_Crystal_Leaves.png",
-  "Parent": "Plant_Leaves_Oak",
+  "Parent": "Plant_Leaves_Azure",
   "BlockType": {
     "CustomModel": "Blocks/Foliage/Leaves/Ball.blockymodel",
     "CustomModelTexture": [
@@ -147,7 +147,7 @@ Create `Server/Item/Items/Plant/Leaves/Plant_Leaves_Crystal.json`:
 
 | Field | Type | Purpose |
 |-------|------|---------|
-| `Parent` | String | Inherits from `Plant_Leaves_Oak` — gets leaf decay, transparency, and break behavior |
+| `Parent` | String | Inherits from `Plant_Leaves_Azure` — gets leaf decay, transparency, and break behavior |
 | `BlockType.CustomModel` | String | Shared leaf model. All tree types use the same `Ball.blockymodel` shape |
 | `BlockType.CustomModelTexture` | Array | Color texture applied to the model. Change this PNG to change the leaf color |
 | `BlockType.ParticleColor` | String | Color of particles when leaves are broken. Use a color that matches the texture |
@@ -284,7 +284,7 @@ Create `Server/Item/Items/Plant/Plant_Sapling_Crystal.json`:
           {
             "Prefabs": [
               {
-                "Path": "Trees/Crystal/Stage_0/Crystal_Stage0_001.prefab.json",
+                "Path": "Trees/Azure/Stage_0/Azure_Stage0_001.prefab.json",
                 "Weight": 1
               }
             ],
@@ -301,7 +301,7 @@ Create `Server/Item/Items/Plant/Plant_Sapling_Crystal.json`:
           {
             "Prefabs": [
               {
-                "Path": "Trees/Crystal/Stage_1/Crystal_Stage1_001.prefab.json",
+                "Path": "Trees/Azure/Stage_1/Azure_Stage1_001.prefab.json",
                 "Weight": 1
               }
             ],
@@ -318,7 +318,7 @@ Create `Server/Item/Items/Plant/Plant_Sapling_Crystal.json`:
           {
             "Prefabs": [
               {
-                "Path": "Trees/Crystal/Stage_2/Crystal_Stage2_001.prefab.json",
+                "Path": "Trees/Azure/Stage_2/Azure_Stage2_001.prefab.json",
                 "Weight": 1
               }
             ],
@@ -335,7 +335,7 @@ Create `Server/Item/Items/Plant/Plant_Sapling_Crystal.json`:
           {
             "Prefabs": [
               {
-                "Path": "Trees/Crystal/Stage_3/Crystal_Stage3_001.prefab.json",
+                "Path": "Trees/Azure/Stage_3/Azure_Stage3_001.prefab.json",
                 "Weight": 1
               }
             ],
@@ -450,8 +450,8 @@ Two `BlockType` properties are essential for the sapling to work:
 To add visual variety, include multiple entries in a stage's `Prefabs` array with equal `Weight`. The engine picks one at random:
 ```json
 "Prefabs": [
-  { "Path": "Trees/Crystal/Stage_2/Crystal_Stage2_001.prefab.json", "Weight": 1 },
-  { "Path": "Trees/Crystal/Stage_2/Crystal_Stage2_002.prefab.json", "Weight": 1 }
+  { "Path": "Trees/Azure/Stage_2/Azure_Stage2_001.prefab.json", "Weight": 1 },
+  { "Path": "Trees/Azure/Stage_2/Crystal_Stage2_002.prefab.json", "Weight": 1 }
 ]
 ```
 :::
@@ -462,29 +462,29 @@ To add visual variety, include multiple entries in a stage's `Prefabs` array wit
 
 The `PrefabList` tells the engine where to scan for your tree's prefab files. Each growth stage has its own directory.
 
-Create `Server/PrefabList/Trees_Crystal.json`:
+Create `Server/PrefabList/Trees_Azure.json`:
 
 ```json
 {
   "Prefabs": [
     {
       "RootDirectory": "Asset",
-      "Path": "Trees/Crystal/Stage_0/",
+      "Path": "Trees/Azure/Stage_0/",
       "Recursive": true
     },
     {
       "RootDirectory": "Asset",
-      "Path": "Trees/Crystal/Stage_1/",
+      "Path": "Trees/Azure/Stage_1/",
       "Recursive": true
     },
     {
       "RootDirectory": "Asset",
-      "Path": "Trees/Crystal/Stage_2/",
+      "Path": "Trees/Azure/Stage_2/",
       "Recursive": true
     },
     {
       "RootDirectory": "Asset",
-      "Path": "Trees/Crystal/Stage_3/",
+      "Path": "Trees/Azure/Stage_3/",
       "Recursive": true
     }
   ]
@@ -501,6 +501,10 @@ Create `Server/PrefabList/Trees_Crystal.json`:
 | `Recursive` | Boolean | `true` — scan subdirectories as well |
 
 The actual `.prefab.json` files contain block position data that forms the tree shape. These are typically created using the Hytale prefab editor in Creative Mode, not written by hand.
+
+:::tip[Reusing Azure Prefabs]
+In this tutorial we reuse the vanilla Azure tree prefabs directly. The sapling's `Farming` stages point to `Trees/Azure/Stage_N/` paths that already exist in the base game. This means you get a fully working tree without creating prefab files from scratch — only the block definitions, textures, and translations are custom.
+:::
 
 ---
 
@@ -577,12 +581,7 @@ CreateACustomTree/
 │   │       │   └── Plant_Fruit_Crystal.json
 │   │       └── Plant_Sapling_Crystal.json
 │   ├── PrefabList/
-│   │   └── Trees_Crystal.json
-│   ├── Prefabs/Trees/Crystal/
-│   │   ├── Stage_0/Crystal_Stage0_001.prefab.json
-│   │   ├── Stage_1/Crystal_Stage1_001.prefab.json
-│   │   ├── Stage_2/Crystal_Stage2_001.prefab.json
-│   │   └── Stage_3/Crystal_Stage3_001.prefab.json
+│   │   └── Trees_Azure.json
 │   └── Languages/
 │       ├── en-US/server.lang
 │       ├── es/server.lang
