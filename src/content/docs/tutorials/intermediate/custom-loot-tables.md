@@ -147,7 +147,7 @@ Update `Server/Drops/Drop_Slime.json`:
           {
             "Type": "Single",
             "Item": {
-              "ItemId": "Block_Crystal_Glow",
+              "ItemId": "Ore_Crystal_Glow",
               "QuantityMin": 1,
               "QuantityMax": 1
             }

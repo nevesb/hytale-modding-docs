@@ -13,7 +13,7 @@ Una **Espada de Cristal** — un arma cuerpo a cuerpo personalizada fabricada co
 
 - Una carpeta de mod con un `manifest.json` válido (ver [Instalación y Configuración](/hytale-modding-docs/getting-started/installation/))
 - [Blockbench](https://www.blockbench.net/) con el plugin de Hytale para crear el modelo 3D
-- El tutorial [Crear un Bloque](/hytale-modding-docs/tutorials/beginner/create-a-block/) completado (la Espada de Cristal usa `Block_Crystal_Glow` como ingrediente de crafteo)
+- El tutorial [Crear un Bloque](/hytale-modding-docs/tutorials/beginner/create-a-block/) completado (la Espada de Cristal usa `Ore_Crystal_Glow` como ingrediente de crafteo)
 - Familiaridad básica con JSON (ver [Fundamentos de JSON](/hytale-modding-docs/getting-started/json-basics/))
 
 ## Repositorio Git
@@ -29,16 +29,16 @@ Clónalo y copia el contenido en tu directorio de mods de Hytale. El repositorio
 ```
 hytale-mods-custom-weapon/
 ├── manifest.json
-├── Crystal_Sword.bbmodel              (archivo fuente de Blockbench)
+├── Weapon_Sword_Crystal_Glow.bbmodel              (archivo fuente de Blockbench)
 ├── Common/
 │   ├── Items/Weapons/Crystal/
-│   │   ├── Crystal_Sword.blockymodel  (modelo de tiempo de ejecución exportado)
-│   │   └── Crystal_Sword.png          (textura)
+│   │   ├── Weapon_Sword_Crystal_Glow.blockymodel  (modelo de tiempo de ejecución exportado)
+│   │   └── Weapon_Sword_Crystal_Glow.png          (textura)
 │   └── Icons/ItemsGenerated/
-│       └── Crystal_Sword.png
+│       └── Weapon_Sword_Crystal_Glow.png
 ├── Server/
 │   ├── Item/Items/HytaleModdingManual/
-│   │   └── Crystal_Sword.json
+│   │   └── Weapon_Sword_Crystal_Glow.json
 │   └── Languages/
 │       ├── en-US/server.lang
 │       ├── pt-BR/server.lang
@@ -99,13 +99,13 @@ Abre Blockbench y crea un nuevo proyecto con el formato **Hytale Character**. La
 Exporta como **Hytale Blocky Model** y guarda en:
 
 ```text
-Common/Items/Weapons/Crystal/Crystal_Sword.blockymodel
+Common/Items/Weapons/Crystal/Weapon_Sword_Crystal_Glow.blockymodel
 ```
 
 Copia el PNG de la textura junto al blockymodel:
 
 ```text
-Common/Items/Weapons/Crystal/Crystal_Sword.png
+Common/Items/Weapons/Crystal/Weapon_Sword_Crystal_Glow.png
 ```
 
 :::caution[Rutas de Assets de Common]
@@ -121,19 +121,19 @@ Las armas de Hytale usan el sistema de plantillas `Parent` para heredar animacio
 Crea el archivo en:
 
 ```text
-Server/Item/Items/HytaleModdingManual/Crystal_Sword.json
+Server/Item/Items/HytaleModdingManual/Weapon_Sword_Crystal_Glow.json
 ```
 
 ```json
 {
   "Parent": "Template_Weapon_Sword",
   "TranslationProperties": {
-    "Name": "server.items.Crystal_Sword.name",
-    "Description": "server.items.Crystal_Sword.description"
+    "Name": "server.items.Weapon_Sword_Crystal_Glow.name",
+    "Description": "server.items.Weapon_Sword_Crystal_Glow.description"
   },
-  "Model": "Items/Weapons/Crystal/Crystal_Sword.blockymodel",
-  "Texture": "Items/Weapons/Crystal/Crystal_Sword.png",
-  "Icon": "Icons/ItemsGenerated/Crystal_Sword.png",
+  "Model": "Items/Weapons/Crystal/Weapon_Sword_Crystal_Glow.blockymodel",
+  "Texture": "Items/Weapons/Crystal/Weapon_Sword_Crystal_Glow.png",
+  "Icon": "Icons/ItemsGenerated/Weapon_Sword_Crystal_Glow.png",
   "Quality": "Rare",
   "ItemLevel": 30,
   "Tags": {
@@ -239,7 +239,7 @@ Server/Item/Items/HytaleModdingManual/Crystal_Sword.json
     "KnowledgeRequired": false,
     "Input": [
       {
-        "ItemId": "Block_Crystal_Glow",
+        "ItemId": "Ore_Crystal_Glow",
         "Quantity": 4
       },
       {
@@ -314,10 +314,10 @@ Usa el **Editor de Recursos** en Modo Creativo para generar el icono de inventar
 
 1. Abre Hytale en Modo Creativo
 2. Abre el Editor de Recursos (botón "Editor" en la parte superior derecha)
-3. Navega a **Item** > `HytaleModdingManual` > `Crystal_Sword`
+3. Navega a **Item** > `HytaleModdingManual` > `Weapon_Sword_Crystal_Glow`
 4. Haz clic en el icono de lápiz junto al campo **Icon**
 5. Ajusta `IconProperties` para obtener la mejor vista isométrica
-6. El icono generado se guarda en `Icons/ItemsGenerated/Crystal_Sword.png`
+6. El icono generado se guarda en `Icons/ItemsGenerated/Weapon_Sword_Crystal_Glow.png`
 
 ---
 
@@ -328,22 +328,22 @@ Crea archivos de idioma para cada idioma:
 ### Inglés (`Server/Languages/en-US/server.lang`)
 
 ```text
-items.Crystal_Sword.name = Crystal Sword
-items.Crystal_Sword.description = A blade forged from enchanted crystal. Radiates a soft blue glow.
+items.Weapon_Sword_Crystal_Glow.name = Crystal Sword
+items.Weapon_Sword_Crystal_Glow.description = A blade forged from enchanted crystal. Radiates a soft blue glow.
 ```
 
 ### Portugués (`Server/Languages/pt-BR/server.lang`)
 
 ```text
-items.Crystal_Sword.name = Espada de Cristal
-items.Crystal_Sword.description = Uma lâmina forjada de cristal encantado. Irradia um brilho azul suave.
+items.Weapon_Sword_Crystal_Glow.name = Espada de Cristal
+items.Weapon_Sword_Crystal_Glow.description = Uma lâmina forjada de cristal encantado. Irradia um brilho azul suave.
 ```
 
 ### Español (`Server/Languages/es/server.lang`)
 
 ```text
-items.Crystal_Sword.name = Espada de Cristal
-items.Crystal_Sword.description = Una espada forjada de cristal encantado. Irradia un brillo azul suave.
+items.Weapon_Sword_Crystal_Glow.name = Espada de Cristal
+items.Weapon_Sword_Crystal_Glow.description = Una espada forjada de cristal encantado. Irradia un brillo azul suave.
 ```
 
 El formato de la clave es `items.<ItemId>.<property>`. Si falta una clave para un idioma, Hytale recurre a `en-US`.
@@ -359,13 +359,13 @@ CreateACustomWeapon/
 ├── manifest.json
 ├── Common/
 │   ├── Items/Weapons/Crystal/
-│   │   ├── Crystal_Sword.blockymodel
-│   │   └── Crystal_Sword.png
+│   │   ├── Weapon_Sword_Crystal_Glow.blockymodel
+│   │   └── Weapon_Sword_Crystal_Glow.png
 │   └── Icons/ItemsGenerated/
-│       └── Crystal_Sword.png
+│       └── Weapon_Sword_Crystal_Glow.png
 ├── Server/
 │   ├── Item/Items/HytaleModdingManual/
-│   │   └── Crystal_Sword.json
+│   │   └── Weapon_Sword_Crystal_Glow.json
 │   └── Languages/
 │       ├── en-US/server.lang
 │       ├── pt-BR/server.lang
@@ -379,7 +379,7 @@ Para probar:
 3. Otórgate permisos de operador y genera la espada usando comandos de chat:
    ```text
    /op self
-   /spawnitem Crystal_Sword
+   /spawnitem Weapon_Sword_Crystal_Glow
    ```
 4. Confirma que:
    - El modelo de la espada de cristal se renderiza correctamente al sostenerla

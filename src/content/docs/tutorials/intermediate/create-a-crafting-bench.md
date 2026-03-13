@@ -1,19 +1,20 @@
 ---
 title: Create a Custom Crafting Bench
-description: Step-by-step tutorial for adding a custom crafting bench with recipe categories, tier upgrades, and item recipes that use it.
+description: Step-by-step tutorial for adding a Crystal Anvil crafting bench with custom model, recipe categories, and crafting UI.
 sidebar:
   order: 4
 ---
 
 ## Goal
 
-Build a custom **Runecrafting Bench** that players can place in the world and use to craft magical items. You will define the bench item with crafting categories, set up tier-based upgrades, and create item recipes that require the bench.
+Build a **Crystal Anvil** — a custom crafting bench that players can place in the world and use to forge crystal weapons. You will define the bench item with an inline `BlockType`, set up crafting categories, configure the required `State` for the crafting UI, and add translation keys.
 
 ## What You'll Learn
 
 - How crafting benches are defined using the `Bench` block type property
+- How `State` with `Id: "crafting"` is **required** for the bench UI to open
 - How to create categories that organise recipes within the bench UI
-- How tier levels unlock progressively harder recipes
+- How tier levels and `CraftingTimeReductionModifier` control crafting speed
 - How item recipes reference a bench via `BenchRequirement`
 
 ## Prerequisites
@@ -22,119 +23,166 @@ Build a custom **Runecrafting Bench** that players can place in the world and us
 - Familiarity with block definitions (see [Create a Custom Block](/hytale-modding-docs/tutorials/beginner/create-a-block))
 - Familiarity with item definitions (see [Create a Custom Item](/hytale-modding-docs/tutorials/beginner/create-an-item))
 
+**Companion mod repository:** [hytale-mods-custom-bench](https://github.com/nevesb/hytale-mods-custom-bench)
+
 ---
 
-## Step 1: Create the Bench Item Definition
+## Crafting Bench Overview
 
-Crafting benches in Hytale are items with a `BlockType` that contains a `Bench` object. The `Bench` object defines the bench's type, unique ID, categories, and tier levels. The vanilla Farming Bench (`Bench_Farming.json`) and Weapon Bench (`Bench_Weapon.json`) both follow this pattern.
+Crafting benches in Hytale are **items** that contain an inline `BlockType` with a `Bench` configuration. Unlike pure blocks that need a separate Block JSON and `BlockTypeList`, benches define everything in a single Item JSON file — the same pattern used by vanilla benches like `Bench_Weapon` and `Bench_Armory`.
 
-Create your bench definition at:
+Key differences from regular blocks:
+- **No separate Block JSON** in `Server/Item/Block/Blocks/`
+- **No `BlockTypeList` entry** needed
+- The `State` block with `Id: "crafting"` is **mandatory** for the crafting UI to work
+- The `Bench` object defines the crafting type, categories, and tier levels
 
+---
+
+## Step 1: Set Up the Mod File Structure
+
+```text
+CreateACraftingBench/
+├── manifest.json
+├── Common/
+│   ├── Blocks/
+│   │   └── HytaleModdingManual/
+│   │       └── Armory_Crystal_Glow.blockymodel
+│   └── BlockTextures/
+│       └── HytaleModdingManual/
+│           └── Armory_Crystal_Glow.png
+└── Server/
+    ├── Item/
+    │   └── Items/
+    │       └── HytaleModdingManual/
+    │           └── Bench_Armory_Crystal_Glow.json
+    └── Languages/
+        ├── en-US/
+        │   └── server.lang
+        ├── es/
+        │   └── server.lang
+        └── pt-BR/
+            └── server.lang
 ```
-YourMod/Assets/Server/Item/Items/Bench/Bench_Runecrafting.json
+
+### manifest.json
+
+```json
+{
+  "Group": "HytaleModdingManual",
+  "Name": "CreateACraftingBench",
+  "Version": "1.0.0",
+  "Description": "Crystal Anvil crafting bench for forging crystal weapons",
+  "Authors": [
+    {
+      "Name": "HytaleModdingManual"
+    }
+  ],
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "IncludesAssetPack": true
+}
 ```
+
+Note that `IncludesAssetPack` is `true` because we have Common assets (model and texture).
+
+---
+
+## Step 2: Create the Bench Item Definition
+
+Create the bench at `Server/Item/Items/HytaleModdingManual/Bench_Armory_Crystal_Glow.json`:
 
 ```json
 {
   "TranslationProperties": {
-    "Name": "server.items.Bench_Runecrafting.name",
-    "Description": "server.items.Bench_Runecrafting.description"
+    "Name": "server.items.Bench_Armory_Crystal_Glow.name",
+    "Description": "server.items.Bench_Armory_Crystal_Glow.description"
   },
-  "Icon": "Icons/ItemsGenerated/Bench_Runecrafting.png",
+  "Quality": "Rare",
+  "Icon": "Icons/ItemsGenerated/Bench_Armory_Crystal_Glow.png",
   "Categories": [
     "Furniture.Benches"
   ],
-  "MaxStack": 1,
-  "ItemLevel": 4,
+  "Recipe": {
+    "TimeSeconds": 10.0,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ore_Crystal_Glow",
+        "Quantity": 3
+      },
+      {
+        "ItemId": "Wood_Enchanted_Trunk",
+        "Quantity": 10
+      },
+      {
+        "ItemId": "Ingredient_Bar_Gold",
+        "Quantity": 5
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Crafting"
+        ],
+        "Id": "Workbench",
+        "RequiredTierLevel": 2
+      }
+    ]
+  },
   "BlockType": {
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "CustomModel": "Blocks/Benches/Runecrafting.blockymodel",
+    "CustomModel": "Blocks/HytaleModdingManual/Armory_Crystal_Glow.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Benches/Runecrafting_Texture.png",
+        "Texture": "BlockTextures/HytaleModdingManual/Armory_Crystal_Glow.png",
         "Weight": 1
       }
     ],
-    "HitboxType": "Bench_Runecrafting",
     "VariantRotation": "NESW",
-    "Bench": {
-      "Type": "Crafting",
-      "Id": "Runecraftingbench",
-      "Categories": [
-        {
-          "Id": "Runes",
-          "Icon": "Icons/CraftingCategories/Runecrafting/Runes.png",
-          "Name": "server.benchCategories.runecraftingbench.runes"
-        },
-        {
-          "Id": "Enchantments",
-          "Icon": "Icons/CraftingCategories/Runecrafting/Enchantments.png",
-          "Name": "server.benchCategories.runecraftingbench.enchantments"
-        },
-        {
-          "Id": "Scrolls",
-          "Icon": "Icons/CraftingCategories/Runecrafting/Scrolls.png",
-          "Name": "server.benchCategories.runecraftingbench.scrolls"
-        }
-      ],
-      "LocalOpenSoundEventId": "SFX_Bench_Placeholder",
-      "LocalCloseSoundEventId": "SFX_Bench_Placeholder",
-      "CompletedSoundEventId": "SFX_Bench_Placeholder",
-      "BenchUpgradeSoundEventId": "SFX_Workbench_Upgrade_Start_Default",
-      "BenchUpgradeCompletedSoundEventId": "SFX_Workbench_Upgrade_Complete_Default",
-      "TierLevels": [
-        {
-          "CraftingTimeReductionModifier": 0.0,
-          "UpgradeRequirement": {
-            "Material": [
-              {
-                "ItemId": "Ingredient_Crystal_Cyan",
-                "Quantity": 10
-              },
-              {
-                "ItemId": "Ingredient_Bar_Iron",
-                "Quantity": 5
-              }
-            ],
-            "TimeSeconds": 3
-          }
-        },
-        {
-          "CraftingTimeReductionModifier": 0.15,
-          "UpgradeRequirement": {
-            "Material": [
-              {
-                "ItemId": "Ingredient_Crystal_Cyan",
-                "Quantity": 25
-              },
-              {
-                "ItemId": "Ingredient_Bar_Thorium",
-                "Quantity": 10
-              }
-            ],
-            "TimeSeconds": 3
-          }
-        },
-        {
-          "CraftingTimeReductionModifier": 0.3
-        }
-      ]
-    },
+    "HitboxType": "Bench_Weapon",
     "State": {
       "Id": "crafting",
       "Definitions": {
-        "CraftCompleted": {}
+        "CraftCompleted": {
+          "Looping": true
+        },
+        "CraftCompletedInstant": {}
       }
     },
     "Gathering": {
       "Breaking": {
-        "GatherType": "Benches"
+        "GatherType": "Benches",
+        "ItemId": "Bench_Armory_Crystal_Glow"
       }
     },
-    "BlockParticleSetId": "Stone",
-    "ParticleColor": "#4488cc",
+    "Light": {
+      "Color": "#88ccff"
+    },
+    "Bench": {
+      "Type": "Crafting",
+      "LocalOpenSoundEventId": "SFX_Weapon_Bench_Open",
+      "LocalCloseSoundEventId": "SFX_Weapon_Bench_Close",
+      "CompletedSoundEventId": "SFX_Weapon_Bench_Craft",
+      "Id": "Armory_Crystal_Glow",
+      "Categories": [
+        {
+          "Id": "Crystal_Glow_Sword",
+          "Name": "server.benchCategories.crystal_glow_sword",
+          "Icon": "Icons/CraftingCategories/Armory/Sword.png"
+        }
+      ],
+      "TierLevels": [
+        {
+          "CraftingTimeReductionModifier": 0.0
+        }
+      ]
+    },
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#88ccff",
     "Support": {
       "Down": [
         {
@@ -142,37 +190,28 @@ YourMod/Assets/Server/Item/Items/Bench/Bench_Runecrafting.json
         }
       ]
     },
-    "BlockSoundSetId": "Stone"
-  },
-  "Recipe": {
-    "TimeSeconds": 3,
-    "Input": [
-      {
-        "ResourceTypeId": "Rock",
-        "Quantity": 10
-      },
-      {
-        "ItemId": "Ingredient_Crystal_Cyan",
-        "Quantity": 5
-      }
-    ],
-    "BenchRequirement": [
-      {
-        "Type": "Crafting",
-        "Id": "Workbench",
-        "Categories": [
-          "Workbench_Crafting"
-        ]
-      }
-    ]
+    "BlockParticleSetId": "Crystal"
   },
   "PlayerAnimationsId": "Block",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      13,
+      -14
+    ]
+  },
   "Tags": {
     "Type": [
       "Bench"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Wood"
+  "MaxStack": 1,
+  "ItemSoundSetId": "ISS_Items_Gems"
 }
 ```
 
@@ -181,71 +220,68 @@ YourMod/Assets/Server/Item/Items/Bench/Bench_Runecrafting.json
 | Field | Purpose |
 |-------|---------|
 | `Bench.Type` | Must be `"Crafting"` for recipe-based benches |
-| `Bench.Id` | Unique identifier that recipes reference in their `BenchRequirement`. This is the string that connects recipes to this bench |
+| `Bench.Id` | Unique identifier that recipes reference in their `BenchRequirement` |
 | `Bench.Categories` | Array of category tabs shown in the bench UI. Each has an `Id`, `Icon`, and translation `Name` |
-| `Bench.TierLevels` | Array of upgrade tiers. Each tier can have a `CraftingTimeReductionModifier` (percentage faster) and an `UpgradeRequirement` with materials and time |
+| `Bench.TierLevels` | Array of upgrade tiers. Each can have `CraftingTimeReductionModifier` (percentage faster) and `UpgradeRequirement` |
+| `State` | **Required.** Must have `"Id": "crafting"` for the bench UI to open on interaction |
 | `VariantRotation` | `"NESW"` lets the bench face four directions when placed |
-| `State` | Defines visual states like `CraftCompleted` for animations while crafting |
+| `HitboxType` | Reuses `"Bench_Weapon"` hitbox for the interaction area |
+| `Light.Color` | Emits a soft blue glow (`#88ccff`) |
+| `Support.Down` | Requires a full block face below to place |
+
+:::caution[State is mandatory]
+Without the `State` block, the bench will place in the world but **the crafting UI will not open** when you interact with it. There is no error in the logs — it silently fails. Every vanilla bench (`Bench_Weapon`, `Bench_Armory`, `Bench_Campfire`) includes this `State` configuration.
+:::
 
 ### Category structure
 
-Each category in the `Categories` array is an object with three fields:
+Each category in the `Categories` array defines a tab in the crafting UI:
 
 ```json
 {
-  "Id": "Runes",
-  "Icon": "Icons/CraftingCategories/Runecrafting/Runes.png",
-  "Name": "server.benchCategories.runecraftingbench.runes"
+  "Id": "Crystal_Glow_Sword",
+  "Name": "server.benchCategories.crystal_glow_sword",
+  "Icon": "Icons/CraftingCategories/Armory/Sword.png"
 }
 ```
 
-- **`Id`** -- The category identifier that recipes reference to appear under this tab
-- **`Icon`** -- Path to the icon PNG displayed on the category tab
-- **`Name`** -- Translation key for the category label text
+- **`Id`** — The category identifier that recipes reference to appear under this tab
+- **`Icon`** — Path to the icon PNG displayed on the category tab (we reuse the vanilla Sword icon)
+- **`Name`** — Translation key for the category label text
 
 ---
 
-## Step 2: Create Recipes That Use the Bench
+## Step 3: Create a Recipe That Uses the Bench
 
-Any item definition with a `Recipe` block can reference your bench. The connection is made through the `BenchRequirement` array, where `Id` matches your bench's `Bench.Id` and `Categories` lists which category tabs the recipe appears under.
+Any item with a `Recipe` can reference your bench through `BenchRequirement`. The connection is made by matching `BenchRequirement.Id` to your bench's `Bench.Id`, and `Categories` to the category tabs the recipe appears under.
 
-Create an item that is crafted at the Runecrafting Bench:
-
-```
-YourMod/Assets/Server/Item/Items/Rune/Rune_Fire.json
-```
+For example, the Crystal Glow Sword recipe references our bench:
 
 ```json
 {
-  "TranslationProperties": {
-    "Name": "server.items.Rune_Fire.name",
-    "Description": "server.items.Rune_Fire.description"
-  },
-  "Icon": "Icons/MyMod/Rune_Fire.png",
-  "Quality": "Rare",
-  "MaxStack": 16,
-  "ItemLevel": 3,
   "Recipe": {
-    "TimeSeconds": 5,
+    "TimeSeconds": 8.0,
     "Input": [
       {
-        "ItemId": "Ingredient_Fire_Essence",
-        "Quantity": 3
+        "ItemId": "Ore_Crystal_Glow",
+        "Quantity": 10
       },
       {
-        "ItemId": "Ingredient_Crystal_Cyan",
-        "Quantity": 2
+        "ItemId": "Wood_Enchanted_Trunk",
+        "Quantity": 50
+      },
+      {
+        "ItemId": "Ingredient_Leather_Heavy",
+        "Quantity": 10
       }
     ],
-    "OutputQuantity": 1,
     "BenchRequirement": [
       {
         "Type": "Crafting",
-        "Id": "Runecraftingbench",
+        "Id": "Armory_Crystal_Glow",
         "Categories": [
-          "Runes"
-        ],
-        "RequiredTierLevel": 1
+          "Crystal_Glow_Sword"
+        ]
       }
     ]
   }
@@ -259,105 +295,97 @@ YourMod/Assets/Server/Item/Items/Rune/Rune_Fire.json
 | `Type` | Must be `"Crafting"` to match a crafting bench |
 | `Id` | Must exactly match the `Bench.Id` from your bench definition (case-sensitive) |
 | `Categories` | Array of category IDs this recipe appears under. Must match a category `Id` from the bench |
-| `RequiredTierLevel` | Minimum bench tier required. Tier levels are 1-indexed from the `TierLevels` array. Omit for tier 0 (no upgrade needed) |
-
----
-
-## Step 3: Add a Tier-Gated Recipe
-
-To create a recipe that only unlocks after the player upgrades their bench, set `RequiredTierLevel` to a higher value:
-
-```
-YourMod/Assets/Server/Item/Items/Rune/Rune_Void.json
-```
-
-```json
-{
-  "TranslationProperties": {
-    "Name": "server.items.Rune_Void.name",
-    "Description": "server.items.Rune_Void.description"
-  },
-  "Icon": "Icons/MyMod/Rune_Void.png",
-  "Quality": "Epic",
-  "MaxStack": 8,
-  "ItemLevel": 6,
-  "Recipe": {
-    "TimeSeconds": 10,
-    "Input": [
-      {
-        "ItemId": "Ingredient_Void_Essence",
-        "Quantity": 5
-      },
-      {
-        "ItemId": "Ingredient_Crystal_Cyan",
-        "Quantity": 8
-      }
-    ],
-    "OutputQuantity": 1,
-    "BenchRequirement": [
-      {
-        "Type": "Crafting",
-        "Id": "Runecraftingbench",
-        "Categories": [
-          "Runes"
-        ],
-        "RequiredTierLevel": 2
-      }
-    ]
-  }
-}
-```
-
-This recipe appears greyed out until the player upgrades the Runecrafting Bench to tier 2.
+| `RequiredTierLevel` | Minimum bench tier required. Omit for tier 0 (no upgrade needed) |
 
 ---
 
 ## Step 4: Add Translation Keys
 
-Add all translation keys to your language file:
+Create language files at `Server/Languages/<locale>/server.lang`:
+
+### English (`en-US/server.lang`)
 
 ```
-YourMod/Assets/Languages/en-US.lang
+items.Bench_Armory_Crystal_Glow.name = Crystal Anvil
+items.Bench_Armory_Crystal_Glow.description = A crystal anvil for forging crystal weapons.
+benchCategories.crystal_glow_sword = Crystal Sword
 ```
 
+### Spanish (`es/server.lang`)
+
 ```
-server.items.Bench_Runecrafting.name=Runecrafting Bench
-server.items.Bench_Runecrafting.description=A bench for crafting runes and enchantments.
-server.benchCategories.runecraftingbench.runes=Runes
-server.benchCategories.runecraftingbench.enchantments=Enchantments
-server.benchCategories.runecraftingbench.scrolls=Scrolls
-server.items.Rune_Fire.name=Fire Rune
-server.items.Rune_Fire.description=A rune imbued with the essence of fire.
-server.items.Rune_Void.name=Void Rune
-server.items.Rune_Void.description=A rune channelling void energy.
+items.Bench_Armory_Crystal_Glow.name = Yunque de Cristal
+items.Bench_Armory_Crystal_Glow.description = Un yunque de cristal para forjar armas de cristal.
+benchCategories.crystal_glow_sword = Espada de Cristal
 ```
+
+### Portuguese BR (`pt-BR/server.lang`)
+
+```
+items.Bench_Armory_Crystal_Glow.name = Bigorna de Cristal
+items.Bench_Armory_Crystal_Glow.description = Uma bigorna de cristal para forjar armas de cristal.
+benchCategories.crystal_glow_sword = Espada de Cristal
+```
+
+Note the translation key format: `items.<ItemId>.name` and `benchCategories.<category_id>`. The `server.` prefix in the JSON (`"Name": "server.items.Bench_Armory_Crystal_Glow.name"`) maps to the lang file key without the `server.` prefix.
 
 ---
 
-## Step 5: Test In-Game
+## Step 5: Add the Custom Model
 
-1. Place your mod folder in the server mods directory.
-2. Start the server and watch for JSON validation errors.
-3. Use the developer item spawner to give yourself `Bench_Runecrafting`.
+The bench uses a custom `.blockymodel` and texture. Place them in the `Common/` folder:
+
+- **Model:** `Common/Blocks/HytaleModdingManual/Armory_Crystal_Glow.blockymodel`
+- **Texture:** `Common/BlockTextures/HytaleModdingManual/Armory_Crystal_Glow.png`
+
+You can create the model using [Blockbench](https://www.blockbench.net/) with the **Hytale Block** format. The model should fit within the block boundary (32 units = 1 block). For a 2-block-wide bench, use the `"HitboxType": "Bench_Weapon"` hitbox which covers the wider area.
+
+:::tip[Common Asset Paths]
+Common assets must be inside one of these root directories: `Blocks/`, `BlockTextures/`, `Items/`, `Resources/`, `NPC/`, `VFX/`, or `Consumable/`. Putting files outside these folders causes a load error.
+:::
+
+---
+
+## Step 6: Test In-Game
+
+1. Place the mod folder in your mods directory (`%APPDATA%/Hytale/UserData/Mods/`).
+2. Start the server and check the logs for validation errors.
+3. Use the command `/spawnitem Bench_Armory_Crystal_Glow` to give yourself the bench.
 4. Place the bench and right-click to open the crafting UI.
-5. Confirm all three category tabs (Runes, Enchantments, Scrolls) appear.
-6. Verify `Rune_Fire` appears under the Runes tab and can be crafted.
-7. Confirm `Rune_Void` appears greyed out until you upgrade the bench to tier 2.
-8. Upgrade the bench by providing the required materials and verify the tier 2 recipe unlocks.
+5. Confirm the Crystal Sword category tab appears.
+
+![Crystal Anvil placed in the world](/hytale-modding-docs/images/tutorials/create-a-crafting-bench/crystal-anvil-ingame.png)
+
+![Crystal Anvil crafting UI showing the Crystal Sword recipe](/hytale-modding-docs/images/tutorials/create-a-crafting-bench/crystal-anvil-crafting-ui.png)
 
 **Common errors and fixes:**
 
 | Error | Cause | Fix |
 |-------|-------|-----|
+| Bench places but UI doesn't open | Missing `State` block | Add `"State": { "Id": "crafting", "Definitions": { "CraftCompleted": { "Looping": true }, "CraftCompletedInstant": {} } }` |
 | Recipe not appearing in bench | `BenchRequirement.Id` mismatch | Ensure `Id` exactly matches `Bench.Id` (case-sensitive) |
 | Category tab missing | Category `Id` not in bench definition | Add the category to the bench's `Categories` array |
-| Recipe always greyed out | `RequiredTierLevel` too high | Check that tier level exists in the bench's `TierLevels` array |
+| `StackOverflowError` on load | Using `Parent` inheritance with `State` | Make the bench standalone — copy all fields instead of inheriting from `Bench_Weapon` |
 | Bench not placeable | Missing `Support` block | Add `"Support": { "Down": [{ "FaceType": "Full" }] }` |
+| Common asset load error | Wrong asset path | Ensure assets are inside `Blocks/`, `BlockTextures/`, etc. — not `Animations/` or custom folders |
+
+---
+
+## Vanilla Bench Reference
+
+For reference, here are the bench types used in the vanilla game:
+
+| Bench | `Bench.Type` | `Bench.Id` | Categories |
+|-------|-------------|------------|------------|
+| Weapon Bench | `Crafting` | `Weapon_Bench` | Sword, Mace, Battleaxe, Daggers, Bow |
+| Armory | `DiagramCrafting` | `Armory` | Weapons (Sword, Club, Axe, etc.), Armor (Head, Chest, etc.) |
+| Campfire | `Crafting` | `Campfire` | Cooking |
+| Workbench | `Crafting` | `Workbench` | Workbench_Crafting |
 
 ---
 
 ## Next Steps
 
-- [Create a Custom Block](/hytale-modding-docs/tutorials/beginner/create-a-block) -- learn how blocks and items connect
-- [Custom Loot Tables](/hytale-modding-docs/tutorials/intermediate/custom-loot-tables) -- set up drops that include your crafted items
-- [NPC Shops and Trading](/hytale-modding-docs/tutorials/intermediate/npc-shops-and-trading) -- sell bench-crafted items through NPC merchants
+- [Create a Custom Block](/hytale-modding-docs/tutorials/beginner/create-a-block) — learn how blocks and items connect
+- [Custom Loot Tables](/hytale-modding-docs/tutorials/intermediate/custom-loot-tables) — set up drops that include your crafted items
+- [NPC Shops and Trading](/hytale-modding-docs/tutorials/intermediate/npc-shops-and-trading) — sell bench-crafted items through NPC merchants

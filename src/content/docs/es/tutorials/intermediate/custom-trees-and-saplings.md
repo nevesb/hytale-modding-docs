@@ -730,7 +730,7 @@ CreateACustomTree/
    /spawnitem Wood_Enchanted_Trunk
    /spawnitem Plant_Sapling_Enchanted
    /spawnitem Plant_Fruit_Enchanted
-   /spawnitem Block_Crystal_Glow
+   /spawnitem Ore_Crystal_Glow
    ```
 5. Coloca el tronco y verifica que aparece la textura personalizada
 6. Coloca bloques Crystal Glow en un área oscura (bajo tierra o de noche)

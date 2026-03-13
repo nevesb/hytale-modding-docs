@@ -5,7 +5,7 @@ description: Build a custom block in Blockbench, wire it into Hytale JSON, and t
 
 ## What You'll Build
 
-A glowing crystal block called **Block_Crystal_Glow** — a custom-model block with its own texture, light emission, sound set, and inventory icon.
+A glowing crystal block called **Ore_Crystal_Glow** — a custom-model block with its own texture, light emission, sound set, and inventory icon.
 
 ![Custom crystal block placed in the world, emitting a soft blue glow](/hytale-modding-docs/images/tutorials/create-a-block/block-ingame.png)
 
@@ -35,15 +35,15 @@ hytale-mods-custom-block/
 │   ├── BlockTextures/HytaleModdingManual/
 │   │   └── Crystal_Glow.png
 │   └── Icons/ItemsGenerated/
-│       └── Block_Crystal_Glow.png
+│       └── Ore_Crystal_Glow.png
 ├── Server/
 │   ├── BlockTypeList/
 │   │   └── HytaleModdingManual_Blocks.json
 │   ├── Item/
 │   │   ├── Block/Blocks/HytaleModdingManual/
-│   │   │   └── Block_Crystal_Glow.json
+│   │   │   └── Ore_Crystal_Glow.json
 │   │   └── Items/HytaleModdingManual/
-│   │       └── Block_Crystal_Glow.json
+│   │       └── Ore_Crystal_Glow.json
 │   └── Languages/
 │       └── en-US/server.lang
 └── ...
@@ -106,7 +106,7 @@ The block definition controls how the block behaves in the world — its physics
 Create the file at:
 
 ```text
-Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
+Server/Item/Block/Blocks/HytaleModdingManual/Ore_Crystal_Glow.json
 ```
 
 ```json
@@ -126,7 +126,7 @@ Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
   "Gathering": {
     "Breaking": {
       "GatherType": "Rocks",
-      "ItemId": "Block_Crystal_Glow"
+      "ItemId": "Ore_Crystal_Glow"
     }
   },
   "Light": {
@@ -183,7 +183,7 @@ Server/BlockTypeList/HytaleModdingManual_Blocks.json
 ```json
 {
   "Blocks": [
-    "Block_Crystal_Glow"
+    "Ore_Crystal_Glow"
   ]
 }
 ```
@@ -199,21 +199,21 @@ The item definition makes the block appear in inventory and controls how the pla
 Create the file at:
 
 ```text
-Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
+Server/Item/Items/HytaleModdingManual/Ore_Crystal_Glow.json
 ```
 
 ```json
 {
   "TranslationProperties": {
-    "Name": "server.items.Block_Crystal_Glow.name",
-    "Description": "server.items.Block_Crystal_Glow.description"
+    "Name": "server.items.Ore_Crystal_Glow.name",
+    "Description": "server.items.Ore_Crystal_Glow.description"
   },
   "Interactions": {
     "Primary": "Block_Primary",
     "Secondary": "Block_Secondary"
   },
   "Quality": "Uncommon",
-  "Icon": "Icons/ItemsGenerated/Block_Crystal_Glow.png",
+  "Icon": "Icons/ItemsGenerated/Ore_Crystal_Glow.png",
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
@@ -232,7 +232,7 @@ Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
     "Gathering": {
       "Breaking": {
         "GatherType": "Rocks",
-        "ItemId": "Block_Crystal_Glow"
+        "ItemId": "Ore_Crystal_Glow"
       }
     },
     "Light": {
@@ -264,7 +264,7 @@ Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `TranslationProperties` | object | No | — | Contains translation keys for the item name and description. |
-| `TranslationProperties.Name` | string | No | — | Translation key for the item's display name (e.g., `server.items.Block_Crystal_Glow.name`). |
+| `TranslationProperties.Name` | string | No | — | Translation key for the item's display name (e.g., `server.items.Ore_Crystal_Glow.name`). |
 | `TranslationProperties.Description` | string | No | — | Translation key for the item's tooltip description. |
 | `Interactions` | object | No | — | Defines what happens on left-click (`Primary`) and right-click (`Secondary`). |
 | `Interactions.Primary` | string | No | — | Primary interaction when the player left-clicks. `Block_Primary` = break block behavior. |
@@ -292,17 +292,17 @@ Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
 
 Hytale includes a built-in **Resource Editor** accessible from Creative Mode. You can use it to automatically generate the inventory icon for your block instead of creating one manually.
 
-![Hytale Resource Editor showing the Block_Crystal_Glow item with its auto-generated icon and properties panel](/hytale-modding-docs/images/tutorials/create-a-block/resource-editor.png)
+![Hytale Resource Editor showing the Ore_Crystal_Glow item with its auto-generated icon and properties panel](/hytale-modding-docs/images/tutorials/create-a-block/resource-editor.png)
 
 To generate the icon:
 
 1. Open Hytale in **Creative Mode**
 2. Open the **Resource Editor** (top-right corner: "Editor" button)
 3. Navigate to **Item** in the left panel and find your mod group (e.g., `HytaleModdingManual`)
-4. Select your block item (`Block_Crystal_Glow`)
+4. Select your block item (`Ore_Crystal_Glow`)
 5. In the properties panel on the right, find the **Icon** field
 6. Click the pencil icon next to the Icon field — the editor will render the 3D model and save a PNG icon automatically
-7. The generated icon is saved to `Icons/ItemsGenerated/Block_Crystal_Glow.png`
+7. The generated icon is saved to `Icons/ItemsGenerated/Ore_Crystal_Glow.png`
 
 The Resource Editor also lets you adjust `IconProperties` (Scale, Rotation, Translation) visually to get the perfect isometric view for your icon.
 
@@ -330,8 +330,8 @@ The item JSON references translation keys through `TranslationProperties`:
 ```json
 {
   "TranslationProperties": {
-    "Name": "server.items.Block_Crystal_Glow.name",
-    "Description": "server.items.Block_Crystal_Glow.description"
+    "Name": "server.items.Ore_Crystal_Glow.name",
+    "Description": "server.items.Ore_Crystal_Glow.description"
   }
 }
 ```
@@ -345,25 +345,25 @@ items.<ItemId>.<property> = <translated text>
 ### English (`Server/Languages/en-US/server.lang`)
 
 ```text
-items.Block_Crystal_Glow.name = Glowing Crystal Block
-items.Block_Crystal_Glow.description = A crystal block that radiates soft blue light.
+items.Ore_Crystal_Glow.name = Glowing Crystal Block
+items.Ore_Crystal_Glow.description = A crystal block that radiates soft blue light.
 ```
 
 ### Portuguese (`Server/Languages/pt-BR/server.lang`)
 
 ```text
-items.Block_Crystal_Glow.name = Bloco de Cristal Brilhante
-items.Block_Crystal_Glow.description = Um bloco de cristal que irradia uma suave luz azul.
+items.Ore_Crystal_Glow.name = Bloco de Cristal Brilhante
+items.Ore_Crystal_Glow.description = Um bloco de cristal que irradia uma suave luz azul.
 ```
 
 ### Spanish (`Server/Languages/es/server.lang`)
 
 ```text
-items.Block_Crystal_Glow.name = Bloque de Cristal Brillante
-items.Block_Crystal_Glow.description = Un bloque de cristal que irradia una suave luz azul.
+items.Ore_Crystal_Glow.name = Bloque de Cristal Brillante
+items.Ore_Crystal_Glow.description = Un bloque de cristal que irradia una suave luz azul.
 ```
 
-If a translation key is missing for a locale, Hytale falls back to `en-US`. If the key is missing entirely, the raw key string (e.g., `server.items.Block_Crystal_Glow.name`) is displayed instead of the translated name.
+If a translation key is missing for a locale, Hytale falls back to `en-US`. If the key is missing entirely, the raw key string (e.g., `server.items.Ore_Crystal_Glow.name`) is displayed instead of the translated name.
 
 For more details on the localization system, see [Localization Keys](/hytale-modding-docs/reference/concepts/localization-keys/).
 
@@ -382,15 +382,15 @@ CreateACustomBlock/
 │   ├── BlockTextures/HytaleModdingManual/
 │   │   └── Crystal_Glow.png
 │   └── Icons/ItemsGenerated/
-│       └── Block_Crystal_Glow.png
+│       └── Ore_Crystal_Glow.png
 ├── Server/
 │   ├── BlockTypeList/
 │   │   └── HytaleModdingManual_Blocks.json
 │   ├── Item/
 │   │   ├── Block/Blocks/HytaleModdingManual/
-│   │   │   └── Block_Crystal_Glow.json
+│   │   │   └── Ore_Crystal_Glow.json
 │   │   └── Items/HytaleModdingManual/
-│   │       └── Block_Crystal_Glow.json
+│   │       └── Ore_Crystal_Glow.json
 │   └── Languages/
 │       ├── en-US/server.lang
 │       ├── pt-BR/server.lang
@@ -404,7 +404,7 @@ To test:
 3. Grant yourself operator permissions and spawn the block using chat commands:
    ```text
    /op self
-   /spawnitem Block_Crystal_Glow
+   /spawnitem Ore_Crystal_Glow
    ```
 4. Place the block in the world
 5. Confirm:
