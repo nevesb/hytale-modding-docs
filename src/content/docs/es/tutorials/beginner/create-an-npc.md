@@ -23,6 +23,8 @@ Crear un **Slime** — un NPC hostil que persigue y ataca a los jugadores en cua
 - Blockbench con el plugin de Hytale instalado
 - Familiaridad con la herencia de plantillas JSON (consulta [Herencia y Plantillas](/hytale-modding-docs/reference/concepts/inheritance-and-templates/))
 
+**Repositorio del mod complementario:** [hytale-mods-custom-npc](https://github.com/nevesb/hytale-mods-custom-npc)
+
 ---
 
 ## Descripción General de la Arquitectura de NPCs
@@ -362,63 +364,44 @@ Esta indirección existe porque las plantillas usan `Compute` para leer valores 
 
 ## Paso 6: Crear la Tabla de Botín
 
-La tabla de botín controla qué loot se suelta cuando el NPC muere. Hytale usa un sistema de **selección aleatoria con pesos**.
+La tabla de botín controla qué loot se suelta cuando el NPC muere. Por ahora, crea una tabla de drops vacía para que el Slime no suelte nada:
 
 Crea `Server/Drops/Drop_Slime.json`:
 
 ```json
+{}
+```
+
+Luego conéctala al Slime agregando `DropList` al Rol de NPC. Abre `Server/NPC/Roles/Slime.json` y agrega la línea resaltada:
+
+```json {7}
 {
-  "Container": {
-    "Type": "Choice",
-    "Containers": [
-      {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Ore_Crystal_Slime",
-          "QuantityMin": 1,
-          "QuantityMax": 1
-        },
-        "Weight": 100
-      },
-      {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Consumable_Potion_Health_Large"
-        },
-        "Weight": 60
-      },
-      {
-        "Type": "Empty",
-        "Weight": 40
-      }
-    ]
+  "Type": "Variant",
+  "Reference": "Template_Predator",
+  "Modify": {
+    "Appearance": "Slime",
+    "MaxHealth": 75,
+    "DropList": "Drop_Slime",
+    "KnockbackScale": 0.5,
+    "IsMemory": true,
+    "MemoriesCategory": "Beast",
+    "NameTranslationKey": {
+      "Compute": "NameTranslationKey"
+    }
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.Slime.name",
+      "Description": "Translation key for NPC name display"
+    }
   }
 }
 ```
 
-### Cómo Funciona la Selección con Pesos
+El `"DropList": "Drop_Slime"` indica al motor que busque `Server/Drops/Drop_Slime.json` cuando el NPC muera.
 
-El `"Type": "Choice"` raíz elige **un** contenedor hijo al azar, proporcional al peso:
-
-| Drop | Peso | Probabilidad |
-|------|------|-------------|
-| Mineral de Cristal de Slime (1) | 100 | 100/200 = **50%** |
-| Poción de Salud (Grande) | 60 | 60/200 = **30%** |
-| Nada | 40 | 40/200 = **20%** |
-
-Peso total = 100 + 60 + 40 = 200. Cada peso se divide entre el total para obtener la probabilidad.
-
-### Tipos de Contenedores de Drops
-
-| Tipo | Comportamiento |
-|------|---------------|
-| `Choice` | Elige **un** hijo al azar (con pesos) |
-| `Multiple` | Evalúa **todos** los hijos (usar para drops garantizados + bonus) |
-| `Single` | Produce el `Item` especificado con cantidad entre `QuantityMin` y `QuantityMax` |
-| `Empty` | No suelta nada — usar como opción de "sin drop" en contenedores `Choice` |
-
-:::tip[Múltiples Drops Garantizados]
-Para siempre soltar un objeto Y tener probabilidad de un segundo, usa `Multiple` en la raíz con dos hijos `Choice` — uno garantizado, uno con una opción `Empty`. Consulta [Referencia de Tablas de Botín](/hytale-modding-docs/reference/economy-and-progression/drop-tables/) para patrones avanzados.
+:::tip[¿Quieres Botín Real?]
+El tutorial [Tablas de Botín Personalizadas](/hytale-modding-docs/es/tutorials/intermediate/custom-loot-tables/) amplía este Slime y reemplaza la tabla de drops vacía con drops garantizados de Fruta Encantada y un 10% de probabilidad de un bloque Crystal Glow raro.
 :::
 
 ---
@@ -496,4 +479,5 @@ La clave de traducción en el archivo `.lang` debe coincidir con el `Parameters.
 - [Crear un Bloque Personalizado](/hytale-modding-docs/tutorials/beginner/create-a-block/) — Construye un bloque de cristal brillante para usar como drop de NPC
 - [Crear un Arma Personalizada](/hytale-modding-docs/tutorials/beginner/create-an-item/) — Crea una espada para luchar contra tu nuevo NPC
 - [Referencia de Roles de NPC](/hytale-modding-docs/reference/npc-system/npc-roles/) — Referencia completa del esquema para definiciones de roles de NPC
+- [Tablas de Botín Personalizadas](/hytale-modding-docs/es/tutorials/intermediate/custom-loot-tables/) — Agrega drops garantizados y raros a tu NPC Slime
 - [Referencia de Tablas de Botín](/hytale-modding-docs/reference/economy-and-progression/drop-tables/) — Patrones avanzados de tablas de botín con contenedores anidados

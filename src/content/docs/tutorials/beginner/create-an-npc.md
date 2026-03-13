@@ -23,6 +23,8 @@ Create a **Slime** — a hostile NPC that chases and attacks players on sight. Y
 - Blockbench with the Hytale plugin installed
 - Familiarity with JSON template inheritance (see [Inheritance and Templates](/hytale-modding-docs/reference/concepts/inheritance-and-templates/))
 
+**Companion mod repository:** [hytale-mods-custom-npc](https://github.com/nevesb/hytale-mods-custom-npc)
+
 ---
 
 ## NPC Architecture Overview
@@ -362,63 +364,44 @@ This indirection exists because templates use `Compute` to read values that each
 
 ## Step 6: Create the Drop Table
 
-The drop table controls what loot falls when the NPC dies. Hytale uses a **weighted random selection** system.
+The drop table controls what loot falls when the NPC dies. For now, create an empty drop table so the Slime drops nothing:
 
 Create `Server/Drops/Drop_Slime.json`:
 
 ```json
+{}
+```
+
+Then connect it to the Slime by adding `DropList` to the NPC Role. Open `Server/NPC/Roles/Slime.json` and add the highlighted line:
+
+```json {7}
 {
-  "Container": {
-    "Type": "Choice",
-    "Containers": [
-      {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Ore_Crystal_Slime",
-          "QuantityMin": 1,
-          "QuantityMax": 1
-        },
-        "Weight": 100
-      },
-      {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Consumable_Potion_Health_Large"
-        },
-        "Weight": 60
-      },
-      {
-        "Type": "Empty",
-        "Weight": 40
-      }
-    ]
+  "Type": "Variant",
+  "Reference": "Template_Predator",
+  "Modify": {
+    "Appearance": "Slime",
+    "MaxHealth": 75,
+    "DropList": "Drop_Slime",
+    "KnockbackScale": 0.5,
+    "IsMemory": true,
+    "MemoriesCategory": "Beast",
+    "NameTranslationKey": {
+      "Compute": "NameTranslationKey"
+    }
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.Slime.name",
+      "Description": "Translation key for NPC name display"
+    }
   }
 }
 ```
 
-### How Weighted Selection Works
+The `"DropList": "Drop_Slime"` tells the engine to look for `Server/Drops/Drop_Slime.json` when the NPC dies.
 
-The root `"Type": "Choice"` picks **one** child container at random, proportional to weight:
-
-| Drop | Weight | Probability |
-|------|--------|-------------|
-| Crystal Slime Ore (1) | 100 | 100/200 = **50%** |
-| Health Potion (Large) | 60 | 60/200 = **30%** |
-| Nothing | 40 | 40/200 = **20%** |
-
-Total weight = 100 + 60 + 40 = 200. Each weight is divided by the total to get the probability.
-
-### Drop Container Types
-
-| Type | Behavior |
-|------|----------|
-| `Choice` | Picks **one** child at random (weighted) |
-| `Multiple` | Evaluates **all** children (use for guaranteed + bonus drops) |
-| `Single` | Yields the specified `Item` with quantity between `QuantityMin` and `QuantityMax` |
-| `Empty` | Drops nothing — use as a "no drop" option in `Choice` containers |
-
-:::tip[Multiple Guaranteed Drops]
-To always drop one item AND have a chance at a second, use `Multiple` at the root with two `Choice` children — one guaranteed, one with an `Empty` option. See [Drop Tables Reference](/hytale-modding-docs/reference/economy-and-progression/drop-tables/) for advanced patterns.
+:::tip[Want Actual Loot?]
+The [Custom Loot Tables](/hytale-modding-docs/tutorials/intermediate/custom-loot-tables/) tutorial builds on this Slime and replaces the empty drop table with guaranteed Enchanted Fruit drops and a 10% chance for a rare Crystal Glow block.
 :::
 
 ---
@@ -496,4 +479,5 @@ The translation key in the `.lang` file must match the `Parameters.NameTranslati
 - [Create a Custom Block](/hytale-modding-docs/tutorials/beginner/create-a-block/) — Build a glowing crystal block to use as an NPC drop
 - [Create a Custom Weapon](/hytale-modding-docs/tutorials/beginner/create-an-item/) — Create a sword to fight your new NPC
 - [NPC Roles Reference](/hytale-modding-docs/reference/npc-system/npc-roles/) — Complete schema reference for NPC role definitions
+- [Custom Loot Tables](/hytale-modding-docs/tutorials/intermediate/custom-loot-tables/) — Add guaranteed and rare drops to your Slime NPC
 - [Drop Tables Reference](/hytale-modding-docs/reference/economy-and-progression/drop-tables/) — Advanced drop table patterns with nested containers

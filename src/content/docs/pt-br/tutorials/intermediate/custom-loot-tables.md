@@ -1,76 +1,76 @@
 ---
 title: Tabelas de Loot Personalizadas
-description: Tutorial passo a passo para criar tabelas de loot e drops com entradas ponderadas, contêineres aninhados e drops condicionais.
+description: Tutorial passo a passo para criar tabelas de drops com drops garantidos, itens raros ponderados e contêineres aninhados usando o NPC Slime.
 sidebar:
   order: 2
 ---
 
 ## Objetivo
 
-Criar um conjunto de tabelas de loot personalizadas que demonstram toda a gama do sistema de drops do Hytale. Você construirá um drop garantido, um drop aleatório ponderado, uma tabela aninhada com equipamento raro e uma tabela de drops de colheita de recursos.
+Criar uma tabela de drops personalizada para o NPC **Slime** do tutorial [Criar um NPC Personalizado](/hytale-modding-docs/pt-br/tutorials/beginner/create-an-npc/). Você construirá um drop garantido, adicionará um item raro ponderado e aprenderá como contêineres aninhados criam lógica de loot complexa.
 
 ## O Que Você Vai Aprender
 
 - Como os tipos de `Container` (`Multiple`, `Choice`, `Single`) funcionam juntos para criar lógica de drops
 - Como `Weight` controla a probabilidade de drops aleatórios
-- Como aninhar contêineres para tabelas de loot complexas com drops garantidos e raros
+- Como combinar drops garantidos e raros em uma única tabela
 - Como `QuantityMin` e `QuantityMax` criam quantidades de drops variáveis
-- Como as diferentes categorias de tabelas de drops (NPCs, Wood, Rock, Crop) são organizadas
+- Como conectar uma tabela de drops a um NPC via `DropList`
 
 ## Pré-requisitos
 
-- Uma pasta de mod com um `manifest.json` válido (veja [Configurar Seu Ambiente de Desenvolvimento](/hytale-modding-docs/pt-br/tutorials/beginner/setup-dev-environment))
-- Pelo menos um item personalizado (veja [Criar um Item Personalizado](/hytale-modding-docs/pt-br/tutorials/beginner/create-an-item))
+- Um mod funcional do NPC Slime (veja [Criar um NPC Personalizado](/hytale-modding-docs/pt-br/tutorials/beginner/create-an-npc/))
+- O mod da Árvore Encantada instalado (veja [Árvores e Saplings Personalizados](/hytale-modding-docs/pt-br/tutorials/intermediate/custom-trees-and-saplings/)) — usamos sua Fruta Encantada como item de drop
+- O mod do bloco Crystal Glow instalado (veja [Criar um Bloco Personalizado](/hytale-modding-docs/pt-br/tutorials/beginner/create-a-block/)) — usamos como drop raro
+
+**Repositórios do mod complementar:**
+- [hytale-mods-custom-npc](https://github.com/nevesb/hytale-mods-custom-npc) — Slime NPC v1.0.0 (mod base sem loot)
+- [hytale-mods-custom-loot-tables](https://github.com/nevesb/hytale-mods-custom-loot-tables) — Slime NPC v1.1.0 (com tabela de drops deste tutorial)
+
+:::note[Este Tutorial Substitui a Tabela de Drops do NPC]
+O tutorial [Criar um NPC Personalizado](/hytale-modding-docs/pt-br/tutorials/beginner/create-an-npc/) inclui uma tabela de drops básica no Passo 6. Este tutorial constrói uma versão mais completa que **substitui** aquela tabela de drops. Após completar este tutorial, seu Slime usará a nova tabela de loot.
+:::
 
 ---
 
 ## Visão Geral do Sistema de Drops
 
-As tabelas de drops ficam em `Assets/Server/Drops/` e são organizadas por tipo de origem:
+As tabelas de drops ficam em `Server/Drops/` e controlam quais itens caem quando um NPC morre, um bloco quebra ou um recurso é coletado. O jogo vanilla as organiza por tipo de fonte:
 
 ```
 Assets/Server/Drops/
   NPCs/
     Beast/
-    Boss/
     Critter/
-    Elemental/
     Intelligent/
       Feran/
-      Goblin/
       Trork/
-    Livestock/
-    Undead/
-    Void/
   Crop/
   Wood/
   Rock/
   Plant/
-  Items/
-  Prefabs/
-  Traps/
 ```
 
-Toda tabela de drops é um arquivo JSON com um objeto raiz `Container`. O sistema de contêineres usa três tipos que podem ser aninhados para criar qualquer lógica de drop.
+Toda tabela de drops é um arquivo JSON com um objeto raiz `Container`. O sistema de contêineres usa três tipos que podem ser aninhados para criar qualquer lógica de drop:
 
-### Tipos de contêiner
+### Tipos de Contêiner
 
 | Tipo | Comportamento |
 |------|--------------|
 | `Multiple` | Avalia **todos** os contêineres filhos em ordem. Cada filho é executado independentemente |
-| `Choice` | Escolhe **um** filho aleatoriamente, ponderado pelos valores de `Weight` |
+| `Choice` | Escolhe **um** filho aleatoriamente, ponderado pelos valores de `Weight`. O `Weight` do próprio `Choice` controla se o grupo é ativado |
 | `Single` | Nó terminal. Produz o `Item` especificado com uma quantidade aleatória entre `QuantityMin` e `QuantityMax` |
 
 ---
 
 ## Passo 1: Criar um Drop Garantido
 
-A tabela de drops mais simples garante um ou mais itens toda vez. Este padrão é usado por `Rock_Crystal_Blue.json` para depósitos de cristal.
+A tabela de drops mais simples garante um item toda vez. Vamos começar fazendo o Slime sempre dropar 1 Fruta Encantada — a mesma fruta do tutorial [Árvores e Saplings Personalizados](/hytale-modding-docs/pt-br/tutorials/intermediate/custom-trees-and-saplings/).
 
-Crie:
+Crie (ou substitua) o arquivo da tabela de drops:
 
 ```
-YourMod/Assets/Server/Drops/NPCs/Beast/Drop_Thornbeast.json
+CreateACustomNPC/Server/Drops/Drop_Slime.json
 ```
 
 ```json
@@ -81,9 +81,9 @@ YourMod/Assets/Server/Drops/NPCs/Beast/Drop_Thornbeast.json
       {
         "Type": "Single",
         "Item": {
-          "ItemId": "Ingredient_Hide_Heavy",
-          "QuantityMin": 2,
-          "QuantityMax": 4
+          "ItemId": "Plant_Fruit_Enchanted",
+          "QuantityMin": 1,
+          "QuantityMax": 1
         }
       }
     ]
@@ -91,17 +91,35 @@ YourMod/Assets/Server/Drops/NPCs/Beast/Drop_Thornbeast.json
 }
 ```
 
-Um contêiner `Multiple` com um único filho `Single` garante o drop toda vez. A quantidade é escolhida aleatoriamente entre `QuantityMin` e `QuantityMax` (inclusivo).
+Um contêiner `Multiple` com um único filho `Single` garante o drop toda vez. O `ItemId` deve corresponder ao nome do arquivo de uma definição de item existente (sem `.json`).
+
+Este é o mesmo padrão usado por depósitos de cristal vanilla. Por exemplo, `Rock_Crystal_Blue.json` garante 4-5 cristais ciano:
+
+```json
+{
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Crystal_Cyan",
+          "QuantityMin": 4,
+          "QuantityMax": 5
+        }
+      }
+    ]
+  }
+}
+```
 
 ---
 
-## Passo 2: Criar uma Tabela de Multi-Drops com Itens Garantidos
+## Passo 2: Adicionar um Drop Raro de Cristal
 
-Este padrão -- usado por `Drop_Bear_Grizzly.json` -- garante múltiplos drops diferentes usando um contêiner `Multiple` com vários filhos:
+Agora vamos tornar o Slime mais interessante — mantemos a fruta garantida, mas adicionamos uma **chance de 10%** de também dropar um bloco Crystal Glow do tutorial [Criar um Bloco Personalizado](/hytale-modding-docs/pt-br/tutorials/beginner/create-a-block/).
 
-```
-YourMod/Assets/Server/Drops/NPCs/Beast/Drop_Crystalbeast.json
-```
+Atualize `Server/Drops/Drop_Slime.json`:
 
 ```json
 {
@@ -115,23 +133,23 @@ YourMod/Assets/Server/Drops/NPCs/Beast/Drop_Crystalbeast.json
           {
             "Type": "Single",
             "Item": {
-              "ItemId": "Ingredient_Hide_Heavy",
+              "ItemId": "Plant_Fruit_Enchanted",
               "QuantityMin": 1,
-              "QuantityMax": 2
+              "QuantityMax": 1
             }
           }
         ]
       },
       {
         "Type": "Choice",
-        "Weight": 100,
+        "Weight": 10,
         "Containers": [
           {
             "Type": "Single",
             "Item": {
-              "ItemId": "Food_Wildmeat_Raw",
-              "QuantityMin": 2,
-              "QuantityMax": 3
+              "ItemId": "Block_Crystal_Glow",
+              "QuantityMin": 1,
+              "QuantityMax": 1
             }
           }
         ]
@@ -141,17 +159,16 @@ YourMod/Assets/Server/Drops/NPCs/Beast/Drop_Crystalbeast.json
 }
 ```
 
-O contêiner `Multiple` executa ambos os grupos `Choice`. Como cada grupo `Choice` tem apenas uma opção com `Weight: 100`, ambos os itens são garantidos. Esta estrutura é usada em vez de dois contêineres `Single` simples porque o campo `Weight` nos contêineres `Choice` também controla se o grupo dropa -- um `Weight` de 100 significa 100% de chance.
+### Como os Pesos Funcionam
 
----
+O contêiner externo `Multiple` avalia ambos os grupos independentemente:
 
-## Passo 3: Criar um Drop Aleatório Ponderado com Loot Raro
+1. **Grupo 1** (`Weight: 100`): 100% de chance — sempre dropa 1 Fruta Encantada
+2. **Grupo 2** (`Weight: 10`): 10% de chance — às vezes também dropa 1 bloco Crystal Glow
 
-Este padrão -- usado por `Drop_Trork_Warrior.json` -- combina drops garantidos com equipamento raro. O contêiner `Choice` escolhe um filho baseado em pesos relativos:
+O `Weight` em um contêiner `Choice` controla se aquele grupo é ativado. `Weight: 100` significa sempre, `Weight: 10` significa 10% das vezes.
 
-```
-YourMod/Assets/Server/Drops/NPCs/Intelligent/Drop_Crystal_Guardian.json
-```
+Este é o mesmo padrão que o vanilla usa para drops de equipamento de NPCs. Por exemplo, `Drop_Trork_Warrior.json` usa três grupos:
 
 ```json
 {
@@ -165,11 +182,21 @@ YourMod/Assets/Server/Drops/NPCs/Intelligent/Drop_Crystal_Guardian.json
           {
             "Type": "Single",
             "Item": {
-              "ItemId": "Ingredient_Crystal_Cyan",
-              "QuantityMin": 2,
-              "QuantityMax": 5
+              "ItemId": "Ingredient_Fabric_Scrap_Linen",
+              "QuantityMin": 1,
+              "QuantityMax": 3
             }
           }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Weight": 5,
+        "Containers": [
+          { "Weight": 25, "Type": "Single", "Item": { "ItemId": "Armor_Trork_Head", "QuantityMin": 1, "QuantityMax": 1 } },
+          { "Weight": 25, "Type": "Single", "Item": { "ItemId": "Armor_Trork_Chest", "QuantityMin": 1, "QuantityMax": 1 } },
+          { "Weight": 25, "Type": "Single", "Item": { "ItemId": "Armor_Trork_Hands", "QuantityMin": 1, "QuantityMax": 1 } },
+          { "Weight": 25, "Type": "Single", "Item": { "ItemId": "Armor_Trork_Legs", "QuantityMin": 1, "QuantityMax": 1 } }
         ]
       },
       {
@@ -177,31 +204,8 @@ YourMod/Assets/Server/Drops/NPCs/Intelligent/Drop_Crystal_Guardian.json
         "Weight": 15,
         "Containers": [
           {
-            "Weight": 40,
             "Type": "Single",
-            "Item": {
-              "ItemId": "Armor_Crystal_Head",
-              "QuantityMin": 1,
-              "QuantityMax": 1
-            }
-          },
-          {
-            "Weight": 40,
-            "Type": "Single",
-            "Item": {
-              "ItemId": "Armor_Crystal_Chest",
-              "QuantityMin": 1,
-              "QuantityMax": 1
-            }
-          },
-          {
-            "Weight": 20,
-            "Type": "Single",
-            "Item": {
-              "ItemId": "Weapon_Sword_Crystal",
-              "QuantityMin": 1,
-              "QuantityMax": 1
-            }
+            "Item": { "ItemId": "Weapon_Battleaxe_Stone_Trork", "QuantityMin": 1, "QuantityMax": 1 }
           }
         ]
       }
@@ -210,29 +214,51 @@ YourMod/Assets/Server/Drops/NPCs/Intelligent/Drop_Crystal_Guardian.json
 }
 ```
 
-### Como os pesos funcionam
+- **Grupo 1** (`Weight: 100`): Sempre dropa 1-3 retalhos de linho
+- **Grupo 2** (`Weight: 5`): 5% de chance de dropar uma peça de armadura (cada uma com peso interno de 25%)
+- **Grupo 3** (`Weight: 15`): 15% de chance de dropar um machado de batalha
 
-O contêiner externo `Multiple` executa ambos os grupos:
-
-1. **Grupo 1** (`Weight: 100`): Sempre dropa 2-5 cristais
-2. **Grupo 2** (`Weight: 15`): 15% de chance de executar. Se executar, escolhe um item:
-   - 40% de chance: Capacete de Cristal
-   - 40% de chance: Peitoral de Cristal
-   - 20% de chance: Espada de Cristal
-
-Os valores internos de `Weight` são relativos entre si dentro do grupo `Choice`: 40 + 40 + 20 = 100 total, então a espada tem 20/100 = 20% de chance *quando o grupo é ativado*.
-
-A chance geral de obter a espada em qualquer abate é: 15% (grupo ativa) x 20% (espada selecionada) = 3%.
+Os valores internos de `Weight` dentro de um `Choice` são relativos entre si: 25 + 25 + 25 + 25 = 100, então cada peça de armadura tem 25% de chance *quando o grupo é ativado*. A chance total de obter o capacete é 5% x 25% = 1.25%.
 
 ---
 
-## Passo 4: Criar uma Tabela de Drops Aninhada com Múltiplos Resultados
+## Passo 3: Conectar a Tabela de Drops ao NPC
 
-Para cenários complexos, aninhe `Multiple` dentro de `Choice` para criar resultados ramificados. Este padrão é usado por `Wood_Branch.json`:
+As tabelas de drops são referenciadas pelas definições de papéis de NPC através do campo `DropList`. O valor corresponde ao nome do arquivo da tabela de drops sem `.json`.
 
+Abra o Papel de NPC do seu Slime em `Server/NPC/Roles/Slime.json` e adicione o campo `DropList` ao bloco `Modify`:
+
+```json {7}
+{
+  "Type": "Variant",
+  "Reference": "Template_Predator",
+  "Modify": {
+    "Appearance": "Slime",
+    "MaxHealth": 75,
+    "DropList": "Drop_Slime",
+    "KnockbackScale": 0.5,
+    "IsMemory": true,
+    "MemoriesCategory": "Beast",
+    "NameTranslationKey": {
+      "Compute": "NameTranslationKey"
+    }
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.Slime.name",
+      "Description": "Translation key for NPC name display"
+    }
+  }
+}
 ```
-YourMod/Assets/Server/Drops/Wood/Drop_Crystalwood_Branch.json
-```
+
+O `"DropList": "Drop_Slime"` diz ao engine para resolver `Server/Drops/Drop_Slime.json` quando o NPC morrer. NPCs vanilla usam o mesmo padrão — por exemplo, `Bear_Grizzly.json` referencia `"Drop_Bear_Grizzly"`.
+
+---
+
+## Passo 4: Contêineres Aninhados para Drops Complexos
+
+Para cenários mais complexos, você pode aninhar `Multiple` dentro de `Choice` para criar resultados ramificados. Este padrão é usado pelo `Wood_Branch.json` vanilla para drops de recursos ao quebrar galhos de madeira:
 
 ```json
 {
@@ -241,20 +267,20 @@ YourMod/Assets/Server/Drops/Wood/Drop_Crystalwood_Branch.json
     "Containers": [
       {
         "Type": "Multiple",
-        "Weight": 60,
+        "Weight": 50,
         "Containers": [
           {
             "Type": "Single",
             "Item": {
               "ItemId": "Ingredient_Stick",
-              "QuantityMin": 1,
-              "QuantityMax": 3
+              "QuantityMin": 0,
+              "QuantityMax": 2
             }
           },
           {
             "Type": "Single",
             "Item": {
-              "ItemId": "Ingredient_Crystal_Cyan",
+              "ItemId": "Ingredient_Tree_Sap",
               "QuantityMin": 0,
               "QuantityMax": 1
             }
@@ -263,7 +289,7 @@ YourMod/Assets/Server/Drops/Wood/Drop_Crystalwood_Branch.json
       },
       {
         "Type": "Multiple",
-        "Weight": 40,
+        "Weight": 50,
         "Containers": [
           {
             "Type": "Single",
@@ -280,74 +306,80 @@ YourMod/Assets/Server/Drops/Wood/Drop_Crystalwood_Branch.json
 
 Esta tabela tem dois resultados possíveis escolhidos pelo `Choice` externo:
 
-- **60% de chance**: Dropa 1-3 gravetos E 0-1 cristais (ambos os itens do `Multiple`)
-- **40% de chance**: Dropa apenas 1 graveto
+- **50% de chance**: Dropa 0-2 gravetos **e** 0-1 seiva de árvore (ambos os itens do `Multiple`)
+- **50% de chance**: Dropa apenas 1 graveto
 
-Note que quando `QuantityMin` é 0, há uma chance do item não produzir nada. Quando `QuantityMin` e `QuantityMax` são omitidos, a quantidade padrão é 1.
+Quando `QuantityMin` é `0`, há uma chance do item não produzir nada. Quando `QuantityMin` e `QuantityMax` são omitidos, a quantidade padrão é `1`.
+
+:::tip[Resumo de Aninhamento]
+- `Multiple` → `Choice`: Cada grupo é avaliado independentemente (garantido + raro, como nosso Slime)
+- `Choice` → `Multiple`: Um resultado é escolhido, depois todos os seus itens dropam juntos (ramificação, como Wood Branch)
+:::
 
 ---
 
-## Passo 5: Criar uma Tabela de Drops Vazia
+## Passo 5: Tabelas de Drops Vazias
 
-Alguns NPCs (como Esquilos e Sapos vanilla) não dropam nada. Um objeto vazio alcança isso:
-
-```
-YourMod/Assets/Server/Drops/NPCs/Critter/Drop_Glowfly.json
-```
+Alguns NPCs não dropam nada. Todos os critters vanilla — Esquilos, Sapos, Geckos, Suricatos — usam um objeto vazio:
 
 ```json
 {}
 ```
 
----
-
-## Passo 6: Conectar a Tabela de Drops a um NPC
-
-As tabelas de drops são referenciadas pelas definições de função de NPC através do campo `DropList`. O valor corresponde ao nome do arquivo sem `.json`, e o engine procura em todos os diretórios sob `Assets/Server/Drops/`.
-
-No seu arquivo de função de NPC:
-
-```json
-{
-  "Type": "Variant",
-  "Reference": "Template_Predator",
-  "Modify": {
-    "Appearance": "Bear_Grizzly",
-    "DropList": "Drop_Crystal_Guardian",
-    "MaxHealth": 80
-  }
-}
-```
-
-O valor de `DropList` `"Drop_Crystal_Guardian"` resolve para `Assets/Server/Drops/NPCs/Intelligent/Drop_Crystal_Guardian.json`.
+Assim é como seu Slime funcionava antes deste tutorial — sem um `DropList` no Papel de NPC, ou com uma tabela de drops vazia, o NPC não dropa nada ao morrer.
 
 ---
 
-## Passo 7: Testar No Jogo
+## Passo 6: Testar no Jogo
 
-1. Coloque sua pasta de mod no diretório de mods do servidor.
-2. Inicie o servidor e observe erros sobre IDs de lista de drops desconhecidos ou IDs de itens inválidos.
-3. Gere o NPC que usa sua tabela de drops.
-4. Mate o NPC múltiplas vezes e verifique:
-   - Drops garantidos aparecem toda vez
-   - Drops raros aparecem aproximadamente na frequência esperada
-   - Quantidades ficam dentro das faixas mín/máx definidas
-5. Para drops de recursos (madeira, pedra), quebre o bloco correspondente e verifique os drops.
+1. Copie sua pasta `CreateACustomNPC/` atualizada para `%APPDATA%/Hytale/UserData/Mods/`
+
+2. Certifique-se de que os mods **CreateACustomBlock** e **CustomTreesAndSaplings** também estejam instalados — a tabela de drops referencia itens de ambos os mods
+
+3. Inicie Hytale e entre no **Modo Criativo**
+
+4. Spawne e mate o Slime múltiplas vezes:
+   ```text
+   /op self
+   /npc spawn Slime
+   ```
+
+5. Verifique:
+
+![Drops do Slime no jogo — Frutas Encantadas e blocos Crystal Glow no chão depois de matar vários Slimes](/hytale-modding-docs/images/tutorials/custom-loot-tables/slime-drops.png)
+
+   - Toda morte dropa 1 Fruta Encantada (garantido)
+   - Aproximadamente 1 em cada 10 mortes também dropa um bloco Crystal Glow (10% de chance)
+   - As quantidades estão corretas (sempre exatamente 1 de cada)
 
 **Erros comuns e correções:**
 
 | Erro | Causa | Correção |
 |------|-------|----------|
-| `Unknown drop list` | Nome de arquivo ou diretório errado | Verifique se o arquivo de drop existe e `DropList` corresponde ao nome do arquivo sem `.json` |
-| `Unknown item id` | Erro de digitação no ID do item na tabela de drops | Verifique se os valores de `ItemId` correspondem aos nomes de arquivo das definições reais de itens |
-| NPC não dropa nada | Contêiner vazio ou `Weight: 0` | Certifique-se de que pelo menos um contêiner tem um peso diferente de zero |
+| `Unknown drop list` | Nome de arquivo ou caminho errado | Verifique se `Drop_Slime.json` existe em `Server/Drops/` e se `DropList` corresponde sem `.json` |
+| `Unknown item id` | Erro de digitação no ID do item ou mod faltando | Verifique se `ItemId` corresponde aos nomes reais dos arquivos. Certifique-se de que os mods que fornecem esses itens estejam instalados |
+| NPC não dropa nada | `DropList` faltando no Papel de NPC | Adicione `"DropList": "Drop_Slime"` ao bloco `Modify` em `Slime.json` |
 | Sempre mesma quantidade | `QuantityMin` igual a `QuantityMax` | Defina valores diferentes para drops variáveis |
-| Drop raro nunca aparece | `Weight` muito baixo | Aumente o valor de `Weight` no contêiner `Choice` ou teste mais abates |
+| Drop raro nunca aparece | `Weight` muito baixo ou azar | `Weight: 10` significa ~10% — mate 20+ Slimes para confirmar |
+
+---
+
+## Referência de Tabelas de Drops Vanilla
+
+Aqui está um resumo de padrões reais de tabelas de drops dos assets do jogo:
+
+| Arquivo Vanilla | Padrão | Caso de Uso |
+|----------------|--------|-------------|
+| `Rock_Crystal_Blue.json` | `Multiple` → `Single` | Drop de recurso garantido |
+| `Drop_Bear_Grizzly.json` | `Multiple` → `Choice(100)` + `Choice(100)` | Múltiplos drops garantidos |
+| `Drop_Trork_Warrior.json` | `Multiple` → `Choice(100)` + `Choice(5)` + `Choice(15)` | Garantido + loot raro |
+| `Wood_Branch.json` | `Choice` → `Multiple(50)` + `Multiple(50)` | Resultados ramificados de recursos |
+| `Drop_Frog_*.json` | `{}` | Sem drops |
 
 ---
 
 ## Próximos Passos
 
-- [Criar um NPC Personalizado](/hytale-modding-docs/pt-br/tutorials/beginner/create-an-npc) -- construa o NPC que usa sua tabela de drops
-- [Regras de Spawn de NPCs Personalizadas](/hytale-modding-docs/pt-br/tutorials/intermediate/custom-npc-spawning) -- controle onde seus NPCs que dropam loot aparecem
-- [Lojas de NPCs e Comércio](/hytale-modding-docs/pt-br/tutorials/intermediate/npc-shops-and-trading) -- crie mercadores que vendem itens das suas tabelas de loot
+- [Regras de Spawn de NPCs Personalizadas](/hytale-modding-docs/pt-br/tutorials/intermediate/custom-npc-spawning/) — controle onde seus Slimes que dropam loot aparecem no mundo
+- [Lojas de NPCs e Comércio](/hytale-modding-docs/pt-br/tutorials/intermediate/npc-shops-and-trading/) — crie mercadores que vendam itens das suas tabelas de loot
+- [Referência de Tabelas de Drops](/hytale-modding-docs/pt-br/reference/economy-and-progression/drop-tables/) — referência completa do esquema para todos os tipos de contêineres
