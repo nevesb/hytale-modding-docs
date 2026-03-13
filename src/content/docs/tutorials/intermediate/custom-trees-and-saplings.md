@@ -1,33 +1,49 @@
 ---
 title: Custom Trees and Saplings
-description: Create a Crystal Tree with trunk, leaves, glowing fruit, and a plantable sapling with multi-stage growth.
+description: Create an Enchanted Tree with trunk, leaves, glowing fruit, moss, and a plantable sapling with multi-stage growth driven by crystal light.
 sidebar:
   order: 1
 ---
 
 ## What You'll Build
 
-A **Crystal Tree** — a custom tree type that players can grow from a sapling. When fully grown, the tree provides **Crystal Wood** (trunk blocks) for crafting weapon handles and **Light Shards** (glowing fruit) for crossbow ammunition. The tree uses Azure tree models as a base with custom textures.
+An **Enchanted Tree** — a custom tree type that players can grow from a sapling near Crystal Glow blocks. When fully grown, the tree provides **Enchanted Wood** (trunk blocks) for crafting, **Light Shards** (glowing fruit), and **Crystal Moss** decorative blocks. The tree uses Azure tree leaf models and Ash trunk as a base with custom textures and a unique crystal-light growth mechanic.
+
+![Fully grown Enchanted Tree at night showing blue crystal leaves, dark trunk with crystal moss, glowing Light Shard fruit, and Crystal Glow blocks at the base](/hytale-modding-docs/images/tutorials/custom-trees-and-saplings/tree-fullgrown.png)
+
+![Enchanted Tree drops after being chopped — crystal blocks, Light Shards, trunk pieces, and moss scattered on the ground](/hytale-modding-docs/images/tutorials/custom-trees-and-saplings/tree-drops.png)
 
 ## What You'll Learn
 
-- How Hytale trees are composed of multiple block types (trunk, leaves, fruit, sapling)
+- How Hytale trees are composed of multiple block types (trunk, leaves, fruit, sapling, moss)
 - How `Parent` inheritance creates tree variants from existing types
 - How the `Farming` system drives sapling growth through prefab stages
+- How to create a custom `Growth Modifier` that responds to specific light colors
 - How to configure light-emitting fruit blocks
 - How `PrefabList` registers tree structures for the engine
 
 ## Prerequisites
 
+- Complete the [Create a Custom Block](/hytale-modding-docs/tutorials/beginner/create-a-block/) tutorial first — this mod **depends on the Crystal Glow Block** created in that tutorial for its growth mechanic
 - A mod folder with a valid `manifest.json` (see [Setup Your Dev Environment](/hytale-modding-docs/tutorials/beginner/setup-dev-environment/))
-- Familiarity with block definitions (see [Create a Custom Block](/hytale-modding-docs/tutorials/beginner/create-a-block/))
-- Custom textures for trunk, leaves, and fruit (or reuse Azure textures for testing)
+- The [Crystal Glow Block mod](https://github.com/nevesb/hytale-mods-custom-block) installed and working in your mods folder
+- Custom textures for trunk, leaves, and fruit (or reuse Azure/Ash textures for testing)
+
+## Git Repository
+
+The complete working mod is available as a GitHub repository:
+
+```text
+https://github.com/nevesb/hytale-mods-custom-tree
+```
+
+Clone it and copy the contents to your Hytale mods directory to test immediately.
 
 ---
 
 ## Tree System Overview
 
-A Hytale tree is not a single asset — it is a **composition of four block types** plus a **growth system** that assembles them into a tree shape:
+A Hytale tree is not a single asset — it is a **composition of multiple block types** plus a **growth system** that assembles them into a tree shape:
 
 ```mermaid
 flowchart TD;
@@ -39,6 +55,7 @@ flowchart TD;
     F[Trunk Block] --> E;
     G[Leaves Block] --> E;
     H[Fruit Block] --> E;
+    I[Moss Blocks] --> E;
 
     style A fill:#2d5a27,color:#fff;
     style E fill:#2d6a8f,color:#fff;
@@ -51,6 +68,8 @@ flowchart TD;
 | **Leaves** | `Server/Item/Items/Plant/Leaves/` | Decorative canopy — decays when trunk is removed |
 | **Fruit** | `Server/Item/Items/Plant/Fruit/` | Harvestable item that grows on the tree — can glow, be consumed, or used as crafting material |
 | **Sapling** | `Server/Item/Items/Plant/` | Plantable block with `Farming` stages that grows into a tree over time |
+| **Moss** | `Server/Item/Items/Plant/Moss/` | Decorative blocks that grow on the trunk — wall moss and rug moss |
+| **Growth Modifier** | `Server/Farming/Modifiers/` | Controls what environmental conditions speed up growth |
 | **PrefabList** | `Server/PrefabList/` | Registry that tells the engine where to find the tree prefab files for each growth stage |
 
 Each prefab (`.prefab.json`) is a blueprint containing the exact block positions that form the tree shape at that stage. The sapling's `Farming` system transitions through these prefabs over time.
@@ -59,18 +78,17 @@ Each prefab (`.prefab.json`) is a blueprint containing the exact block positions
 
 ## Step 1: Create the Trunk Block
 
-The trunk is what players chop to get wood. We inherit from `Wood_Azure_Trunk` (the Azure tree variant) and override only the textures and particle color.
+The trunk is what players chop to get wood. We inherit from `Wood_Ash_Trunk` and override only the textures, gathering, and particle color.
 
-Create `Server/Item/Items/Wood/Crystal/Wood_Crystal_Trunk.json`:
+Create `Server/Item/Items/Wood/Enchanted/Wood_Enchanted_Trunk.json`:
 
 ```json
 {
   "TranslationProperties": {
-    "Name": "server.items.Wood_Crystal_Trunk.name",
-    "Description": "server.items.Wood_Crystal_Trunk.description"
+    "Name": "server.items.Wood_Enchanted_Trunk.name",
+    "Description": "server.items.Wood_Enchanted_Trunk.description"
   },
-  "Parent": "Wood_Azure_Trunk",
-  "Icon": "Icons/ItemsGenerated/Wood_Crystal_Trunk.png",
+  "Parent": "Wood_Ash_Trunk",
   "BlockType": {
     "Textures": [
       {
@@ -81,7 +99,7 @@ Create `Server/Item/Items/Wood/Crystal/Wood_Crystal_Trunk.json`:
     ],
     "Gathering": {
       "Breaking": {
-        "ItemId": "Wood_Crystal_Trunk",
+        "ItemId": "Wood_Enchanted_Trunk",
         "GatherType": "Woods"
       }
     },
@@ -92,7 +110,13 @@ Create `Server/Item/Items/Wood/Crystal/Wood_Crystal_Trunk.json`:
     { "Id": "Wood_All" },
     { "Id": "Fuel" },
     { "Id": "Charcoal" }
-  ]
+  ],
+  "Icon": "Icons/ItemsGenerated/Wood_Enchanted_Trunk.png",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [22.5, 45, 22.5],
+    "Translation": [0, -13.5]
+  }
 }
 ```
 
@@ -100,19 +124,20 @@ Create `Server/Item/Items/Wood/Crystal/Wood_Crystal_Trunk.json`:
 
 | Field | Type | Purpose |
 |-------|------|---------|
-| `Parent` | String | Inherits all block properties from `Wood_Azure_Trunk` (hardness, tool requirements, physics) |
+| `Parent` | String | Inherits all block properties from `Wood_Ash_Trunk` (hardness, tool requirements, physics) |
 | `BlockType.Textures` | Array | Texture configuration. `Sides` for the bark, `UpDown` for the cross-section when viewed from top/bottom |
 | `BlockType.Textures[].Weight` | Number | For multiple texture variants — `1` means this is the only option |
 | `BlockType.Gathering.Breaking` | Object | What drops when the block is broken. `GatherType: "Woods"` means axes break it faster |
 | `BlockType.ParticleColor` | String | Hex color of particles when the block is hit or broken |
 | `ResourceTypes` | Array | Tags this block as wood for crafting recipes. `Wood_Trunk` and `Wood_All` let it be used in any recipe requiring wood |
+| `IconProperties` | Object | Controls how the 3D model renders as an inventory icon (scale, rotation, position) |
 
 :::tip[Texture Files]
 The texture paths are relative to `Common/`. You need two PNG files:
 - `Common/BlockTextures/Wood_Trunk_Crystal_Side.png` — bark texture (side faces)
 - `Common/BlockTextures/Wood_Trunk_Crystal_Top.png` — ring texture (top/bottom faces)
 
-Since we inherit from Azure, you can start by copying the Azure textures (`Wood_Trunk_Azure_Side.png` and `Wood_Trunk_Azure_Top.png`) and adjusting the hue to a crystal blue/purple.
+Since we inherit from Ash, you can start by copying the Ash trunk textures and adjusting the hue to a crystal blue/purple.
 :::
 
 ---
@@ -121,15 +146,15 @@ Since we inherit from Azure, you can start by copying the Azure textures (`Wood_
 
 Leaves use a shared 3D model (`Ball.blockymodel`) with a custom texture for color. They inherit all decay and physics behavior from the Azure leaves template.
 
-Create `Server/Item/Items/Plant/Leaves/Plant_Leaves_Crystal.json`:
+Create `Server/Item/Items/Plant/Leaves/Plant_Leaves_Enchanted.json`:
 
 ```json
 {
   "TranslationProperties": {
-    "Name": "server.items.Plant_Leaves_Crystal.name"
+    "Name": "server.items.Plant_Leaves_Enchanted.name"
   },
-  "Icon": "Icons/ItemsGenerated/Plant_Crystal_Leaves.png",
   "Parent": "Plant_Leaves_Azure",
+  "Icon": "Icons/ItemsGenerated/Plant_Leaves_Enchanted.png",
   "BlockType": {
     "CustomModel": "Blocks/Foliage/Leaves/Ball.blockymodel",
     "CustomModelTexture": [
@@ -160,15 +185,14 @@ The `Ball.blockymodel` is a shared vanilla model at `Common/Blocks/Foliage/Leave
 
 The fruit is the key crafting material — **Light Shards** that glow on the tree and drop when harvested. This block emits light, is transparent, and can be consumed as food.
 
-Create `Server/Item/Items/Plant/Fruit/Plant_Fruit_Crystal.json`:
+Create `Server/Item/Items/Plant/Fruit/Plant_Fruit_Enchanted.json`:
 
 ```json
 {
   "TranslationProperties": {
-    "Name": "server.items.Plant_Fruit_Crystal.name",
-    "Description": "server.items.Plant_Fruit_Crystal.description"
+    "Name": "server.items.Plant_Fruit_Enchanted.name",
+    "Description": "server.items.Plant_Fruit_Enchanted.description"
   },
-  "Icon": "Icons/ItemsGenerated/Plant_Fruit_Crystal.png",
   "Parent": "Template_Fruit",
   "BlockType": {
     "CustomModel": "Resources/Ingredients/Crystal_Fruit.blockymodel",
@@ -185,7 +209,15 @@ Create `Server/Item/Items/Plant/Fruit/Plant_Fruit_Crystal.json`:
     },
     "BlockSoundSetId": "Mushroom",
     "BlockParticleSetId": "Dust",
-    "ParticleColor": "#326ea7"
+    "ParticleColor": "#326ea7",
+    "Gathering": {
+      "Harvest": {
+        "ItemId": "Plant_Fruit_Enchanted"
+      },
+      "Soft": {
+        "ItemId": "Plant_Fruit_Enchanted"
+      }
+    }
   },
   "InteractionVars": {
     "Consume_Charge": {
@@ -206,6 +238,7 @@ Create `Server/Item/Items/Plant/Fruit/Plant_Fruit_Crystal.json`:
       ]
     }
   },
+  "Icon": "Icons/ItemsGenerated/Plant_Fruit_Enchanted.png",
   "Scale": 1.75,
   "DropOnDeath": true,
   "Quality": "Common"
@@ -217,10 +250,12 @@ Create `Server/Item/Items/Plant/Fruit/Plant_Fruit_Crystal.json`:
 | Field | Type | Purpose |
 |-------|------|---------|
 | `Parent` | String | Inherits from `Template_Fruit` — gets harvesting behavior, food consumption logic |
-| `BlockType.CustomModel` | String | 3D model for the fruit. Create in Blockbench or reuse `Azure_Fruit.blockymodel` |
+| `BlockType.CustomModel` | String | 3D model for the fruit. Create in Blockbench or reuse an existing fruit model |
 | `BlockType.Opacity` | String | `"Transparent"` — the fruit block doesn't block light or vision |
 | `BlockType.Light.Color` | String | Hex color of emitted light. `"#469"` gives a soft blue glow matching the crystal theme |
 | `BlockType.VariantRotation` | String | `"UpDown"` — the fruit hangs in different orientations for natural variety |
+| `BlockType.Gathering.Harvest` | Object | What drops when right-clicking the fruit. Allows collecting without breaking the block |
+| `BlockType.Gathering.Soft` | Object | What drops when breaking the fruit block. Same item, but the block is destroyed |
 | `InteractionVars` | Object | Defines what happens when consumed. Inherits from `Consume_Charge_Food_T1_Inner` for basic food healing |
 | `Scale` | Number | Visual scale multiplier. `1.75` makes the fruit more visible on the tree |
 | `DropOnDeath` | Boolean | `true` — the fruit drops as an item when the block is destroyed (tree chopped or leaves decay) |
@@ -231,155 +266,192 @@ Create `Server/Item/Items/Plant/Fruit/Plant_Fruit_Crystal.json`:
 
 ---
 
-## Step 4: Create the Sapling
+## Step 4: Create the Moss Blocks
 
-The sapling is the most complex piece — it's a plantable block that uses the `Farming` system to grow through prefab stages over time.
+Moss blocks grow on and around the tree trunk, adding visual detail. We create two types: **wall moss** (attaches to trunk sides) and **rug moss** (spreads on the ground near the base). Both use `Tint` to recolor the vanilla blue moss textures to match our crystal theme.
 
-Create `Server/Item/Items/Plant/Plant_Sapling_Crystal.json`:
+### Wall Moss
+
+Create `Server/Item/Items/Plant/Moss/Plant_Moss_Wall_Crystal.json`:
 
 ```json
 {
   "TranslationProperties": {
-    "Name": "server.items.Plant_Sapling_Crystal.name",
-    "Description": "server.items.Plant_Sapling_Crystal.description"
+    "Name": "server.items.Plant_Moss_Wall_Crystal.name"
   },
-  "Icon": "Icons/ItemsGenerated/Plant_Crystal_Sapling.png",
-  "Categories": [
-    "Blocks.Plants"
-  ],
-  "Interactions": {
-    "Primary": "Block_Primary",
-    "Secondary": "Block_Secondary"
-  },
-  "ItemLevel": 6,
+  "Parent": "Plant_Moss_Wall_Blue",
   "BlockType": {
-    "DrawType": "Model",
-    "CustomModel": "Blocks/Foliage/Tree/Sapling.blockymodel",
+    "Gathering": {
+      "Soft": {
+        "ItemId": "Plant_Moss_Wall_Crystal"
+      },
+      "UseDefaultDropWhenPlaced": true
+    },
+    "Tint": ["#88ccff"],
+    "ParticleColor": "#88ccff"
+  },
+  "Icon": "Icons/ItemsGenerated/Plant_Moss_Wall_Crystal.png",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [22.5, 45, 22.5],
+    "Translation": [10, -14]
+  }
+}
+```
+
+### Rug Moss
+
+Create `Server/Item/Items/Plant/Moss/Plant_Moss_Rug_Crystal.json`:
+
+```json
+{
+  "TranslationProperties": {
+    "Name": "server.items.Plant_Moss_Rug_Crystal.name"
+  },
+  "Parent": "Plant_Moss_Rug_Blue",
+  "BlockType": {
+    "Gathering": {
+      "Soft": {
+        "ItemId": "Plant_Moss_Rug_Crystal"
+      },
+      "UseDefaultDropWhenPlaced": true
+    },
+    "Light": {
+      "Color": "#246"
+    },
+    "Tint": ["#88ccff"],
+    "ParticleColor": "#88ccff"
+  },
+  "Icon": "Icons/ItemsGenerated/Plant_Moss_Rug_Crystal.png",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [22.5, 45, 22.5],
+    "Translation": [0, -7]
+  }
+}
+```
+
+### Moss Fields
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `Parent` | String | `Plant_Moss_Wall_Blue` or `Plant_Moss_Rug_Blue` — inherits model, placement rules, and decay behavior |
+| `BlockType.Tint` | Array | Color tint applied over the parent texture. `"#88ccff"` shifts the blue moss to a crystal blue matching the tree theme |
+| `BlockType.Light.Color` | String | Rug moss emits a faint `"#246"` glow, adding subtle ground lighting around the tree base |
+| `BlockType.Gathering.Soft` | Object | What drops when breaking the moss. Returns itself |
+| `BlockType.Gathering.UseDefaultDropWhenPlaced` | Boolean | `true` — uses the vanilla default drop behavior when the block is placed by a player |
+
+:::tip[Using Tint for Color Variants]
+The `Tint` field is a powerful shortcut — instead of creating new textures, you apply a color filter over the parent's existing textures. This is ideal for moss, grass, and flower variants where only the hue needs to change.
+:::
+
+---
+
+## Step 5: Create the Sapling
+
+The sapling is the most complex piece — it's a plantable block that inherits from `Plant_Sapling_Oak` and uses the `Farming` system to grow through prefab stages over time. It also uses a custom **CrystalGlow** growth modifier that makes the tree grow only near Crystal Glow block light.
+
+Create `Server/Item/Items/Plant/Plant_Sapling_Enchanted.json`:
+
+```json
+{
+  "TranslationProperties": {
+    "Name": "server.items.Plant_Sapling_Enchanted.name",
+    "Description": "server.items.Plant_Sapling_Enchanted.description"
+  },
+  "Parent": "Plant_Sapling_Oak",
+  "BlockType": {
     "CustomModelTexture": [
       {
         "Texture": "Blocks/Foliage/Tree/Sapling_Textures/Crystal.png",
         "Weight": 1
       }
     ],
-    "Group": "Wood",
-    "HitboxType": "Plant_Large",
-    "Flags": {},
-    "RandomRotation": "YawStep1",
-    "BlockEntity": {
-      "Components": {
-        "FarmingBlock": {}
-      }
-    },
+    "ParticleColor": "#44aacc",
     "Farming": {
       "Stages": {
         "Default": [
           {
-            "Block": "Plant_Sapling_Crystal",
+            "Block": "Plant_Sapling_Enchanted",
             "Duration": {
-              "Min": 40000,
-              "Max": 60000
+              "Min": 500000,
+              "Max": 800000
             },
             "Type": "BlockType"
           },
           {
             "Prefabs": [
               {
-                "Path": "Trees/Azure/Stage_0/Azure_Stage0_001.prefab.json",
+                "Path": "Trees/Enchanted/Stage_0/Enchanted_Stage0_001.prefab.json",
                 "Weight": 1
               }
             ],
             "Duration": {
-              "Min": 40000,
-              "Max": 60000
+              "Min": 500000,
+              "Max": 800000
             },
             "Type": "Prefab",
-            "ReplaceMaskTags": [
-              "Soil"
-            ],
+            "ReplaceMaskTags": ["Soil"],
             "SoundEventId": "SFX_Crops_Grow"
           },
           {
             "Prefabs": [
               {
-                "Path": "Trees/Azure/Stage_1/Azure_Stage1_001.prefab.json",
+                "Path": "Trees/Enchanted/Stage_1/Enchanted_Stage1_001.prefab.json",
                 "Weight": 1
               }
             ],
             "Duration": {
-              "Min": 40000,
-              "Max": 60000
+              "Min": 500000,
+              "Max": 800000
             },
             "Type": "Prefab",
-            "ReplaceMaskTags": [
-              "Soil"
-            ],
+            "ReplaceMaskTags": ["Soil"],
             "SoundEventId": "SFX_Crops_Grow"
           },
           {
             "Prefabs": [
               {
-                "Path": "Trees/Azure/Stage_2/Azure_Stage2_001.prefab.json",
+                "Path": "Trees/Enchanted/Stage_2/Enchanted_Stage2_001.prefab.json",
                 "Weight": 1
               }
             ],
             "Duration": {
-              "Min": 40000,
-              "Max": 60000
+              "Min": 500000,
+              "Max": 800000
             },
             "Type": "Prefab",
-            "ReplaceMaskTags": [
-              "Soil"
-            ],
+            "ReplaceMaskTags": ["Soil"],
             "SoundEventId": "SFX_Crops_Grow"
           },
           {
             "Prefabs": [
               {
-                "Path": "Trees/Azure/Stage_3/Azure_Stage3_001.prefab.json",
+                "Path": "Trees/Enchanted/Stage_3/Enchanted_Stage3_001.prefab.json",
                 "Weight": 1
               }
             ],
             "Type": "Prefab",
-            "ReplaceMaskTags": [
-              "Soil"
-            ],
+            "ReplaceMaskTags": ["Soil"],
             "SoundEventId": "SFX_Crops_Grow"
           }
         ]
       },
       "StartingStageSet": "Default",
-      "ActiveGrowthModifiers": [
-        "Fertilizer",
-        "Water",
-        "LightLevel"
-      ]
+      "ActiveGrowthModifiers": ["CrystalGlow"]
     },
     "Gathering": {
       "Soft": {
-        "ItemId": "Plant_Sapling_Crystal"
+        "ItemId": "Plant_Sapling_Enchanted"
       }
-    },
-    "Support": {
-      "Down": [
-        {
-          "TagId": "Type=Soil"
-        }
-      ]
-    },
-    "BlockParticleSetId": "Flower",
-    "BlockSoundSetId": "Bush",
-    "ParticleColor": "#44aacc"
+    }
   },
-  "PlayerAnimationsId": "Item",
-  "Tags": {
-    "Type": [
-      "Plant"
-    ],
-    "Family": [
-      "Sapling"
-    ]
-  },
-  "ItemSoundSetId": "ISS_Items_Foliage"
+  "Icon": "Icons/ItemsGenerated/Plant_Sapling_Enchanted.png",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [0, 0, 0],
+    "Translation": [0, -13.5]
+  }
 }
 ```
 
@@ -389,9 +461,9 @@ The `Farming.Stages.Default` array defines the growth progression:
 
 ```mermaid
 flowchart LR;
-    A[Stage 0<br>Sapling Block<br>40-60k ticks] --> B[Stage 1<br>Small Prefab<br>40-60k ticks];
-    B --> C[Stage 2<br>Medium Prefab<br>40-60k ticks];
-    C --> D[Stage 3<br>Large Prefab<br>40-60k ticks];
+    A[Stage 0<br>Sapling Block<br>500-800k ticks] --> B[Stage 1<br>Small Prefab<br>500-800k ticks];
+    B --> C[Stage 2<br>Medium Prefab<br>500-800k ticks];
+    C --> D[Stage 3<br>Large Prefab<br>500-800k ticks];
     D --> E[Stage 4<br>Full Tree<br>Permanent];
 
     style A fill:#2d5a27,color:#fff;
@@ -400,91 +472,131 @@ flowchart LR;
 
 | Stage | Type | What Happens |
 |-------|------|-------------|
-| 0 | `BlockType` | The sapling block itself sits in the world. After 40,000–60,000 ticks, it transitions to the first prefab |
+| 0 | `BlockType` | The sapling block itself sits in the world. After 500,000–800,000 ticks, it transitions to the first prefab |
 | 1 | `Prefab` | The engine replaces the sapling with a small tree prefab (a few trunk + leaf blocks) |
 | 2 | `Prefab` | Replaces with a medium tree prefab (taller, more leaves) |
 | 3 | `Prefab` | Replaces with a large tree prefab (branches, fruit start appearing) |
 | 4 | `Prefab` | The final, fully grown tree. **No `Duration`** — it stays permanently |
+
+### Sapling Key Differences from Scratch
+
+Because we inherit from `Plant_Sapling_Oak`, the sapling already has:
+- `DrawType: "Model"` and `CustomModel: "Blocks/Foliage/Tree/Sapling.blockymodel"`
+- `BlockEntity.Components.FarmingBlock: {}`
+- `Support.Down` requiring soil
+- `HitboxType: "Plant_Large"`
+- `Group: "Wood"` and `RandomRotation: "YawStep1"`
+- Categories, tags, interactions, and sound sets
+
+We only need to override: the **texture**, **particle color**, **farming stages** (to point to our own prefabs), **gathering** (to drop our sapling), and the **growth modifier**.
 
 ### Key Farming Fields
 
 | Field | Type | Purpose |
 |-------|------|---------|
 | `Stages.Default[].Type` | String | `"BlockType"` for the sapling block, `"Prefab"` for tree model stages |
-| `Stages.Default[].Block` | String | For `BlockType` stages: the block ID (usually the sapling itself) |
+| `Stages.Default[].Block` | String | For `BlockType` stages: the block ID (the sapling itself) |
 | `Stages.Default[].Prefabs` | Array | For `Prefab` stages: list of prefab paths with weights for random selection |
 | `Stages.Default[].Duration` | Object | `Min`/`Max` in game ticks. The engine picks a random value. Omit on the final stage to make it permanent |
 | `Stages.Default[].ReplaceMaskTags` | Array | Block tags that prefabs can replace. `"Soil"` lets roots push into dirt |
 | `Stages.Default[].SoundEventId` | String | Sound played when transitioning to this stage |
 | `StartingStageSet` | String | Which stage set to begin with. `"Default"` is standard |
-| `ActiveGrowthModifiers` | Array | What speeds up growth: `"Fertilizer"`, `"Water"`, `"LightLevel"` |
-
-### Required Components
-
-Two `BlockType` properties are essential for the sapling to work:
-
-**FarmingBlock component** — tells the engine this block uses the farming system:
-```json
-"BlockEntity": {
-  "Components": {
-    "FarmingBlock": {}
-  }
-}
-```
-
-**Support rule** — sapling must be placed on soil:
-```json
-"Support": {
-  "Down": [{ "TagId": "Type=Soil" }]
-}
-```
-
-**Gathering** — breaking the sapling returns it to the player:
-```json
-"Gathering": {
-  "Soft": { "ItemId": "Plant_Sapling_Crystal" }
-}
-```
+| `ActiveGrowthModifiers` | Array | Growth modifier IDs. `"CrystalGlow"` is our custom modifier defined in the next step |
 
 :::tip[Multiple Prefab Variants]
 To add visual variety, include multiple entries in a stage's `Prefabs` array with equal `Weight`. The engine picks one at random:
 ```json
 "Prefabs": [
-  { "Path": "Trees/Azure/Stage_2/Azure_Stage2_001.prefab.json", "Weight": 1 },
-  { "Path": "Trees/Azure/Stage_2/Crystal_Stage2_002.prefab.json", "Weight": 1 }
+  { "Path": "Trees/Enchanted/Stage_2/Enchanted_Stage2_001.prefab.json", "Weight": 1 },
+  { "Path": "Trees/Enchanted/Stage_2/Enchanted_Stage2_002.prefab.json", "Weight": 1 }
 ]
 ```
 :::
 
 ---
 
-## Step 5: Register the PrefabList
+## Step 6: Create the Crystal Glow Growth Modifier
+
+This is what makes the Enchanted Tree unique — it only grows near **Crystal Glow blocks** (`#88ccff` light). The modifier filters light by RGB color to ensure only the right light source triggers growth.
+
+Create `Server/Farming/Modifiers/CrystalGlow.json`:
+
+```json
+{
+  "Type": "LightLevel",
+  "Modifier": 2500,
+  "ArtificialLight": {
+    "Red": {
+      "Min": 0,
+      "Max": 5
+    },
+    "Green": {
+      "Min": 1,
+      "Max": 127
+    },
+    "Blue": {
+      "Min": 1,
+      "Max": 127
+    }
+  },
+  "Sunlight": {
+    "Min": 0,
+    "Max": 5
+  },
+  "RequireBoth": true
+}
+```
+
+### Growth Modifier Fields
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `Type` | String | `"LightLevel"` — this modifier checks light conditions at the sapling's position |
+| `Modifier` | Number | Growth speed multiplier. `2500` gives a massive boost, making the tree grow fast near crystal light |
+| `ArtificialLight.Red` | Object | RGB filter — Red `0-5` filters out torches and other warm light sources (high red component) |
+| `ArtificialLight.Green` | Object | Green `1-127` accepts the green component of Crystal Glow light |
+| `ArtificialLight.Blue` | Object | Blue `1-127` accepts the blue component of Crystal Glow light |
+| `Sunlight` | Object | `0-5` — the tree only grows in darkness or deep shade (sunlight inhibits growth) |
+| `RequireBoth` | Boolean | `true` — **both** artificial light AND sunlight conditions must be met simultaneously |
+
+:::caution[How the RGB Filter Works]
+The Crystal Glow block emits `#88ccff` light, which has RGB values of approximately R:136, G:204, B:255. The modifier accepts this because:
+- Red `0-5`: The filter checks the **ambient red level** at the sapling, not the light source's color directly. In a dark area lit only by Crystal Glow, the red level is low.
+- Green/Blue `1-127`: Ensures some artificial light is present (not zero).
+- Sunlight `0-5`: Forces underground/nighttime planting.
+
+Torches and other warm lights have high red components, so they **fail** the Red filter and don't trigger growth.
+:::
+
+---
+
+## Step 7: Register the PrefabList
 
 The `PrefabList` tells the engine where to scan for your tree's prefab files. Each growth stage has its own directory.
 
-Create `Server/PrefabList/Trees_Azure.json`:
+Create `Server/PrefabList/Trees_Enchanted.json`:
 
 ```json
 {
   "Prefabs": [
     {
       "RootDirectory": "Asset",
-      "Path": "Trees/Azure/Stage_0/",
+      "Path": "Trees/Enchanted/Stage_0/",
       "Recursive": true
     },
     {
       "RootDirectory": "Asset",
-      "Path": "Trees/Azure/Stage_1/",
+      "Path": "Trees/Enchanted/Stage_1/",
       "Recursive": true
     },
     {
       "RootDirectory": "Asset",
-      "Path": "Trees/Azure/Stage_2/",
+      "Path": "Trees/Enchanted/Stage_2/",
       "Recursive": true
     },
     {
       "RootDirectory": "Asset",
-      "Path": "Trees/Azure/Stage_3/",
+      "Path": "Trees/Enchanted/Stage_3/",
       "Recursive": true
     }
   ]
@@ -500,54 +612,56 @@ Create `Server/PrefabList/Trees_Azure.json`:
 | `Path` | String | Subdirectory containing `.prefab.json` files for one growth stage |
 | `Recursive` | Boolean | `true` — scan subdirectories as well |
 
-The actual `.prefab.json` files contain block position data that forms the tree shape. These are typically created using the Hytale prefab editor in Creative Mode, not written by hand.
-
-:::tip[Reusing Azure Prefabs]
-In this tutorial we reuse the vanilla Azure tree prefabs directly. The sapling's `Farming` stages point to `Trees/Azure/Stage_N/` paths that already exist in the base game. This means you get a fully working tree without creating prefab files from scratch — only the block definitions, textures, and translations are custom.
-:::
+The actual `.prefab.json` files contain block position data that forms the tree shape. These are created using the Hytale prefab editor in Creative Mode and contain references to the block types we defined above (trunk, leaves, fruit, moss). The prefabs are included in the [companion repository](https://github.com/nevesb/hytale-mods-custom-tree).
 
 ---
 
-## Step 6: Add Translations
+## Step 8: Add Translations
 
 Create language files under `Server/Languages/`:
 
 **`Server/Languages/en-US/server.lang`**
 ```properties
-items.Wood_Crystal_Trunk.name = Crystal Wood
-items.Wood_Crystal_Trunk.description = Shimmering wood harvested from a Crystal Tree.
-items.Plant_Leaves_Crystal.name = Crystal Leaves
-items.Plant_Fruit_Crystal.name = Light Shard
-items.Plant_Fruit_Crystal.description = A glowing fruit from the Crystal Tree. Used to craft light-infused ammunition.
-items.Plant_Sapling_Crystal.name = Crystal Sapling
-items.Plant_Sapling_Crystal.description = Plant on soil to grow a Crystal Tree.
+items.Wood_Enchanted_Trunk.name = Enchanted Wood
+items.Wood_Enchanted_Trunk.description = Shimmering wood harvested from an Enchanted Tree.
+items.Plant_Leaves_Enchanted.name = Enchanted Leaves
+items.Plant_Fruit_Enchanted.name = Light Shard
+items.Plant_Fruit_Enchanted.description = A glowing fruit from the Enchanted Tree. Used to craft light-infused ammunition.
+items.Plant_Sapling_Enchanted.name = Enchanted Sapling
+items.Plant_Sapling_Enchanted.description = Plant on soil to grow an Enchanted Tree.
+items.Plant_Moss_Wall_Crystal.name = Crystal Wall Moss
+items.Plant_Moss_Rug_Crystal.name = Crystal Moss Rug
 ```
 
 **`Server/Languages/es/server.lang`**
 ```properties
-items.Wood_Crystal_Trunk.name = Madera Cristalina
-items.Wood_Crystal_Trunk.description = Madera reluciente cosechada de un Árbol de Cristal.
-items.Plant_Leaves_Crystal.name = Hojas de Cristal
-items.Plant_Fruit_Crystal.name = Fragmento de Luz
-items.Plant_Fruit_Crystal.description = Una fruta brillante del Árbol de Cristal. Se usa para fabricar munición infundida con luz.
-items.Plant_Sapling_Crystal.name = Brote de Cristal
-items.Plant_Sapling_Crystal.description = Planta en tierra para hacer crecer un Árbol de Cristal.
+items.Wood_Enchanted_Trunk.name = Madera Encantada
+items.Wood_Enchanted_Trunk.description = Madera reluciente cosechada de un Arbol Encantado.
+items.Plant_Leaves_Enchanted.name = Hojas Encantadas
+items.Plant_Fruit_Enchanted.name = Fragmento de Luz
+items.Plant_Fruit_Enchanted.description = Una fruta brillante del Arbol Encantado. Se usa para fabricar municion infundida con luz.
+items.Plant_Sapling_Enchanted.name = Brote Encantado
+items.Plant_Sapling_Enchanted.description = Planta en tierra para hacer crecer un Arbol Encantado.
+items.Plant_Moss_Wall_Crystal.name = Musgo de Pared Cristalino
+items.Plant_Moss_Rug_Crystal.name = Alfombra de Musgo Cristalino
 ```
 
 **`Server/Languages/pt-BR/server.lang`**
 ```properties
-items.Wood_Crystal_Trunk.name = Madeira Cristalina
-items.Wood_Crystal_Trunk.description = Madeira reluzente colhida de uma Árvore de Cristal.
-items.Plant_Leaves_Crystal.name = Folhas de Cristal
-items.Plant_Fruit_Crystal.name = Fragmento de Luz
-items.Plant_Fruit_Crystal.description = Uma fruta brilhante da Árvore de Cristal. Usada para fabricar munição infundida com luz.
-items.Plant_Sapling_Crystal.name = Muda de Cristal
-items.Plant_Sapling_Crystal.description = Plante em solo para cultivar uma Árvore de Cristal.
+items.Wood_Enchanted_Trunk.name = Madeira Encantada
+items.Wood_Enchanted_Trunk.description = Madeira reluzente colhida de uma Arvore Encantada.
+items.Plant_Leaves_Enchanted.name = Folhas Encantadas
+items.Plant_Fruit_Enchanted.name = Fragmento de Luz
+items.Plant_Fruit_Enchanted.description = Uma fruta brilhante da Arvore Encantada. Usada para fabricar municao infundida com luz.
+items.Plant_Sapling_Enchanted.name = Muda Encantada
+items.Plant_Sapling_Enchanted.description = Plante em solo para cultivar uma Arvore Encantada.
+items.Plant_Moss_Wall_Crystal.name = Musgo de Parede Cristalino
+items.Plant_Moss_Rug_Crystal.name = Tapete de Musgo Cristalino
 ```
 
 ---
 
-## Step 7: Complete Mod Structure
+## Step 9: Complete Mod Structure
 
 ```text
 CreateACustomTree/
@@ -557,31 +671,46 @@ CreateACustomTree/
 │   │   ├── Wood_Trunk_Crystal_Side.png
 │   │   └── Wood_Trunk_Crystal_Top.png
 │   ├── Blocks/Foliage/
-│   │   └── Leaves/Ball_Textures/
-│   │       └── Crystal.png
+│   │   ├── Leaves/
+│   │   │   ├── Ball.blockymodel
+│   │   │   └── Ball_Textures/
+│   │   │       └── Crystal.png
+│   │   └── Tree/
+│   │       ├── Sapling.blockymodel
+│   │       └── Sapling_Textures/
+│   │           └── Crystal.png
 │   ├── Resources/Ingredients/
 │   │   ├── Crystal_Fruit.blockymodel
 │   │   └── Crystal_Fruit_Texture.png
-│   ├── Blocks/Foliage/Tree/
-│   │   └── Sapling_Textures/
-│   │       └── Crystal.png
 │   └── Icons/ItemsGenerated/
-│       ├── Wood_Crystal_Trunk.png
-│       ├── Plant_Crystal_Leaves.png
-│       ├── Plant_Fruit_Crystal.png
-│       └── Plant_Crystal_Sapling.png
+│       ├── Wood_Enchanted_Trunk.png
+│       ├── Plant_Sapling_Enchanted.png
+│       ├── Plant_Fruit_Enchanted.png
+│       ├── Plant_Leaves_Enchanted.png
+│       ├── Plant_Moss_Wall_Crystal.png
+│       └── Plant_Moss_Rug_Crystal.png
 ├── Server/
+│   ├── Farming/Modifiers/
+│   │   └── CrystalGlow.json
 │   ├── Item/Items/
-│   │   ├── Wood/Crystal/
-│   │   │   └── Wood_Crystal_Trunk.json
+│   │   ├── Wood/Enchanted/
+│   │   │   └── Wood_Enchanted_Trunk.json
 │   │   └── Plant/
 │   │       ├── Leaves/
-│   │       │   └── Plant_Leaves_Crystal.json
+│   │       │   └── Plant_Leaves_Enchanted.json
 │   │       ├── Fruit/
-│   │       │   └── Plant_Fruit_Crystal.json
-│   │       └── Plant_Sapling_Crystal.json
+│   │       │   └── Plant_Fruit_Enchanted.json
+│   │       ├── Moss/
+│   │       │   ├── Plant_Moss_Wall_Crystal.json
+│   │       │   └── Plant_Moss_Rug_Crystal.json
+│   │       └── Plant_Sapling_Enchanted.json
 │   ├── PrefabList/
-│   │   └── Trees_Azure.json
+│   │   └── Trees_Enchanted.json
+│   ├── Prefabs/Trees/Enchanted/
+│   │   ├── Stage_0/Enchanted_Stage0_001.prefab.json
+│   │   ├── Stage_1/Enchanted_Stage1_001.prefab.json
+│   │   ├── Stage_2/Enchanted_Stage2_001.prefab.json
+│   │   └── Stage_3/Enchanted_Stage3_001.prefab.json
 │   └── Languages/
 │       ├── en-US/server.lang
 │       ├── es/server.lang
@@ -590,24 +719,31 @@ CreateACustomTree/
 
 ---
 
-## Step 8: Test In-Game
+## Step 10: Test In-Game
 
 1. Copy the mod folder to `%APPDATA%/Hytale/UserData/Mods/`
-2. Launch Hytale and enter **Creative Mode**
-3. Grant yourself operator permissions and spawn the blocks:
+2. Also install the [Crystal Glow Block mod](https://github.com/nevesb/hytale-mods-custom-block) — it's required for the growth mechanic
+3. Launch Hytale and enter **Creative Mode**
+4. Grant yourself operator permissions and spawn the items:
    ```text
    /op self
-   /spawnitem Wood_Crystal_Trunk
-   /spawnitem Plant_Sapling_Crystal
-   /spawnitem Plant_Fruit_Crystal
+   /spawnitem Wood_Enchanted_Trunk
+   /spawnitem Plant_Sapling_Enchanted
+   /spawnitem Plant_Fruit_Enchanted
+   /spawnitem Block_Crystal_Glow
    ```
-4. Place the trunk and verify the custom texture appears
-5. Place the sapling on a dirt block and confirm:
+5. Place the trunk and verify the custom texture appears
+6. Place Crystal Glow blocks in a dark area (underground or at night)
+7. Place the sapling on soil near the Crystal Glow blocks and confirm:
    - It renders with the crystal sapling texture
    - It requires soil below (breaks if soil is removed)
    - Breaking it returns the sapling item
-6. Wait for growth stages or use time acceleration to verify prefab transitions
-7. Check that the fruit block glows with blue light when placed
+8. Wait for growth — the CrystalGlow modifier gives a 2500x speed boost, so growth should be fast near the crystal light
+9. Verify the fully grown tree has:
+   - Enchanted trunk blocks with crystal-blue textures
+   - Crystal leaves in ice-blue color
+   - Glowing Light Shard fruit
+   - Crystal Moss on the trunk and ground
 
 ---
 
@@ -615,21 +751,22 @@ CreateACustomTree/
 
 | Problem | Cause | Fix |
 |---------|-------|-----|
-| Sapling places but never grows | Missing `FarmingBlock` component | Add `"BlockEntity": { "Components": { "FarmingBlock": {} } }` to `BlockType` |
+| Sapling places but never grows | Missing `FarmingBlock` component or no crystal light | Ensure sapling inherits from `Plant_Sapling_Oak` (has `FarmingBlock`) and place Crystal Glow blocks nearby in darkness |
 | `Unknown prefab path` | Prefab file missing or wrong path | Verify `.prefab.json` files exist at the paths referenced in `Farming.Stages` |
-| Sapling floats in air | Missing `Support` | Add `"Support": { "Down": [{ "TagId": "Type=Soil" }] }` |
+| Sapling floats in air | Missing `Support` | Inherited from `Plant_Sapling_Oak` — ensure parent is correct |
 | Fruit doesn't glow | Wrong `Light` format | Use `"Light": { "Color": "#469" }` inside `BlockType` (not at root level) |
 | Leaves use wrong model | `CustomModel` path incorrect | Shared models like `Ball.blockymodel` are at `Blocks/Foliage/Leaves/Ball.blockymodel` |
-| Growth too fast/slow | `Duration` values off | Vanilla uses 40,000–60,000 ticks per stage. Lower = faster growth |
-| Variant inherits wrong stages | `Parent` not overriding `Farming` | The variant must provide the complete `Farming.Stages` object |
+| Growth too slow | `CrystalGlow` modifier not activating | Check that Crystal Glow blocks are placed nearby, area is dark (sunlight 0-5), and no warm lights (torches) are near |
+| Moss color wrong | `Tint` not applied | Ensure `Tint` is an array: `["#88ccff"]`, not a string |
+| Tree grows with any light | Wrong `ActiveGrowthModifiers` | Use `["CrystalGlow"]` not generic `["LightLevel"]` |
 
 ---
 
 ## How This Connects
 
-The Crystal Tree provides two key materials for the rest of the tutorial series:
+The Enchanted Tree provides key materials for the rest of the tutorial series:
 
-- **Crystal Wood** → used as the handle material when crafting the [Crystal Sword](/hytale-modding-docs/tutorials/beginner/create-an-item/) and [Crystal Crossbow](/hytale-modding-docs/tutorials/intermediate/projectile-weapons/)
+- **Enchanted Wood** → used as the handle material when crafting the [Crystal Sword](/hytale-modding-docs/tutorials/beginner/create-an-item/) and [Crystal Crossbow](/hytale-modding-docs/tutorials/intermediate/projectile-weapons/)
 - **Light Shards** → used as ammunition for the Crystal Crossbow's light bolts
 
-Next tutorial: [Custom Loot Tables](/hytale-modding-docs/tutorials/intermediate/custom-loot-tables/) — configure advanced drop tables so the Crystal Tree and Slime drop the right materials with proper weights.
+Next tutorial: [Custom Loot Tables](/hytale-modding-docs/tutorials/intermediate/custom-loot-tables/) — configure advanced drop tables so the Enchanted Tree and Slime drop the right materials with proper weights.

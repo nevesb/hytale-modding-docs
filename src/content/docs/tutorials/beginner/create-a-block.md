@@ -134,7 +134,14 @@ Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
     "Level": 14
   },
   "BlockSoundSetId": "Crystal",
-  "ParticleColor": "#88ccff"
+  "ParticleColor": "#88ccff",
+  "Support": {
+    "Down": [
+      {
+        "FaceType": "Full"
+      }
+    ]
+  }
 }
 ```
 
@@ -160,6 +167,7 @@ Server/Item/Block/Blocks/HytaleModdingManual/Block_Crystal_Glow.json
 | `BlockSoundSetId` | string | No | — | Sound set used for placing, breaking, and walking on the block. Values: `Stone`, `Wood`, `Crystal`, `Metal`, `Dirt`, etc. |
 | `ParticleColor` | string | No | — | Hex color of particles emitted when the block is broken. |
 | `BlockParticleSetId` | string | No | — | Particle set used when the block is broken or interacted with. Values: `Stone`, `Wood`, `Dirt`, etc. |
+| `Support` | object | No | — | Defines which adjacent blocks must exist for this block to remain placed. If support is removed, the block breaks and drops as an item. `Down` requires a block below with `FaceType: "Full"`. |
 | `Flags` | object | No | `{}` | Bitfield flags for special block behaviors (e.g., `Flammable`, `Replaceable`). |
 
 ---
@@ -233,7 +241,14 @@ Server/Item/Items/HytaleModdingManual/Block_Crystal_Glow.json
     },
     "BlockParticleSetId": "Stone",
     "BlockSoundSetId": "Crystal",
-    "ParticleColor": "#88ccff"
+    "ParticleColor": "#88ccff",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    }
   },
   "MaxStack": 64,
   "IconProperties": {
