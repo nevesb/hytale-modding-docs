@@ -1,60 +1,66 @@
 ---
 title: Custom NPC Spawn Rules
-description: Step-by-step tutorial for creating custom NPC spawn rules with environments, time ranges, moon phases, and biome conditions.
+description: Step-by-step tutorial for creating spawn rules that make Slimes appear in Azure forests and a Feran merchant spawn in Feran biomes.
 sidebar:
   order: 6
 ---
 
 ## Goal
 
-Create advanced spawn rules that control where, when, and how your NPCs appear in the world. You will build spawn files for daytime forest creatures, nocturnal void enemies with moon phase modifiers, and zone-specific predators with light level restrictions.
+Create **spawn rules** that make your custom NPCs appear naturally in the world. You will make the **Slime** from the [Create a Custom NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc/) tutorial spawn in Azure forests, and the **Feran Enchanted Merchant** from the [NPC Shops and Trading](/hytale-modding-docs/tutorials/intermediate/npc-shops-and-trading/) tutorial spawn in Feran biomes.
+
+![Slime spawning naturally in an Azure forest biome](/hytale-modding-docs/images/tutorials/custom-npc-spawning/slime-azure-forest.png)
 
 ## What You'll Learn
 
-- How spawn rule files connect environments to NPC roles
-- How to use `DayTimeRange` for time-of-day restrictions
-- How `Weight` and `Flock` control spawn frequency and group size
-- How `SpawnBlockSet` determines the surface type for spawning
-- How `MoonPhaseWeightModifiers`, `LightRanges`, and `Despawn` create advanced spawn behaviour
+- How world spawn files control where and when NPCs appear in biomes
+- How `Environments` connect spawn rules to specific biomes
+- How `Weight`, `Flock`, and `DayTimeRange` control spawn frequency, group size, and timing
+- How `SpawnBlockSet` restricts NPCs to specific surface types
 
 ## Prerequisites
 
-- A mod folder with a valid `manifest.json` (see [Setup Your Dev Environment](/hytale-modding-docs/tutorials/beginner/setup-dev-environment))
-- At least one custom NPC role (see [Create a Custom NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc))
+- The Slime NPC mod from [Create a Custom NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc/)
+- The Feran Enchanted Merchant mod from [NPC Shops and Trading](/hytale-modding-docs/tutorials/intermediate/npc-shops-and-trading/)
+
+**Companion mod repository:** [hytale-mods-custom-npc-spawns](https://github.com/nevesb/hytale-mods-custom-npc-spawns)
 
 ---
 
 ## Spawn System Overview
 
-Spawn rules live in `Assets/Server/NPC/Spawn/World/` and are organised by zone. The engine reads every JSON file in these directories and merges them. Each file associates a list of environments (biomes) with a list of NPCs that can spawn there.
+Hytale uses **world spawns** to make NPCs appear naturally as players explore. Spawn files live in `Server/NPC/Spawn/World/` and are organized by zone. The engine reads every JSON file in each zone directory and merges them. Each file associates a list of environments (biomes) with NPCs that can spawn there.
 
 ```
-Assets/Server/NPC/Spawn/World/
-  Zone0/
-  Zone1/
-    Spawns_Zone1_Forests_Critter.json
-    Spawns_Zone1_Forests_Predator.json
-    Spawns_Zone1_Mountains_Animal.json
-  Zone2/
-  Zone3/
-  Zone4/
-  Void/
-  Unique/
+Server/NPC/Spawn/
+  World/
+    Zone0/          (Ocean)
+    Zone1/          (Azure Forest, Plains, Mountains)
+    Zone2/          (Feran, Savanna, Desert)
+    Zone3/          (Tundra)
+    Void/           (Night creatures)
 ```
+
+### Environment IDs
+
+Environments represent biomes. Each zone has several environment variants:
+
+| Zone | Common Environments |
+|------|-------------------|
+| Zone 1 | `Env_Zone1_Forests`, `Env_Zone1_Azure`, `Env_Zone1_Autumn`, `Env_Zone1_Plains`, `Env_Zone1_Mountains_Critter` |
+| Zone 2 | `Env_Zone2_Feran`, `Env_Zone2_Savanna`, `Env_Zone2_Desert`, `Env_Zone2_Oasis`, `Env_Zone2_Plateau` |
+| Zone 3 | `Env_Zone3_Tundra` |
 
 ---
 
-## Step 1: Create a Basic Daytime Spawn Rule
+## Step 1: Create the Slime World Spawn
 
-This example spawns critters in Zone 1 forest biomes during the day -- matching the pattern used by vanilla files like `Spawns_Zone1_Forests_Critter.json`.
+World spawns make NPCs appear naturally as the player explores. Vanilla predators like Bears and Spiders use this system to populate forests.
 
-Create:
-
-```
-YourMod/Assets/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_MyMod_Critter.json
-```
+Here is the vanilla forest predator spawn for reference:
 
 ```json
+// Vanilla: Spawns_Zone1_Forests_Predator.json
 {
   "Environments": [
     "Env_Zone1_Forests",
@@ -63,16 +69,38 @@ YourMod/Assets/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_MyMod_Critter.json
   ],
   "NPCs": [
     {
-      "Weight": 4,
+      "Weight": 5,
       "SpawnBlockSet": "Soil",
-      "Id": "Mossbug",
-      "Flock": "One_Or_Two"
+      "Id": "Bear_Grizzly"
     },
     {
-      "Weight": 2,
-      "SpawnBlockSet": "Birds",
-      "Id": "Glowfly",
-      "Flock": "Group_Small"
+      "Weight": 5,
+      "SpawnBlockSet": "Soil",
+      "Id": "Spider"
+    }
+  ],
+  "DayTimeRange": [6, 18]
+}
+```
+
+Now create a spawn file for Slimes in Azure and standard forests:
+
+```
+NPCSpawning/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_Azure_Slime.json
+```
+
+```json
+{
+  "Environments": [
+    "Env_Zone1_Azure",
+    "Env_Zone1_Forests"
+  ],
+  "NPCs": [
+    {
+      "Weight": 15,
+      "SpawnBlockSet": "Soil",
+      "Id": "Slime",
+      "Flock": "One_Or_Two"
     }
   ],
   "DayTimeRange": [
@@ -82,145 +110,155 @@ YourMod/Assets/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_MyMod_Critter.json
 }
 ```
 
-### Field reference
+### Field Breakdown
 
-| Field | Purpose |
-|-------|---------|
-| `Environments` | Array of environment IDs this spawn file applies to. The engine matches these against the world generator's biome map |
-| `NPCs` | Array of NPC entries that can spawn in the listed environments |
-| `NPCs[].Weight` | Relative spawn likelihood. Higher values mean more common. Vanilla critters use 2-6 typically |
-| `NPCs[].SpawnBlockSet` | Surface type for spawning: `"Soil"` (ground), `"Birds"` (air), `"Water"` (aquatic) |
-| `NPCs[].Id` | NPC role ID -- matches the filename of the role JSON without `.json` |
-| `NPCs[].Flock` | Group size. String values: `"One_Or_Two"`, `"Group_Small"`, `"Group_Large"` |
-| `DayTimeRange` | `[start, end]` hours (0-24) during which spawning is active. `[6, 18]` = 6 AM to 6 PM |
+| Field | Value | Purpose |
+|-------|-------|---------|
+| `Environments` | `["Env_Zone1_Azure", "Env_Zone1_Forests"]` | Slimes spawn in Azure and standard forest biomes |
+| `Weight` | `15` | Spawn frequency relative to other NPCs. Compare: vanilla predators use 5 |
+| `SpawnBlockSet` | `"Soil"` | Spawn only on ground blocks. Other options: `"Birds"` (air), `"Water"` (aquatic), `"Volcanic"` (cave) |
+| `Id` | `"Slime"` | Matches the NPC role filename (`Slime.json`) without `.json` |
+| `Flock` | `"One_Or_Two"` | Spawns 1-2 Slimes together. Other options: `"Group_Small"`, `"Group_Medium"`, `"Group_Large"` |
+| `DayTimeRange` | `[6, 18]` | Active from 6 AM to 6 PM (daytime only) |
+
+:::tip[Night Spawns]
+For nocturnal NPCs, set `DayTimeRange` to `[19, 5]` (wraps past midnight — 7 PM to 5 AM). Add `"Despawn": { "DayTimeRange": [5, 19] }` to make them disappear at dawn, like vanilla Void creatures.
+:::
+
+### Flock Options
+
+| Flock Value | Group Size | Use Case |
+|-------------|-----------|----------|
+| *(omitted)* | 1 | Solo predators (Bears, Spiders) |
+| `"One_Or_Two"` | 1-2 | Light packs |
+| `"Group_Small"` | 2-4 | Critter herds |
+| `"Group_Medium"` | 3-6 | Animal herds |
+| `"Group_Large"` | 5-10 | Large flocks |
+| `{"Size": [2, 3]}` | 2-3 | Custom range |
 
 ---
 
-## Step 2: Create a Nocturnal Spawn Rule with Moon Phases
+## Step 2: Create the Merchant World Spawn
 
-Void creatures in Hytale use advanced spawn settings including moon phase weight modifiers and despawn rules. This pattern comes from files in `Assets/Server/NPC/Spawn/World/Void/`.
-
-Create:
+The Feran Enchanted Merchant spawns naturally in Feran biomes. This makes the merchant appear in and around Feran cities:
 
 ```
-YourMod/Assets/Server/NPC/Spawn/World/Void/Spawns_MyMod_Night_Void.json
+NPCSpawning/Server/NPC/Spawn/World/Zone2/Spawns_Zone2_Feran_Merchant.json
 ```
+
+```json
+{
+  "Environments": [
+    "Env_Zone2_Feran"
+  ],
+  "NPCs": [
+    {
+      "Weight": 100,
+      "SpawnBlockSet": "Soil",
+      "Id": "Feran_Enchanted_Merchant",
+      "Flock": "One_Or_Two"
+    }
+  ],
+  "DayTimeRange": [
+    6,
+    18
+  ]
+}
+```
+
+![Feran Enchanted Merchant spawned in a Feran city — "Press F to trade"](/hytale-modding-docs/images/tutorials/custom-npc-spawning/feran-merchant-city.png)
+
+| Field | Value | Purpose |
+|-------|-------|---------|
+| `Environments` | `["Env_Zone2_Feran"]` | Spawns only in Feran biomes (Zone 2) |
+| `Weight` | `100` | High weight ensures frequent spawning. Compare: vanilla critters use 5-20 |
+| `Id` | `"Feran_Enchanted_Merchant"` | Matches the NPC role filename from the NPCShopsAndTrading mod |
+| `Flock` | `"One_Or_Two"` | Spawns 1-2 merchants together |
+
+:::tip[Multiple Environments]
+To spawn the merchant across all Zone 2 biomes, add more environments to the array: `["Env_Zone2_Feran", "Env_Zone2_Savanna", "Env_Zone2_Desert", "Env_Zone2_Oasis", "Env_Zone2_Plateau"]`.
+:::
+
+---
+
+## Step 3: Create the Manifest
+
+The spawn mod depends on both the Slime NPC mod and the Trading NPC mod:
+
+```
+NPCSpawning/manifest.json
+```
+
+```json
+{
+  "Group": "HytaleModdingManual",
+  "Name": "NPCSpawning",
+  "Version": "1.0.0",
+  "Description": "Custom NPC spawn rules for Slime in Azure forests and Feran Enchanted Merchant in Feran cities",
+  "Authors": [
+    {
+      "Name": "HytaleModdingManual"
+    }
+  ],
+  "Dependencies": {
+    "HytaleModdingManual:CreateACustomNPC": "1.0.0",
+    "HytaleModdingManual:NPCShopsAndTrading": "1.0.0"
+  },
+  "OptionalDependencies": {},
+  "IncludesAssetPack": false
+}
+```
+
+Note that `IncludesAssetPack` is `false` — spawn rules are server-only files with no client-side assets (no models, textures, or icons).
+
+---
+
+## Step 4: Advanced Spawn Options
+
+### Nocturnal Spawns with Moon Phases
+
+Void creatures use night-only spawns with moon phase modifiers. This pattern makes NPCs more common during full moons:
 
 ```json
 {
   "Environments": [
     "Env_Zone1_Plains",
-    "Env_Zone2_Savanna",
-    "Env_Zone3_Tundra"
-  ],
-  "Despawn": {
-    "DayTimeRange": [
-      5,
-      19
-    ]
-  },
-  "MoonPhaseWeightModifiers": [
-    0.5,
-    1,
-    1.5,
-    1.5,
-    1
+    "Env_Zone1_Forests"
   ],
   "NPCs": [
     {
       "Weight": 20,
       "SpawnBlockSet": "Soil",
-      "Id": "Shadow_Crawler",
+      "Id": "Slime",
       "Flock": {
-        "Size": [
-          2,
-          3
-        ]
+        "Size": [2, 4]
       }
     }
   ],
-  "DayTimeRange": [
-    19,
-    5
-  ],
+  "DayTimeRange": [19, 5],
+  "MoonPhaseWeightModifiers": [0.5, 1, 1.5, 1.5, 1],
   "LightRanges": {
-    "Light": [
-      0,
-      8
-    ]
+    "Light": [0, 8]
+  },
+  "Despawn": {
+    "DayTimeRange": [5, 19]
   }
 }
 ```
 
-### Advanced spawn fields
-
 | Field | Purpose |
 |-------|---------|
-| `Despawn.DayTimeRange` | `[start, end]` hours during which spawned NPCs are forcibly despawned. Used to remove night creatures at dawn |
-| `MoonPhaseWeightModifiers` | Array of multipliers applied to all `Weight` values based on the current moon phase. Index 0 = new moon, higher indices = fuller moons. Values above 1.0 increase spawns; below 1.0 decrease them |
-| `LightRanges.Light` | `[min, max]` light level range (0-15) required at the spawn location. `[0, 8]` means the NPC only spawns in dark areas |
-| `Flock.Size` | Alternative to string flock names. `[min, max]` array for custom group sizes |
+| `MoonPhaseWeightModifiers` | Array of multipliers by moon phase (index 0 = new moon). `1.5` doubles spawns at full moon, `0.5` halves them at new moon |
+| `LightRanges.Light` | `[min, max]` light level (0-15). `[0, 8]` restricts to dark areas |
+| `Despawn.DayTimeRange` | NPCs forcibly despawn during these hours (dawn cleanup) |
 
-### Night-time DayTimeRange
+### Aquatic Spawns
 
-When `start > end` (e.g., `[19, 5]`), the range wraps past midnight. This means spawning is active from 7 PM through to 5 AM.
-
----
-
-## Step 3: Create a Zone-Specific Predator Spawn
-
-Predators use higher weights and typically spawn alone. This pattern matches `Spawns_Zone1_Forests_Predator.json`.
-
-Create:
-
-```
-YourMod/Assets/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_MyMod_Predator.json
-```
+For water-dwelling NPCs, use the `Water` block set with `SpawnFluidTag`:
 
 ```json
 {
-  "Environments": [
-    "Env_Zone1_Forests",
-    "Env_Zone1_Autumn"
-  ],
-  "NPCs": [
-    {
-      "Weight": 5,
-      "SpawnBlockSet": "Soil",
-      "Id": "Thornbeast"
-    },
-    {
-      "Weight": 3,
-      "SpawnBlockSet": "Soil",
-      "Id": "Venomfang",
-      "Flock": "One_Or_Two"
-    }
-  ],
-  "DayTimeRange": [
-    6,
-    18
-  ]
-}
-```
-
-When no `Flock` is specified (as with Thornbeast above), the NPC spawns individually.
-
----
-
-## Step 4: Create an Aquatic Spawn Rule
-
-For water-dwelling creatures, use the `Water` spawn block set and the `SpawnFluidTag` field:
-
-```
-YourMod/Assets/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_MyMod_Aquatic.json
-```
-
-```json
-{
-  "Environments": [
-    "Env_Zone1_Forests",
-    "Env_Zone1_Autumn"
-  ],
+  "Environments": ["Env_Zone1_Forests"],
   "NPCs": [
     {
       "Weight": 10,
@@ -229,59 +267,70 @@ YourMod/Assets/Server/NPC/Spawn/World/Zone1/Spawns_Zone1_MyMod_Aquatic.json
       "Id": "Glowfish",
       "Flock": "Group_Small"
     }
-  ],
-  "DayTimeRange": [
-    6,
-    18
   ]
 }
 ```
-
-### SpawnFluidTag
-
-The `SpawnFluidTag` field restricts spawning to tiles containing a specific fluid. Use `"Water"` for freshwater spawns. This field is used in vanilla files like `Spawns_Portals_Oasis_Animal.json` for flamingos near water.
-
----
-
-## Available Environment IDs
-
-Here are common environment IDs by zone:
-
-| Zone | Environment IDs |
-|------|----------------|
-| Zone 1 | `Env_Zone1_Plains`, `Env_Zone1_Forests`, `Env_Zone1_Autumn`, `Env_Zone1_Azure`, `Env_Zone1_Mountains_Critter` |
-| Zone 2 | `Env_Zone2_Savanna`, `Env_Zone2_Desert` |
-| Zone 3 | `Env_Zone3_Tundra` |
-| Unique | `Env_Portals_Oasis` |
-
-Check the `Environments` field in vanilla spawn files under each zone directory for the complete list.
 
 ---
 
 ## Step 5: Test In-Game
 
-1. Place your mod folder in the server mods directory.
-2. Start the server and watch for errors about unknown NPC IDs or invalid environment names.
-3. Use the developer NPC spawner to verify your NPC roles work independently.
-4. Travel to the appropriate biome during the correct time of day.
-5. For nocturnal spawns, wait until nightfall and move away from light sources.
-6. Check that flock sizes match your configuration.
-7. For moon phase testing, advance the game clock through multiple days.
+1. Copy the `NPCSpawning/` folder to `%APPDATA%/Hytale/UserData/Mods/`
+
+2. Make sure the **CreateACustomNPC** and **NPCShopsAndTrading** mods are also installed (required dependencies)
+
+3. Launch Hytale and test the Slime spawn:
+   - Travel to an **Azure Forest** or **standard Forest** biome in Zone 1
+   - Explore during daytime (6 AM - 6 PM)
+   - Slimes should appear naturally in groups of 1-2
+
+4. Test the Merchant spawn:
+   - Travel to a **Feran biome** in Zone 2
+   - The Enchanted Merchant should appear naturally near Feran cities
+   - Right-click to open the trade UI
 
 **Common errors and fixes:**
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| NPC never spawns naturally | Wrong environment ID | Cross-reference environment names with vanilla spawn files in the same zone |
-| NPC spawns at wrong time | `DayTimeRange` reversed | For nocturnal, use `[19, 5]` not `[5, 19]` |
-| Too many or too few spawns | `Weight` imbalanced | Compare to vanilla weights: critters use 2-6, predators use 3-5 |
-| NPC spawns in mid-air | Wrong `SpawnBlockSet` | Use `"Soil"` for ground creatures, `"Birds"` only for flying NPCs |
-| Void creatures persist at dawn | Missing `Despawn` | Add `"Despawn": { "DayTimeRange": [5, 19] }` |
+| NPC never spawns | Wrong environment ID | Check `Environments` matches biome names from vanilla spawn files in the same zone |
+| `Unknown NPC role` | NPC role not found | Verify the dependency mod is installed and `Id` matches the role filename |
+| NPC spawns at wrong time | `DayTimeRange` reversed | Daytime: `[6, 18]`. Night: `[19, 5]` (start > end wraps past midnight) |
+| Too many spawns | `Weight` too high | Compare to vanilla: critters use 2-6, predators use 3-5 |
+| NPC floats in air | Wrong `SpawnBlockSet` | Use `"Soil"` for ground creatures, `"Birds"` only for flying NPCs |
+
+---
+
+## File Structure Summary
+
+```
+NPCSpawning/
+  manifest.json
+  Server/
+    NPC/
+      Spawn/
+        World/
+          Zone1/
+            Spawns_Zone1_Azure_Slime.json
+          Zone2/
+            Spawns_Zone2_Feran_Merchant.json
+```
+
+---
+
+## Vanilla Spawn Reference
+
+| Vanilla File | Pattern | Use Case |
+|-------------|---------|----------|
+| `Spawns_Zone1_Forests_Predator.json` | World spawn, daytime, equal weights | Forest predators (Bears, Spiders) |
+| `Spawns_Zone1_Forests_Critter.json` | World spawn, daytime, varied weights + flocks | Forest critters (Boars, Bunnies) |
+| `Spawns_Void_Zone1.json` | Night spawn, moon phases, light ranges | Void creatures |
+| `Kweebec_Merchant.json` | Dedicated merchant marker | Solo merchant at Kweebec villages |
 
 ---
 
 ## Next Steps
 
-- [Create a Custom NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc) -- define the NPC role that your spawn rules reference
-- [Custom Loot Tables](/hytale-modding-docs/tutorials/intermediate/custom-loot-tables) -- set up what your spawned NPCs drop when defeated
-- [Projectile Weapons](/hytale-modding-docs/tutorials/intermediate/projectile-weapons) -- create weapons for fighting your spawned predators
+- [Create a Custom NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc/) — define the NPC roles that your spawn rules reference
+- [NPC Shops and Trading](/hytale-modding-docs/tutorials/intermediate/npc-shops-and-trading/) — create the Feran merchant NPC that spawns in settlements
+- [Custom Loot Tables](/hytale-modding-docs/tutorials/intermediate/custom-loot-tables/) — configure what your spawned NPCs drop when defeated
