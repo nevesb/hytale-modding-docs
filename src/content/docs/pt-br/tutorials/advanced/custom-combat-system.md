@@ -1,641 +1,635 @@
 ---
 title: Crie um Sistema de Combate Personalizado
-description: Criando um sistema de combate personalizado com novos tipos de dano, efeitos de entidade, interações de projétil, atributos de arma e balanceamento de combate de NPCs.
+description: Construa uma luta de chefe com múltiplas fases, mecânicas de escudo, mudanças de aparência, invocação de lacaios, animações de ataque personalizadas e spawns no mundo.
 ---
 
-## Objetivo
+import { Aside } from '@astrojs/starlight/components';
 
-Construir um sistema de combate personalizado completo em torno de um novo tipo de dano **Lightning** (Raio). Você criará a definição do tipo de dano, uma arma cajado de raio com configurações de projétil, efeitos de entidade que se aplicam ao acertar, e um NPC que usa ataques de raio com um Combat Action Evaluator ajustado. Este tutorial demonstra como os componentes de combate do Hytale se conectam: tipos de dano, projéteis, interações, itens e IA de NPCs.
+## O que Você Vai Aprender
+
+Construa um encontro completo com o **Slime Chefe** incluindo:
+- Um chefe com múltiplas fases que muda de aparência conforme perde HP
+- Efeitos de entidade de escudo com resistência a dano
+- Animações de ataque personalizadas usando `ItemPlayerAnimations`
+- Movimentação de combate com strafing via `MaintainDistance`
+- Invocação de lacaios durante transições de fase
+- Configuração de world spawn para geração natural
+- Drops de loot com um item troféu
+
+<Aside type="tip">
+O mod completo está disponível no GitHub: [hytale-mod-custom-combat-system](https://github.com/nevesb/hytale-mod-custom-combat-system)
+</Aside>
 
 ## Pré-requisitos
 
-- Uma pasta de mod com um `manifest.json` válido (veja [Configure Seu Ambiente de Desenvolvimento](/hytale-modding-docs/tutorials/beginner/setup-dev-environment))
-- Entendimento de tipos de dano (veja [Tipos de Dano](/hytale-modding-docs/reference/combat-and-projectiles/damage-types))
-- Entendimento de projéteis (veja [Projéteis](/hytale-modding-docs/reference/combat-and-projectiles/projectiles) e [Configurações de Projétil](/hytale-modding-docs/reference/combat-and-projectiles/projectile-configs))
-- Familiaridade com definições de itens (veja [Definições de Itens](/hytale-modding-docs/reference/item-system/item-definitions))
-- Entendimento de IA de combate de NPCs (veja [Balanceamento de Combate de NPCs](/hytale-modding-docs/reference/npc-system/npc-combat-balancing))
+- Um mod funcional com um NPC personalizado (veja [Criar um NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc))
+- Entendimento de spawning de NPCs (veja [Spawning Personalizado de NPCs](/hytale-modding-docs/tutorials/intermediate/custom-npc-spawning))
+- Familiaridade com cadeias de interação (veja [Árvores de Comportamento de IA de NPCs](/hytale-modding-docs/tutorials/advanced/npc-ai-behavior-trees))
 
 ---
 
 ## Arquitetura do Sistema
 
-O sistema de combate envolve cinco tipos de arquivo interconectados:
+O sistema de chefe conecta vários tipos de arquivo:
 
 ```
-Damage Type  ─── define propriedades de dano (perda de durabilidade, perda de stamina, cor)
+ModelAsset (BossSlime_Giant)     ─── define hitbox, animações de estado, aparência
     │
-Projectile   ─── define física e valores base de dano
+ItemPlayerAnimations             ─── mapeia IDs de animação de ataque para arquivos .blockyanim
     │
-Projectile Config ─── define parâmetros de lançamento e cadeias de interação
+Interaction (Boss_Slime_Attack)  ─── dispara a animação de ataque + cadeia de dano
     │
-Item Definition ─── define a arma que lança o projétil
+NPC Role (Boss_Slime_Giant)      ─── define fases, movimentação, estados de combate
     │
-NPC CAE      ─── define a IA que usa as habilidades da arma
-```
-
-Cada componente referencia os outros por ID. Construí-los em ordem garante que cada camada tenha suas dependências em vigor.
-
----
-
-## Passo 1: Criar um Tipo de Dano Personalizado
-
-Tipos de dano definem como o dano interage com o alvo: se causa perda de durabilidade, dreno de stamina, ignora resistências e qual cor os números de dano flutuantes exibem.
-
-Crie `YourMod/Assets/Server/Entity/Damage/Lightning.json`:
-
-```json
-{
-  "Parent": "Elemental",
-  "Inherits": "Elemental",
-  "DurabilityLoss": false,
-  "StaminaLoss": true,
-  "BypassResistances": false,
-  "DamageTextColor": "#7DF9FF"
-}
-```
-
-### Decisões de design
-
-| Campo | Valor | Justificativa |
-|-------|-------|---------------|
-| `Parent: "Elemental"` | Herda da raiz Elemental | Raio é um subtipo elemental, como Fogo e Gelo |
-| `DurabilityLoss: false` | Não danifica equipamento | Dano elemental tradicionalmente não desgasta equipamento |
-| `StaminaLoss: true` | Drena stamina ao acertar | Raio choca o alvo, esgotando stamina |
-| `BypassResistances: false` | Sujeito a verificações de resistência | Permite que armadura e buffs reduzam dano de raio |
-| `DamageTextColor: "#7DF9FF"` | Azul elétrico | Distinto de Fogo (padrão) e Veneno (#00FF00) |
-
-A hierarquia de tipos de dano agora se parece com:
-
-```
-Elemental
-├── Fire
-├── Ice
-├── Poison
-└── Lightning  (seu novo tipo)
+Entity Effect (Shield_Crystal)   ─── escudo com resistência a dano + partículas
+    │
+World Spawn                      ─── geração natural nas florestas da Zona 1
 ```
 
 ---
 
-## Passo 2: Criar o Projétil de Raio
+## Passo 1: Criar o Model Asset do Chefe
 
-Defina a entidade de projétil que voa pelo mundo quando a arma dispara.
+O chefe precisa de uma definição de modelo que mapeie animações de estado (Idle, Walk, Death, etc.), mas **não** animações de ataque. Animações de ataque são tratadas separadamente via `ItemPlayerAnimations`.
 
-Crie `YourMod/Assets/Server/Projectiles/Spells/LightningBolt.json`:
-
-```json
-{
-  "Appearance": "LightningBolt",
-  "Radius": 0.15,
-  "Height": 0.3,
-  "MuzzleVelocity": 55,
-  "TerminalVelocity": 120,
-  "Gravity": 2,
-  "Bounciness": 0,
-  "TimeToLive": 5,
-  "Damage": 45,
-  "DeadTime": 0,
-  "DeathEffectsOnHit": true,
-  "HitSoundEventId": "SFX_Lightning_Hit",
-  "MissSoundEventId": "SFX_Lightning_Miss",
-  "DeathSoundEventId": "SFX_Lightning_Death",
-  "HitParticles": {
-    "SystemId": "Impact_Lightning"
-  },
-  "MissParticles": {
-    "SystemId": "Lightning_Sparks"
-  },
-  "DeathParticles": {
-    "SystemId": "Lightning_Dissipate"
-  },
-  "ExplosionConfig": {
-    "DamageEntities": true,
-    "DamageBlocks": false,
-    "EntityDamageRadius": 3,
-    "EntityDamageFalloff": 0.5
-  }
-}
-```
-
-### Notas de design do projétil
-
-| Campo | Valor | Comparação |
-|-------|-------|------------|
-| `MuzzleVelocity: 55` | Mais rápido que Fireball (40) | Raio deve parecer mais rápido que fogo |
-| `Gravity: 2` | Gravidade baixa | Trajetória quase reta, diferente de flechas (gravidade 10-15) |
-| `Damage: 45` | Entre Ice Ball (20) e Fireball (60) | Balanceado para um elemental de médio alcance |
-| `TimeToLive: 5` | 5 segundos de vida | Desaparece se não atingir nada |
-| `EntityDamageRadius: 3` | AoE pequena | Efeito de raio em cadeia em entidades próximas, menor que Fireball (5) |
-| `EntityDamageFalloff: 0.5` | 50% de dano na borda | Entidades na borda da AoE recebem metade do dano |
-
-Compare com a Fireball vanilla que tem `MuzzleVelocity: 40`, `Gravity: 4`, `Damage: 60` e `EntityDamageRadius: 5`. Raio troca dano bruto por velocidade e precisão.
-
----
-
-## Passo 3: Criar a Configuração do Projétil
-
-A configuração do projétil faz a ponte entre a arma e o projétil, definindo parâmetros de lançamento e cadeias de interação para eventos de acerto/erro.
-
-Crie `YourMod/Assets/Server/ProjectileConfigs/Weapons/Staff/Lightning/Projectile_Config_LightningBolt.json`:
+Crie `Server/Models/Beast/BossSlime_Giant.json`:
 
 ```json
 {
-  "Model": "LightningBolt",
-  "LaunchForce": 35,
-  "Physics": {
-    "Type": "Standard",
-    "Gravity": 2,
-    "TerminalVelocityAir": 55,
-    "TerminalVelocityWater": 10,
-    "RotationMode": "VelocityDamped",
-    "Bounciness": 0.0,
-    "SticksVertically": false
+  "Model": "NPC/Beast/BossSlime/Model/Model_Giant.blockymodel",
+  "Texture": "NPC/Beast/BossSlime/Model/Texture_Giant.png",
+  "EyeHeight": 1.5,
+  "CrouchOffset": -0.5,
+  "HitBox": {
+    "Max": { "X": 1.5, "Y": 1.5, "Z": 1.5 },
+    "Min": { "X": -3.0, "Y": 0, "Z": -3.0 }
   },
-  "LaunchWorldSoundEventId": "SFX_Staff_Lightning_Shoot",
-  "SpawnOffset": {
-    "X": 0.1,
-    "Y": -0.2,
-    "Z": 0.5
-  },
-  "Interactions": {
-    "ProjectileHit": {
-      "Interactions": [
-        {
-          "Parent": "DamageEntityParent",
-          "DamageCalculator": {
-            "Class": "Charged",
-            "BaseDamage": {
-              "Lightning": 45
-            }
-          },
-          "DamageEffects": {
-            "Knockback": {
-              "Type": "Force",
-              "Force": 15,
-              "VelocityType": "Set"
-            },
-            "WorldParticles": [
-              { "SystemId": "Impact_Lightning" },
-              { "SystemId": "Lightning_Sparks" }
-            ],
-            "WorldSoundEventId": "SFX_Lightning_Hit"
-          }
-        },
-        {
-          "Type": "ApplyEffect",
-          "EffectId": "Effect_Lightning_Stun",
-          "Duration": 1.5
-        },
-        {
-          "Type": "RemoveEntity",
-          "Entity": "User"
-        }
+  "AnimationSets": {
+    "Walk": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Walk.blockyanim" }
       ]
     },
-    "ProjectileMiss": {
-      "Interactions": [
-        {
-          "Type": "Simple",
-          "Effects": {
-            "WorldSoundEventId": "SFX_Lightning_Miss",
-            "WorldParticles": [
-              { "SystemId": "Lightning_Sparks" }
-            ]
-          }
-        },
-        {
-          "Type": "RemoveEntity",
-          "Entity": "User"
-        }
+    "Idle": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Idle.blockyanim" }
       ]
     },
-    "ProjectileSpawn": {
-      "Interactions": [
-        {
-          "Type": "Simple",
-          "Effects": {
-            "WorldParticles": [
-              { "SystemId": "Lightning_Charge" }
-            ]
-          }
-        }
+    "Death": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Death.blockyanim", "Loop": false }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Run.blockyanim" }
+      ]
+    },
+    "Walk_Backward": {
+      "Animations": [
+        { "Animation": "NPC/Beast/BossSlime/Animations/Default/Walk_Backward.blockyanim" }
       ]
     }
   }
 }
 ```
 
-### Detalhamento da cadeia de interação
+<Aside type="caution">
+**Não** adicione animações de ataque ao `AnimationSets`. Animações de ataque para NPCs devem ser definidas em um arquivo `ItemPlayerAnimations` separado (Passo 2). Misturá-las faz com que a animação não seja reproduzida.
+</Aside>
 
-A cadeia `ProjectileHit` executa três interações em sequência:
-
-1. **DamageEntityParent** — calcula e aplica dano usando o tipo de dano `Lightning` com 45 de dano base, com força de knockback 15 e efeitos de partícula/som
-2. **ApplyEffect** — aplica um efeito de atordoamento (`Effect_Lightning_Stun`) por 1,5 segundos, impedindo o alvo de agir
-3. **RemoveEntity** — destrói o projétil após acertar
-
-O campo `BaseDamage` usa um mapa de tipo de dano para valor: `{ "Lightning": 45 }`. Isso referencia seu tipo de dano personalizado pelo ID do nome de arquivo. Compare com a configuração vanilla Ice Ball que usa `{ "Ice": 20 }`.
+Você também precisa dos model assets `BossSlime_Medium.json` e `BossSlime_Small.json` para as transições de fase (mesmas animações, modelos/texturas diferentes). O `BossSlime.json` base serve como a aparência padrão.
 
 ---
 
-## Passo 4: Criar a Arma Cajado de Raio
+## Passo 2: Criar o Mapeamento de Animação de Ataque
 
-Defina o item de arma que lança raios.
+As bestas vanilla (Bear, Cactee, etc.) usam arquivos `ItemPlayerAnimations` para mapear IDs de animação de combate para arquivos `.blockyanim`. Seu chefe precisa do mesmo.
 
-Crie `YourMod/Assets/Server/Item/Items/Weapon/Staff/Weapon_Staff_Lightning.json`:
+Crie `Server/Item/Animations/NPC/Beast/BossSlime/BossSlime_Default.json`:
 
 ```json
 {
-  "Parent": "Template_Weapon",
-  "TranslationProperties": {
-    "Name": "server.items.Weapon_Staff_Lightning.name",
-    "Description": "server.items.Weapon_Staff_Lightning.description"
+  "Animations": {
+    "Attack": {
+      "ThirdPerson": "NPC/Beast/BossSlime/Animations/Default/Attack.blockyanim",
+      "Looping": false,
+      "Speed": 1
+    }
   },
-  "Quality": "Rare",
-  "Icon": "Icons/ItemsGenerated/Weapon_Staff_Lightning.png",
-  "Categories": ["Items.Weapons.Staves"],
-  "ItemLevel": 15,
-  "MaxStack": 1,
-  "MaxDurability": 250,
-  "DurabilityLossOnHit": 2,
-  "DropOnDeath": true,
-  "PlayerAnimationsId": "Staff",
-  "Model": "Items/Weapons/Staff/Lightning.blockymodel",
-  "Texture": "Items/Weapons/Staff/Lightning_Texture.png",
-  "Weapon": {},
-  "Tags": {
-    "Type": ["Weapon"],
-    "Family": ["Staff"],
-    "Element": ["Lightning"]
+  "Camera": {
+    "Pitch": {
+      "AngleRange": { "Max": 15, "Min": -15 },
+      "TargetNodes": ["Head"]
+    },
+    "Yaw": {
+      "AngleRange": { "Max": 15, "Min": -15 },
+      "TargetNodes": ["Head"]
+    }
   },
-  "Interactions": {
-    "Primary": "Root_Primary_Staff_Lightning"
+  "WiggleWeights": {
+    "Pitch": 2, "PitchDeceleration": 0.1,
+    "Roll": 0.1, "RollDeceleration": 0.1,
+    "X": 3, "XDeceleration": 0.1,
+    "Y": 0.1, "YDeceleration": 0.1,
+    "Z": 0.1, "ZDeceleration": 0.1
+  }
+}
+```
+
+### Como funciona
+
+| Seção | Propósito |
+|-------|-----------|
+| `Animations.Attack` | Mapeia o ID `"Attack"` para o arquivo `.blockyanim` |
+| `Camera` | Limites de rastreamento da cabeça durante combate |
+| `WiggleWeights` | Balanço visual quando o NPC se move/ataca |
+
+A chave `"Attack"` é o que você referencia no `ItemAnimationId` da interação. O nome do arquivo `BossSlime_Default` se torna o `ItemPlayerAnimationsId`.
+
+---
+
+## Passo 3: Criar a Interação de Ataque
+
+O chefe usa a cadeia vanilla `Root_NPC_Attack_Melee`, mas sobrescreve a animação inicial para usar o ataque personalizado do slime.
+
+Crie `Server/Item/Interactions/Boss_Slime_Attack_Start.json`:
+
+```json
+{
+  "Type": "Simple",
+  "Effects": {
+    "ItemPlayerAnimationsId": "BossSlime_Default",
+    "ItemAnimationId": "Attack",
+    "ClearAnimationOnFinish": false,
+    "ClearSoundEventOnFinish": false
+  },
+  "RunTime": 0.1,
+  "Next": {
+    "Type": "Replace",
+    "DefaultValue": {
+      "Interactions": ["NPC_Attack_Selector_Left"]
+    },
+    "Var": "Melee_Selector"
+  }
+}
+```
+
+Isso substitui o vanilla `NPC_Attack_Melee_Simple` (que usa a animação humanoide `SwingLeft`) por uma interação que reproduz a animação `Attack` do slime.
+
+Crie a interação de dano em `Server/Item/Interactions/Boss_Slime_Slam_Damage.json`:
+
+```json
+{
+  "Parent": "DamageEntityParent",
+  "DamageCalculator": {
+    "BaseDamage": { "Physical": 15 }
+  },
+  "DamageEffects": {
+    "Knockback": { "Force": 3, "VelocityY": 4 },
+    "WorldSoundEventId": "SFX_Unarmed_Impact",
+    "LocalSoundEventId": "SFX_Unarmed_Impact"
+  }
+}
+```
+
+---
+
+## Passo 4: Criar o Entity Effect de Escudo
+
+O escudo fornece resistência temporária a dano e um efeito visual de partículas.
+
+Crie `Server/Entity/Effects/Shield_Crystal.json`:
+
+```json
+{
+  "Duration": 1,
+  "DamageResistance": {
+    "Physical": [{ "Amount": 1.0, "CalculationType": "Multiplicative" }],
+    "Slashing": [{ "Amount": 1.0, "CalculationType": "Multiplicative" }],
+    "Bludgeoning": [{ "Amount": 1.0, "CalculationType": "Multiplicative" }],
+    "Projectile": [{ "Amount": 1.0, "CalculationType": "Multiplicative" }],
+    "Fire": [{ "Amount": 1.0, "CalculationType": "Multiplicative" }],
+    "Ice": [{ "Amount": 1.0, "CalculationType": "Multiplicative" }],
+    "Poison": [{ "Amount": 1.0, "CalculationType": "Multiplicative" }],
+    "Environment": [{ "Amount": 1.0, "CalculationType": "Multiplicative" }]
+  },
+  "ApplicationEffects": {
+    "Particles": [{ "SystemId": "Example_Shield" }]
+  },
+  "Invulnerable": false
+}
+```
+
+### Notas de design
+
+| Campo | Valor | Propósito |
+|-------|-------|-----------|
+| `Duration: 1` | 1 segundo | Duração curta, mas continuamente renovada pelos blocos de instrução do chefe |
+| `Amount: 1.0` + `Multiplicative` | 100% de resistência | Imunidade total a dano enquanto o escudo está ativo |
+| `SystemId: "Example_Shield"` | Partícula embutida | Exibe um efeito de bolha de escudo ao redor do chefe |
+| `Invulnerable: false` | Não invulnerável | Permite que o escudo seja quebrado ao receber dano suficiente |
+
+---
+
+## Passo 5: Criar a Role do Chefe
+
+Este é o arquivo principal. O chefe usa `Type: "Generic"` com uma máquina de estados controlando fases, movimentação de combate e ataques.
+
+Crie `Server/NPC/Roles/Boss_Slime_Giant.json`:
+
+```json
+{
+  "Type": "Generic",
+  "Appearance": "BossSlime_Giant",
+  "MaxHealth": 450,
+  "KnockbackScale": 0.5,
+  "DisableDamageGroups": ["Self"],
+  "DefaultNPCAttitude": "Ignore",
+  "DefaultPlayerAttitude": "Neutral",
+  "DropList": "Drop_BossSlime_Crown",
+  "IsMemory": true,
+  "MemoriesCategory": "Boss",
+  "StartState": "Idle",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 6,
+      "Gravity": 10,
+      "RunThreshold": 0.3,
+      "MaxFallSpeed": 15,
+      "MaxRotationSpeed": 360,
+      "Acceleration": 8
+    }
+  ],
+  "CombatConfig": {
+    "EntityEffect": "Shield_Crystal"
   },
   "InteractionVars": {
-    "ProjectileConfig": {
-      "Interactions": [
+    "Melee_Start": {
+      "Interactions": ["Boss_Slime_Attack_Start"]
+    },
+    "Melee_Damage": {
+      "Interactions": [{ "Parent": "Boss_Slime_Slam_Damage" }]
+    }
+  }
+}
+```
+
+### Campos principais explicados
+
+| Campo | Propósito |
+|-------|-----------|
+| `Type: "Generic"` | Controle manual total via blocos de instrução (sem IA de template) |
+| `InteractionVars.Melee_Start` | Sobrescreve `Root_NPC_Attack_Melee` para usar a animação de ataque do slime |
+| `InteractionVars.Melee_Damage` | Sobrescreve a interação de dano com valores personalizados |
+| `CombatConfig.EntityEffect` | Aplica o efeito `Shield_Crystal` durante o combate |
+| `DefaultPlayerAttitude: "Neutral"` | O chefe ignora jogadores até ser atacado |
+| `StartState: "Idle"` | O chefe começa no estado Idle |
+
+---
+
+## Passo 6: Adicionar Transições de Fase
+
+As transições de fase usam sensores `Once` que disparam quando o HP cai abaixo de limites. Adicione-os como `Instructions` com `Continue: true` para que executem junto com outros blocos.
+
+```json
+{
+  "$Comment": "Phase 1 end: HP <= 77.8% - spawn 1 slime",
+  "Continue": true,
+  "Instructions": [{
+    "Sensor": {
+      "Type": "Self", "Once": true,
+      "Filters": [{
+        "Type": "Stat", "Stat": "Health", "StatTarget": "Value",
+        "RelativeTo": "Health", "RelativeToTarget": "Max",
+        "ValueRange": [0, 0.778]
+      }]
+    },
+    "Actions": [{
+      "Type": "Spawn", "FanOut": true, "SpawnAngle": 360,
+      "DistanceRange": [3, 5], "CountRange": [1, 1],
+      "DelayRange": [0, 0], "Kind": "Slime"
+    }]
+  }]
+}
+```
+
+O chefe completo tem quatro gatilhos de fase:
+
+| Fase | Limite de HP | Ações |
+|------|-------------|-------|
+| Fim da Fase 1 | 77,8% (350 HP) | Invoca 1 Slime |
+| Início da Fase 2 | 55,6% (250 HP) | Muda para aparência Média, reativa escudo, invoca 2 Slimes |
+| Fim da Fase 2 | 38,9% (175 HP) | Invoca 1 Slime |
+| Início da Fase 3 | 22,2% (100 HP) | Muda para aparência Pequena, invoca 2 Slimes |
+
+A mudança de aparência usa ações `"Type": "Appearance"`:
+
+```json
+{ "Type": "Appearance", "Appearance": "BossSlime_Medium" }
+```
+
+Blocos de renovação de escudo usam sensores contínuos (sem `Once`) para reaplicar o escudo a cada segundo durante fases protegidas:
+
+```json
+{
+  "Continue": true,
+  "Instructions": [{
+    "Sensor": {
+      "Type": "Self",
+      "Filters": [{
+        "Type": "Stat", "Stat": "Health", "StatTarget": "Value",
+        "RelativeTo": "Health", "RelativeToTarget": "Max",
+        "ValueRange": [0.778, 1.0]
+      }]
+    },
+    "Actions": [{
+      "Type": "ApplyEntityEffect", "UseTarget": false,
+      "EntityEffect": "Shield_Crystal"
+    }]
+  }]
+}
+```
+
+---
+
+## Passo 7: Adicionar Movimentação de Combate
+
+O chefe usa dois modos de movimentação controlados por estado:
+
+**Estado Idle** — Vagueia aleatoriamente, observa jogadores próximos:
+
+```json
+{
+  "Sensor": { "Type": "State", "State": "Idle" },
+  "Instructions": [
+    {
+      "Sensor": { "Type": "Player", "Range": 20 },
+      "HeadMotion": { "Type": "Watch" },
+      "BodyMotion": { "Type": "Nothing" }
+    },
+    {
+      "Sensor": { "Type": "Any" },
+      "BodyMotion": {
+        "Type": "Wander",
+        "MaxHeadingChange": 45,
+        "RelativeSpeed": 0.3
+      }
+    }
+  ]
+}
+```
+
+**Estado Combat** — Mantém distância e faz strafing:
+
+```json
+{
+  "Sensor": { "Type": "State", "State": "Combat" },
+  "Instructions": [{
+    "Sensor": { "Type": "Player", "Range": 30 },
+    "BodyMotion": {
+      "Type": "MaintainDistance",
+      "DesiredDistanceRange": [1.5, 3.5],
+      "MoveThreshold": 0.5,
+      "RelativeForwardsSpeed": 0.6,
+      "RelativeBackwardsSpeed": 0.5,
+      "StrafingDurationRange": [1, 1],
+      "StrafingFrequencyRange": [2, 2]
+    }
+  }]
+}
+```
+
+### Parâmetros do MaintainDistance
+
+| Campo | Valor | Propósito |
+|-------|-------|-----------|
+| `DesiredDistanceRange: [1.5, 3.5]` | Ficar a 1,5-3,5 blocos do jogador | Perto o suficiente para corpo a corpo, compatível com Template_Predator vanilla |
+| `StrafingDurationRange: [1, 1]` | Strafing por 1 segundo | Cria o movimento de "dança de combate" |
+| `StrafingFrequencyRange: [2, 2]` | Strafing a cada 2 segundos | Reposicionamento regular durante o combate |
+| `RelativeForwardsSpeed: 0.6` | 60% da velocidade ao se aproximar | Aproximação cautelosa |
+
+<Aside type="caution">
+Definir `DesiredDistanceRange` muito alto (ex.: `[3, 5]`) manterá o chefe fora do alcance corpo a corpo. Predadores corpo a corpo vanilla usam `[1.5, 3.5]` calculado a partir de `AttackDistance - 1`.
+</Aside>
+
+---
+
+## Passo 8: Adicionar Ações de Combate
+
+O bloco de combate controla transições de estado e ataques:
+
+```json
+{
+  "Instructions": [
+    {
+      "Sensor": { "Type": "State", "State": "Idle" },
+      "Instructions": [
         {
-          "Type": "SpawnProjectile",
-          "ProjectileConfigId": "Projectile_Config_LightningBolt"
+          "Sensor": { "Type": "Damage" },
+          "Actions": [{ "Type": "State", "State": "Combat" }]
+        },
+        {
+          "Sensor": { "Type": "Any" },
+          "Actions": [{ "Type": "Nothing" }]
+        }
+      ]
+    },
+    {
+      "Sensor": { "Type": "State", "State": "Combat" },
+      "Instructions": [
+        {
+          "Sensor": { "Type": "Player", "Range": 14 },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_NPC_Attack_Melee",
+              "AttackPauseRange": [1.0, 2.0]
+            },
+            { "Type": "Timeout", "Delay": [0.2, 0.2] }
+          ],
+          "HeadMotion": { "Type": "Aim", "RelativeTurnSpeed": 1.5 }
+        },
+        {
+          "Sensor": { "Type": "Not", "Sensor": { "Type": "Player", "Range": 40 } },
+          "Actions": [{ "Type": "State", "State": "Idle" }]
         }
       ]
     }
-  },
-  "Recipe": {
-    "Input": [
-      { "ItemId": "Ingredient_Crystal", "Quantity": 5 },
-      { "ItemId": "Ingredient_Wood_Stick", "Quantity": 2 },
-      { "ResourceTypeId": "Metal_Ingot", "Quantity": 3 }
-    ],
-    "BenchRequirement": [
+  ]
+}
+```
+
+### Como InteractionVars sobrescrevem a cadeia de ataque
+
+A cadeia vanilla `Root_NPC_Attack_Melee` funciona através de Replace Vars:
+
+```
+Root_NPC_Attack_Melee
+  └─ Replace Var "Melee_Start" (padrão: NPC_Attack_Melee_Simple → SwingLeft)
+       └─ Replace Var "Melee_Selector" (padrão: NPC_Attack_Selector_Left)
+            └─ Replace Var "Melee_Damage" (padrão: dano genérico)
+```
+
+Ao definir `InteractionVars` na role do chefe, você sobrescreve elos específicos:
+- `Melee_Start` → `Boss_Slime_Attack_Start` (reproduz a animação do slime em vez do golpe humanoide)
+- `Melee_Damage` → `Boss_Slime_Slam_Damage` (valores de dano e knockback personalizados)
+
+---
+
+## Passo 9: Criar Drops de Loot
+
+Crie `Server/Drops/Drop_BossSlime_Crown.json`:
+
+```json
+{
+  "Container": {
+    "Type": "Choice",
+    "Containers": [
       {
-        "Type": "Crafting",
-        "Id": "MagicBench",
-        "Categories": ["Staves"]
+        "Type": "Single",
+        "Item": { "ItemId": "Trophy_Slime_Crown", "QuantityMin": 1, "QuantityMax": 1 },
+        "Weight": 100
+      },
+      {
+        "Type": "Single",
+        "Item": { "ItemId": "Ore_Crystal_Glow", "QuantityMin": 1, "QuantityMax": 3 },
+        "Weight": 80
       }
-    ],
-    "TimeSeconds": 10
+    ]
   }
 }
 ```
 
-### Campos principais da arma
+Crie o item troféu em `Server/Item/Items/Trophy_Slime_Crown.json`:
+
+```json
+{
+  "TranslationProperties": {
+    "Name": "Slime Crown",
+    "Description": "A trophy from the defeated Slime King"
+  },
+  "Model": "NPC/Beast/BossSlime/Model/Model_Crown.blockymodel",
+  "Texture": "NPC/Beast/BossSlime/Model/Texture.png",
+  "MaxStack": 1,
+  "Scale": 0.5,
+  "Icon": "Icons/ItemsGenerated/Trophy_Slime_Crown.png"
+}
+```
+
+---
+
+## Passo 10: Configurar World Spawns
+
+Adicione o chefe e os slimes regulares às florestas da Zona 1.
+
+Crie `Server/NPC/Spawn/World/Zone1/Spawns_Zone1_Forests_Slime.json`:
+
+```json
+{
+  "Environments": [
+    "Env_Zone1_Forests",
+    "Env_Zone1_Autumn",
+    "Env_Zone1_Azure"
+  ],
+  "NPCs": [
+    {
+      "Weight": 8,
+      "SpawnBlockSet": "Soil",
+      "Id": "Slime"
+    },
+    {
+      "Weight": 1,
+      "SpawnBlockSet": "Soil",
+      "Id": "Boss_Slime_Giant"
+    }
+  ],
+  "DayTimeRange": [6, 18]
+}
+```
+
+### Design do spawn
 
 | Campo | Propósito |
 |-------|-----------|
-| `Weapon: {}` | Objeto vazio que ativa o comportamento de arma no item |
-| `PlayerAnimationsId: "Staff"` | Usa o conjunto de animações de cajado para o personagem do jogador |
-| `MaxDurability: 250` | Cajado tem 250 usos antes de quebrar |
-| `DurabilityLossOnHit: 2` | Cada disparo custa 2 de durabilidade (125 disparos no total) |
-| `ProjectileConfigId` | Referencia a configuração de projétil que define o comportamento de lançamento |
-| `Tags.Element: ["Lightning"]` | Tag usada para filtragem e consultas de resistência |
+| `Environments` | Todas as três variantes de floresta da Zona 1 |
+| `Weight: 8` vs `Weight: 1` | Slimes regulares são 8x mais comuns que o chefe |
+| `SpawnBlockSet: "Soil"` | Aparecem em blocos de grama/terra |
+| `DayTimeRange: [6, 18]` | Apenas durante o dia (6h às 18h) |
 
 ---
 
-## Passo 5: Criar Efeitos de Entidade
+## Passo 11: Testar o Chefe
 
-Efeitos de entidade são condições de status aplicadas aos alvos. Crie um efeito de atordoamento que o raio aplica ao acertar.
+1. Ative o mod e inicie um servidor na Zona 1.
+2. Explore a Floresta Azure para encontrar slimes gerados naturalmente.
+3. Encontre ou invoque o Boss Slime Giant com o console de desenvolvedor.
 
-Crie `YourMod/Assets/Server/Entity/Effects/Effect_Lightning_Stun.json`:
-
-```json
-{
-  "Id": "Effect_Lightning_Stun",
-  "Duration": 1.5,
-  "Stackable": false,
-  "MaxStacks": 1,
-  "StatModifiers": {
-    "MaxSpeed": {
-      "Type": "Multiply",
-      "Value": 0
-    },
-    "AttackSpeed": {
-      "Type": "Multiply",
-      "Value": 0
-    }
-  },
-  "Particles": {
-    "SystemId": "Lightning_Stun_Loop",
-    "AttachToEntity": true
-  },
-  "Icon": "Icons/Effects/Lightning_Stun.png",
-  "TranslationKey": "server.effects.Lightning_Stun.name"
-}
-```
-
-### Design do efeito
-
-| Campo | Propósito |
-|-------|-----------|
-| `Duration: 1.5` | Efeito dura 1,5 segundos |
-| `Stackable: false` | Acertar um alvo atordoado não estende o atordoamento |
-| `StatModifiers.MaxSpeed` | Multiplicar por 0 = alvo não pode se mover |
-| `StatModifiers.AttackSpeed` | Multiplicar por 0 = alvo não pode atacar |
-| `Particles` | Indicador visual anexado à entidade atordoada |
-
-Crie um segundo efeito para um debuff de dano ao longo do tempo por raio:
-
-Crie `YourMod/Assets/Server/Entity/Effects/Effect_Lightning_Shock.json`:
-
-```json
-{
-  "Id": "Effect_Lightning_Shock",
-  "Duration": 5,
-  "Stackable": true,
-  "MaxStacks": 3,
-  "TickInterval": 1.0,
-  "TickDamage": {
-    "DamageType": "Lightning",
-    "Amount": 8
-  },
-  "StatModifiers": {
-    "MaxSpeed": {
-      "Type": "Multiply",
-      "Value": 0.7
-    }
-  },
-  "Particles": {
-    "SystemId": "Lightning_Shock_Loop",
-    "AttachToEntity": true
-  },
-  "Icon": "Icons/Effects/Lightning_Shock.png",
-  "TranslationKey": "server.effects.Lightning_Shock.name"
-}
-```
-
-Este acumula até 3 vezes, causando 8 de dano Lightning por segundo por acúmulo (máximo 24/segundo) enquanto desacelera o alvo para 70% da velocidade. Cada acúmulo tem sua própria duração de 5 segundos.
-
----
-
-## Passo 6: Criar um NPC que Usa Raio
-
-Construa um NPC **Storm Mage** que usa ataques de raio em combate, demonstrando como a IA de NPC se integra com o sistema de combate personalizado.
-
-Crie `YourMod/Assets/Server/NPC/Roles/MyMod/Storm_Mage.json`:
-
-```json
-{
-  "Type": "Variant",
-  "Reference": "Template_Intelligent",
-  "Modify": {
-    "Appearance": "Mage_Storm",
-    "DropList": "Drop_Storm_Mage",
-    "MaxHealth": 95,
-    "MaxSpeed": 5,
-    "ViewRange": 22,
-    "ViewSector": 180,
-    "HearingRange": 14,
-    "AlertedRange": 30,
-    "DefaultPlayerAttitude": "Hostile",
-    "FleeRange": 18,
-    "FleeHealthThreshold": 0.2,
-    "FleeSpeed": 7,
-    "IsMemory": true,
-    "MemoriesCategory": "Other",
-    "MemoriesNameOverride": "Storm Mage",
-    "NameTranslationKey": {
-      "Compute": "NameTranslationKey"
-    }
-  },
-  "Parameters": {
-    "NameTranslationKey": {
-      "Value": "server.npcRoles.Storm_Mage.name",
-      "Description": "Translation key for NPC name display"
-    }
-  }
-}
-```
-
-Crie o CAE do Storm Mage em `YourMod/Assets/Server/NPC/Balancing/Intelligent/CAE_Storm_Mage.json`:
-
-```json
-{
-  "Type": "CombatActionEvaluator",
-  "TargetMemoryDuration": 6,
-  "CombatActionEvaluator": {
-    "RunConditions": [
-      {
-        "Type": "TimeSinceLastUsed",
-        "Curve": { "ResponseCurve": "Linear", "XRange": [0, 4] }
-      },
-      { "Type": "Randomiser", "MinValue": 0.9, "MaxValue": 1 }
-    ],
-    "MinRunUtility": 0.5,
-    "MinActionUtility": 0.01,
-    "AvailableActions": {
-      "SelectTarget": {
-        "Type": "SelectBasicAttackTarget",
-        "Description": "Select target for ranged lightning attacks",
-        "Conditions": [
-          {
-            "Type": "TargetDistance",
-            "Curve": { "ResponseCurve": "SimpleDescendingLogistic", "XRange": [0, 25] }
-          }
-        ]
-      },
-      "LightningBolt": {
-        "Type": "Ability",
-        "Description": "Fire a lightning bolt at the target",
-        "Ability": "Storm_Mage_LightningBolt",
-        "Target": "Hostile",
-        "AttackDistanceRange": [15, 15],
-        "PostExecuteDistanceRange": [10, 12],
-        "WeightCoefficient": 1.0,
-        "Conditions": [
-          {
-            "Type": "TargetDistance",
-            "Curve": { "ResponseCurve": "SimpleLogistic", "XRange": [0, 18] }
-          },
-          {
-            "Type": "TimeSinceLastUsed",
-            "Curve": { "ResponseCurve": "Linear", "XRange": [0, 2] }
-          }
-        ]
-      },
-      "LightningBarrage": {
-        "Type": "Ability",
-        "Description": "Rapid fire three lightning bolts",
-        "Ability": "Storm_Mage_LightningBarrage",
-        "Target": "Hostile",
-        "AttackDistanceRange": [12, 12],
-        "PostExecuteDistanceRange": [8, 10],
-        "ChargeFor": 1.0,
-        "WeightCoefficient": 1.3,
-        "Conditions": [
-          {
-            "Type": "TargetDistance",
-            "Curve": { "ResponseCurve": "SimpleLogistic", "XRange": [0, 15] }
-          },
-          {
-            "Type": "TimeSinceLastUsed",
-            "Curve": { "Type": "Switch", "SwitchPoint": 8 }
-          },
-          {
-            "Type": "TargetStatPercent",
-            "Stat": "Health",
-            "Curve": "Linear"
-          }
-        ]
-      },
-      "Retreat": {
-        "Type": "Ability",
-        "Description": "Teleport away when target gets too close",
-        "Ability": "Storm_Mage_Retreat",
-        "Target": "Self",
-        "WeightCoefficient": 1.4,
-        "Conditions": [
-          {
-            "Type": "TargetDistance",
-            "Curve": { "ResponseCurve": "SimpleDescendingLogistic", "XRange": [0, 6] }
-          },
-          {
-            "Type": "TimeSinceLastUsed",
-            "Curve": { "Type": "Switch", "SwitchPoint": 5 }
-          }
-        ]
-      }
-    },
-    "ActionSets": {
-      "Default": {
-        "BasicAttacks": {
-          "Attacks": ["Storm_Mage_LightningBolt"],
-          "Randomise": false,
-          "MaxRange": 15,
-          "Timeout": 1.0,
-          "CooldownRange": [1.5, 2.5]
-        },
-        "Actions": [
-          "SelectTarget",
-          "LightningBolt",
-          "LightningBarrage",
-          "Retreat"
-        ]
-      }
-    }
-  }
-}
-```
-
-### Design da IA do Storm Mage
-
-O Storm Mage é um conjurador à distância que:
-- **Prefere distância** — `PostExecuteDistanceRange` o mantém 10-12 blocos de distância após atacar
-- **Usa LightningBarrage** em alvos com muita vida (a condição `TargetStatPercent(Health, Linear)` pontua mais alto quando o alvo tem muita vida)
-- **Recua** quando jogadores se aproximam a menos de 6 blocos (logística descendente pontua alto em curta distância)
-- **Foge** com 20% de vida (definido no arquivo de papel)
-
----
-
-## Passo 7: Adicionar Chaves de Tradução
-
-Adicione a `YourMod/Assets/Languages/en-US.lang`:
-
-```
-server.items.Weapon_Staff_Lightning.name=Lightning Staff
-server.items.Weapon_Staff_Lightning.description=A crackling staff that channels lightning energy.
-server.npcRoles.Storm_Mage.name=Storm Mage
-server.effects.Lightning_Stun.name=Stunned
-server.effects.Lightning_Shock.name=Shocked
-```
-
----
-
-## Passo 8: Testar o Sistema de Combate
-
-1. Coloque sua pasta de mod no diretório de mods do servidor e inicie o servidor.
-2. Dê a si mesmo o Cajado de Raio usando o spawner de itens do desenvolvedor.
-3. Teste a arma:
-
-| Teste | Resultado esperado |
-|-------|-------------------|
-| Disparar no terreno | Raio atinge o terreno, partícula de faíscas é reproduzida, som de erro é reproduzido |
-| Disparar em NPC | NPC recebe 45 de dano Lightning (números azuis), fica atordoado por 1,5s, knockback aplicado |
-| Verificar stamina do NPC | Stamina do NPC esgotada (StaminaLoss: true) |
-| Verificar durabilidade de equipamento | Equipamento do alvo NÃO danificado (DurabilityLoss: false) |
-| Disparar em grupo de NPCs | AoE causa dano em entidades dentro de 3 blocos com 50% de falloff |
-
-4. Gere um Storm Mage e teste o combate de NPC:
-
-| Teste | Resultado esperado |
-|-------|-------------------|
-| Aproximar-se do Storm Mage | Começa a disparar raios a 15 blocos de distância |
-| Avançar para corpo a corpo | Storm Mage usa habilidade Retreat para se teleportar para longe |
-| Esperar pela barragem | Storm Mage carrega por 1s e depois dispara raios rápidos |
-| Causar dano até 20% de HP | Storm Mage foge na velocidade 7 |
+| Teste | Resultado Esperado |
+|-------|--------------------|
+| Chefe vagueia em Idle | Move-se lentamente, muda de direção aleatoriamente |
+| Jogador se aproxima a 20 blocos | Chefe observa o jogador mas não ataca |
+| Jogador atinge o chefe | Chefe entra no estado Combat, começa a fazer strafing |
+| Chefe ataca | Reproduz animação de ataque do slime, causa 15 de dano físico com knockback |
+| HP cai abaixo de 77,8% | Invoca 1 Slime próximo |
+| HP cai abaixo de 55,6% | Muda para aparência Média, escudo reativa, invoca 2 Slimes |
+| HP cai abaixo de 38,9% | Invoca 1 Slime |
+| HP cai abaixo de 22,2% | Muda para aparência Pequena, invoca 2 Slimes |
+| Chefe morre | Dropa troféu Coroa do Slime ou minério Crystal Glow |
 
 ### Solução de Problemas
 
-| Problema | Causa | Correção |
-|----------|-------|----------|
-| Números de dano aparecem brancos | Tipo de dano não encontrado | Verifique se `Lightning.json` existe em `Entity/Damage/` e tem `DamageTextColor` |
-| Projétil não causa dano | Chave `BaseDamage` incompatível | Certifique-se de que a chave `BaseDamage` corresponde ao nome de arquivo do tipo de dano: `"Lightning"` |
-| Efeito de atordoamento não aplica | ID de efeito incompatível | Verifique se `EffectId` na interação corresponde ao campo `Id` do arquivo de efeito |
-| Sem knockback ao acertar | Configuração de knockback ausente | Verifique se `DamageEffects.Knockback` tem `Force` > 0 |
-| Arma não pode ser fabricada | ID do bench errado | Verifique se `BenchRequirement.Id` corresponde a uma bancada de fabricação existente |
-| NPC não usa raio | CAE não referenciado | Certifique-se de que o papel do NPC referencia o arquivo CAE em sua ligação de template |
+| Problema | Causa | Solução |
+|----------|-------|---------|
+| Sem animação de ataque | `AnimationSets` contém `Attack` | Remova `Attack` do `AnimationSets` do modelo, defina-o apenas em `ItemPlayerAnimations` |
+| Chefe fica longe demais para acertar | `DesiredDistanceRange` muito alto | Use `[1.5, 3.5]` para alcance corpo a corpo |
+| Chefe não se move em idle | `BodyMotion` definido como `Nothing` | Adicione `"Type": "Wander"` com `RelativeSpeed: 0.3` |
+| Servidor falha ao carregar | `ItemPlayerAnimationsId` inválido | Certifique-se de que o arquivo de animação existe em `Server/Item/Animations/` e inclui as seções `Camera` + `WiggleWeights` |
+| Chefe ataca mas não causa dano | `InteractionVars.Melee_Damage` ausente | Adicione a sobrescrita de dano referenciando `Boss_Slime_Slam_Damage` |
 
 ---
 
-## Listagem Completa de Arquivos
+## Estrutura Completa de Arquivos
 
 ```
-YourMod/
-  Assets/
-    Server/
-      Entity/
-        Damage/
-          Lightning.json
-        Effects/
-          Effect_Lightning_Stun.json
-          Effect_Lightning_Shock.json
-      Projectiles/
-        Spells/
-          LightningBolt.json
-      ProjectileConfigs/
-        Weapons/
-          Staff/
-            Lightning/
-              Projectile_Config_LightningBolt.json
-      Item/
-        Items/
-          Weapon/
-            Staff/
-              Weapon_Staff_Lightning.json
-      NPC/
-        Roles/
-          MyMod/
-            Storm_Mage.json
-        Balancing/
-          Intelligent/
-            CAE_Storm_Mage.json
-    Languages/
-      en-US.lang
+CreateACustomNPC/
+  Common/
+    NPC/Beast/BossSlime/
+      Animations/Default/
+        Attack.blockyanim, Idle.blockyanim, Walk.blockyanim,
+        Death.blockyanim, Run.blockyanim, Walk_Backward.blockyanim, ...
+      Model/
+        Model_Giant.blockymodel, Model_Medium.blockymodel,
+        Model.blockymodel, Model_Crown.blockymodel,
+        Texture_Giant.png, Texture_Medium.png, Texture.png
+    Icons/
+      ModelsGenerated/  (BossSlime_Giant.png, etc.)
+      ItemsGenerated/   (Trophy_Slime_Crown.png)
+  Server/
+    Models/Beast/
+      BossSlime_Giant.json, BossSlime_Medium.json,
+      BossSlime_Small.json, BossSlime.json
+    Item/
+      Animations/NPC/Beast/BossSlime/BossSlime_Default.json
+      Interactions/
+        Boss_Slime_Attack_Start.json, Boss_Slime_Slam_Damage.json
+      Items/Trophy_Slime_Crown.json
+    Entity/Effects/Shield_Crystal.json
+    Drops/Drop_BossSlime_Crown.json
+    NPC/
+      Roles/Boss_Slime_Giant.json
+      Spawn/World/Zone1/Spawns_Zone1_Forests_Slime.json
+  manifest.json
 ```
 
 ---
 
 ## Próximos Passos
 
-- [Árvores de Comportamento de IA de NPCs](/hytale-modding-docs/tutorials/advanced/npc-ai-behavior-trees) — adicione IA complexa de múltiplos estados ao Storm Mage
-- [Dungeons Personalizadas](/hytale-modding-docs/tutorials/advanced/custom-dungeons) — use o sistema de Raio em encontros de dungeon
-- [Tipos de Dano](/hytale-modding-docs/reference/combat-and-projectiles/damage-types) — referência completa de tipos de dano
-- [Configurações de Projétil](/hytale-modding-docs/reference/combat-and-projectiles/projectile-configs) — schema completo de configuração de projétil
-- [Definições de Itens](/hytale-modding-docs/reference/item-system/item-definitions) — referência completa do schema de itens
+- [Criar um NPC](/hytale-modding-docs/tutorials/beginner/create-an-npc) -- crie o NPC Slime base que o chefe invoca
+- [Spawning Personalizado de NPCs](/hytale-modding-docs/tutorials/intermediate/custom-npc-spawning) -- saiba mais sobre configuração de world spawn
+- [Árvores de Comportamento de IA de NPCs](/hytale-modding-docs/tutorials/advanced/npc-ai-behavior-trees) -- padrões avançados de IA para NPCs
+- [Entity Effects](/hytale-modding-docs/reference/combat-and-projectiles/entity-effects) -- referência completa de entity effects
+- [NPC Roles](/hytale-modding-docs/reference/npc-system/npc-roles) -- schema completo de NPC roles
